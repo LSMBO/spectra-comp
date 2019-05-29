@@ -13,7 +13,7 @@ import java.util.Properties;
 
 public class Config {
 	public static String applicationFile = "application.conf";
-	public static String spectraComparatorFile = "spectra-comp.properties";
+	public static String spectraCompFile = "spectra-comp.properties";
 	public static Properties properties = null;
 
 	/**
@@ -27,10 +27,10 @@ public class Config {
 	 * Load spectra-comp parameters
 	 */
 	private synchronized static void loadSpectraCompProps() {
-		try (InputStream input = Main.class.getClassLoader().getResourceAsStream(spectraComparatorFile)) {
+		try (InputStream input = Main.class.getClassLoader().getResourceAsStream(spectraCompFile)) {
 			if (input == null) {
 				System.err.println(
-						"Error - Spectra-comp properties file: '" + spectraComparatorFile + "' does not exist!");
+						"Error - Spectra-comp properties file: '" + spectraCompFile + "' does not exist!");
 			} else {
 				Properties recoverProperties = new Properties();
 				recoverProperties.load(input);
