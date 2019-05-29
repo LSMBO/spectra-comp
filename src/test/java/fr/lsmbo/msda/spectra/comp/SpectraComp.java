@@ -1,7 +1,4 @@
-/**
- * 
- */
-package fr.lsmbo.msda.spectra.comparator;
+package fr.lsmbo.msda.spectra.comp;
 
 import static org.junit.Assert.*;
 
@@ -9,22 +6,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * @author Aromdhani
- *
- */
-public class Comparator {
+public class SpectraComp {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 	}
