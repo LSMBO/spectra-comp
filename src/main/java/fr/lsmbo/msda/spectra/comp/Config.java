@@ -16,10 +16,16 @@ public class Config {
 	public static String spectraComparatorFile = "spectra-comp.properties";
 	public static Properties properties = null;
 
+	/**
+	 * Load application.conf parameters
+	 */
 	private synchronized static void loadApplicationConf() {
 
 	}
 
+	/**
+	 * Load spectra-comp parameters
+	 */
 	private synchronized static void loadSpectraCompProps() {
 		try (InputStream input = Main.class.getClassLoader().getResourceAsStream(spectraComparatorFile)) {
 			if (input == null) {
@@ -39,7 +45,7 @@ public class Config {
 
 	}
 
-	public  static void initialize() {
+	public static void initialize() {
 
 	}
 }

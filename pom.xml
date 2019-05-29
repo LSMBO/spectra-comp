@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.lsmbo.msda</groupId>
-	<artifactId>spectra-comparator</artifactId>
+	<artifactId>spectra-comp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spectra-comparator</name>
-	<description>spectra-comparator is used to compare two peaks list through which spectra are compared using a dot product method</description>
+	<name>spectra-comp</name>
+	<description>spectra-comp is used to compare two peaks list through which spectra are compared using a dot product method</description>
 	<properties>
 		<project.build.date>2019-05-29</project.build.date>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
