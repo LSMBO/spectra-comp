@@ -1,4 +1,4 @@
-package fr.lsmbo.msda.spectra.comparator;
+package fr.lsmbo.msda.spectra.comparator.db;
 
 /**
  * Handle database connection for spectra-comparator
