@@ -16,7 +16,7 @@ public class Config {
 	public static String spectraComparatorFile = "spectra-comp.properties";
 	public static Properties properties = null;
 
-	private static void loadApplicationConf() {
+	private synchronized static void loadApplicationConf() {
 
 	}
 
@@ -39,7 +39,7 @@ public class Config {
 
 	}
 
-	public synchronized static void initialize() {
+	public  static void initialize() {
 
 	}
 }
