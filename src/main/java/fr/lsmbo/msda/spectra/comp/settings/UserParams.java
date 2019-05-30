@@ -42,7 +42,11 @@ public class UserParams {
 		return comparison;
 	}
 
-	public String getRecoverVersion() {
+	public DataSource getDataSource() {
+		return dataSource;
+	}
+
+	public String getSpectraCompVersion() {
 		return spectraCompVersion;
 	}
 
@@ -58,8 +62,12 @@ public class UserParams {
 		this.comparison = comparison;
 	}
 
-	public void setRecoverVersion(String recoverVersion) {
-		this.spectraCompVersion = recoverVersion;
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
+	public void setSpectraCompVersion(String spectraCompVersion) {
+		this.spectraCompVersion = spectraCompVersion;
 	}
 
 	public void setTimestamp(String timestamp) {
@@ -68,22 +76,6 @@ public class UserParams {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
-	}
-
-	public String getSpectraCompVersion() {
-		return spectraCompVersion;
-	}
-
-	public void setSpectraCompVersion(String spectraCompVersion) {
-		this.spectraCompVersion = spectraCompVersion;
-	}
-
-	public DataSource getDataSource() {
-		return dataSource;
-	}
-
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
 	}
 
 	@Override
