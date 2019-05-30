@@ -21,9 +21,8 @@ public class Session {
 	public static String SPECTRACOMP_RELEASE_VERSION = "";
 	public static String SPECTRACOMP_RELEASE_DATE = "";
 
-	public static DataSource SPECTRACOMP_DATA_SOURCE = DataSource.DATABASE;
-	public static File REFERENCE_FILE = null;
-	public static File TEST_FILE = null;
+	public static File REFERENCE_PKLIST_FILE = null;
+	public static File TEST_PKLIST_FILE = null;
 	public static UserParams userParams = null;
 	public static String CURRENT_REGEX_RT = "title.regex.data-analysis.rt";
 
