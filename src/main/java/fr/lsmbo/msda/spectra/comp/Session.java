@@ -5,6 +5,9 @@ package fr.lsmbo.msda.spectra.comp;
 
 import java.io.File;
 
+import fr.lsmbo.msda.spectra.comp.db.DataSource;
+import fr.lsmbo.msda.spectra.comp.settings.UserParams;
+
 /**
  * Holds session parameters .
  * 
@@ -17,8 +20,11 @@ public class Session {
 	public static String SPECTRACOMP_RELEASE_DESCRIPTION = "";
 	public static String SPECTRACOMP_RELEASE_VERSION = "";
 	public static String SPECTRACOMP_RELEASE_DATE = "";
-	public static File CURRENT_FILE = null;
-	public static File SECOND_FILE = null;
-	public static Float HIGHEST_FRAGMENT_MZ = 0F;
+
+	public static DataSource SPECTRACOMP_DATA_SOURCE = DataSource.DATABASE;
+	public static File REFERENCE_FILE = null;
+	public static File TEST_FILE = null;
+	public static UserParams userParams = null;
+	public static String CURRENT_REGEX_RT = "title.regex.data-analysis.rt";
 
 }

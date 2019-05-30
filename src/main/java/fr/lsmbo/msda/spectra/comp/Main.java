@@ -5,13 +5,13 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	@Override
-	public void start(Stage primaryStage) {
-
-	}
-
 	public static void main(String[] args) {
 		System.out.println("Start spectra-comp");
 		launch(args);
+	}
+
+	@Override
+	public void start(Stage primaryStage) {
+
 	}
 }

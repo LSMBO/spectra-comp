@@ -23,8 +23,7 @@ public class IconResource {
 	/**
 	 * Return an image
 	 * 
-	 * @param icon
-	 *            the icon to load.
+	 * @param icon the icon to load.
 	 * @return Image
 	 */
 	public static Image getImage(ICON icon) {

@@ -1,8 +1,15 @@
 package fr.lsmbo.msda.spectra.comp;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+
+import fr.lsmbo.msda.spectra.comp.settings.UserParams;
 
 /**
  * Initialize spectra-comparator configurations
@@ -17,6 +24,31 @@ public class Config {
 	public static Properties properties = null;
 
 	/**
+	 * Return object value. Example: Config.get("max.file.size")
+	 * 
+	 * @param the specified key to retrieve the property value as an object.
+	 */
+	private static Object _get(String key) {
+		return properties.getProperty(key);
+	}
+
+	/**
+	 * Return a property value as String
+	 * 
+	 * @param key the specified key to get the property value
+	 */
+	public static String get(String key) {
+		Object value = _get(key);
+		if (value == null)
+			return null;
+		return value.toString();
+	}
+
+	public static void initialize() {
+
+	}
+
+	/**
 	 * Load application.conf parameters
 	 */
 	private synchronized static void loadApplicationConf() {
@@ -29,8 +61,7 @@ public class Config {
 	private synchronized static void loadSpectraCompProps() {
 		try (InputStream input = Main.class.getClassLoader().getResourceAsStream(spectraCompFile)) {
 			if (input == null) {
-				System.err.println(
-						"Error - Spectra-comp properties file: '" + spectraCompFile + "' does not exist!");
+				System.err.println("Error - Spectra-comp properties file: '" + spectraCompFile + "' does not exist!");
 			} else {
 				Properties recoverProperties = new Properties();
 				recoverProperties.load(input);
@@ -42,10 +73,22 @@ public class Config {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
-	public static void initialize() {
-
+	/**
+	 * Load user parameters. Read and parse parameters file.
+	 * 
+	 * @param paramFile the file used to load user parameters
+	 */
+	public static void loadUserParams(File paramFile) {
+		try {
+			Gson gson = new Gson();
+			JsonReader reader = new JsonReader(new FileReader(paramFile));
+			Session.userParams = gson.fromJson(reader, UserParams.class);
+		} catch (Exception e) {
+			// a possible error case is when param files has been generated with
+			// an older version of Recover
+			e.printStackTrace();
+		}
 	}
 }
