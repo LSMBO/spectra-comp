@@ -1,4 +1,4 @@
 {"name":"spectra-comp",
-"description":"",
+"description":"Spectra-comp is a tool used to compare two peak lists. the spectra are compared using a dot product method",
 "version":"0.0.1-SNAPSHOT",
 "build-date":"2019-05-23"}
