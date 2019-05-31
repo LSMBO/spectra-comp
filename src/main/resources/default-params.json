@@ -1,0 +1,17 @@
+{
+  "userName": "",
+  "timestamp": "",
+  "spectraCompVersion": "0.0.1-SNAPSHOT",
+  "dataSource":"database",
+  "comparison": {
+    "deltaMoz": 0.007,
+    "deltaRT": 90,
+    "numberOfPeaksToCompare": 8,
+    "minimumNumberOfIdenticalPeaks": 4,
+    "minimumThetaAngle": 11
+  },
+    "parsingRules": {
+    "parsingRuleName": "msconvert",
+    "parsingRuleValue": "RTmin:\"(\\d+\\.\\d+)\""
+  }
+}
