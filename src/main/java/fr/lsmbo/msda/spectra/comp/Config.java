@@ -8,7 +8,7 @@ import java.util.Properties;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-
+import fr.lsmbo.msda.spectra.comp.Main;
 import fr.lsmbo.msda.spectra.comp.settings.UserParams;
 
 /**
@@ -20,7 +20,9 @@ import fr.lsmbo.msda.spectra.comp.settings.UserParams;
 
 public class Config {
 	public static String applicationFile = "application.conf";
-	public static String spectraCompFile = "spectra-comp.properties";
+	public static String spectraCompFile = "spectra-comp.json";
+	public static File DefaultParamsFile =  new File(
+			Main.class.getClassLoader().getResource("default-params.json").getPath());
 	public static Properties properties = null;
 
 	/**
@@ -45,7 +47,7 @@ public class Config {
 	}
 
 	public static void initialize() {
-
+		loadUserParams(DefaultParamsFile);
 	}
 
 	/**
@@ -85,6 +87,7 @@ public class Config {
 			Gson gson = new Gson();
 			JsonReader reader = new JsonReader(new FileReader(paramFile));
 			Session.userParams = gson.fromJson(reader, UserParams.class);
+			System.out.println(Session.userParams.toString());
 		} catch (Exception e) {
 			// a possible error case is when param files has been generated with
 			// an older version of Recover

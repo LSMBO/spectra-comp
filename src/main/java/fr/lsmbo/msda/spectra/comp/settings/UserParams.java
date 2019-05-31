@@ -1,6 +1,4 @@
-/*
- * 
- */
+
 package fr.lsmbo.msda.spectra.comp.settings;
 
 import fr.lsmbo.msda.spectra.comp.db.DataSource;
@@ -18,23 +16,25 @@ public class UserParams {
 	private String spectraCompVersion;
 	private DataSource dataSource = DataSource.DATABASE;
 	private ComparisonSettings comparison;
+	private ParsingRulesSettings parsingRules;
 
 	public UserParams() {
-		this("", "", "", DataSource.DATABASE, new ComparisonSettings());
+		this("", "", "", DataSource.DATABASE, new ComparisonSettings(), new ParsingRulesSettings());
 	}
 
-	public UserParams(ComparisonSettings comparison) {
-		this("", "", "", DataSource.DATABASE, comparison);
+	public UserParams(ComparisonSettings comparison, ParsingRulesSettings parsingRules) {
+		this("", "", "", DataSource.DATABASE, comparison, parsingRules);
 	}
 
 	public UserParams(String userName, String timestamp, String spectraCompVersion, DataSource dataSource,
-			ComparisonSettings comparison) {
+			ComparisonSettings comparison, ParsingRulesSettings parsingRules) {
 		super();
 		this.userName = userName;
 		this.timestamp = timestamp;
 		this.spectraCompVersion = spectraCompVersion;
 		this.dataSource = dataSource;
 		this.comparison = comparison;
+		this.parsingRules = parsingRules;
 
 	}
 
@@ -76,6 +76,14 @@ public class UserParams {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public ParsingRulesSettings getParsingRules() {
+		return parsingRules;
+	}
+
+	public void setParsingRules(ParsingRulesSettings parsingRules) {
+		this.parsingRules = parsingRules;
 	}
 
 	@Override
