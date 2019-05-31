@@ -5,8 +5,8 @@ package fr.lsmbo.msda.spectra.comp;
 
 import java.io.File;
 
-import fr.lsmbo.msda.spectra.comp.db.DataSource;
 import fr.lsmbo.msda.spectra.comp.settings.UserParams;
+import fr.lsmbo.msda.spectra.comp.settings.Version;
 
 /**
  * Holds session parameters .
@@ -20,6 +20,7 @@ public class Session {
 	public static String SPECTRACOMP_RELEASE_DESCRIPTION = "";
 	public static String SPECTRACOMP_RELEASE_VERSION = "";
 	public static String SPECTRACOMP_RELEASE_DATE = "";
+	public static Version SPECTRACOMP_VERSION = null;
 
 	public static File REFERENCE_PKLIST_FILE = null;
 	public static File TEST_PKLIST_FILE = null;

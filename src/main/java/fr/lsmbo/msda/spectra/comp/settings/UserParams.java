@@ -89,7 +89,6 @@ public class UserParams {
 	@Override
 	public String toString() {
 		StringBuilder userParamsStr = new StringBuilder();
-		userParamsStr.append("\n").append("##Version: ").append(this.spectraCompVersion);
 		return userParamsStr.toString();
 	}
 }

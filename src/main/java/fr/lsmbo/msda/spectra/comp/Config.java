@@ -2,14 +2,13 @@ package fr.lsmbo.msda.spectra.comp;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import fr.lsmbo.msda.spectra.comp.Main;
+
 import fr.lsmbo.msda.spectra.comp.settings.UserParams;
+import fr.lsmbo.msda.spectra.comp.settings.Version;
 
 /**
  * Initialize spectra-comparator configurations
@@ -20,8 +19,9 @@ import fr.lsmbo.msda.spectra.comp.settings.UserParams;
 
 public class Config {
 	public static String applicationFile = "application.conf";
-	public static String spectraCompFile = "spectra-comp.json";
-	public static File DefaultParamsFile =  new File(
+	public static File spectraCompFile = new File(
+			Main.class.getClassLoader().getResource("spectra-comp.json").getPath());
+	public static File DefaultParamsFile = new File(
 			Main.class.getClassLoader().getResource("default-params.json").getPath());
 	public static Properties properties = null;
 
@@ -48,6 +48,7 @@ public class Config {
 
 	public static void initialize() {
 		loadUserParams(DefaultParamsFile);
+		loadSpectraCompProps(spectraCompFile);
 	}
 
 	/**
@@ -58,39 +59,33 @@ public class Config {
 	}
 
 	/**
-	 * Load spectra-comp parameters
+	 * Load spectra-comp version properties
+	 * @param versionFile the file used to load spectra-comp version
 	 */
-	private synchronized static void loadSpectraCompProps() {
-		try (InputStream input = Main.class.getClassLoader().getResourceAsStream(spectraCompFile)) {
-			if (input == null) {
-				System.err.println("Error - Spectra-comp properties file: '" + spectraCompFile + "' does not exist!");
-			} else {
-				Properties recoverProperties = new Properties();
-				recoverProperties.load(input);
-				Session.SPECTRACOMP_RELEASE_NAME = recoverProperties.getProperty("name");
-				Session.SPECTRACOMP_RELEASE_DESCRIPTION = recoverProperties.getProperty("description");
-				Session.SPECTRACOMP_RELEASE_VERSION = recoverProperties.getProperty("version");
-				Session.SPECTRACOMP_RELEASE_DATE = recoverProperties.getProperty("build-date");
-			}
-		} catch (IOException e) {
+	private synchronized static void loadSpectraCompProps(File versionFile) {
+		try {
+			Gson gson = new Gson();
+			JsonReader reader = new JsonReader(new FileReader(versionFile));
+			Session.SPECTRACOMP_VERSION = gson.fromJson(reader, Version.class);
+			System.out.println(Session.SPECTRACOMP_VERSION.toString());
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	/**
 	 * Load user parameters. Read and parse parameters file.
 	 * 
-	 * @param paramFile the file used to load user parameters
+	 * @param paramsFile the file used to load user parameters
 	 */
-	public static void loadUserParams(File paramFile) {
+	public static void loadUserParams(File paramsFile) {
 		try {
 			Gson gson = new Gson();
-			JsonReader reader = new JsonReader(new FileReader(paramFile));
+			JsonReader reader = new JsonReader(new FileReader(paramsFile));
 			Session.userParams = gson.fromJson(reader, UserParams.class);
 			System.out.println(Session.userParams.toString());
 		} catch (Exception e) {
-			// a possible error case is when param files has been generated with
-			// an older version of Recover
 			e.printStackTrace();
 		}
 	}
