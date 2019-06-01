@@ -2,11 +2,12 @@ package fr.lsmbo.msda.spectra.comp;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-
 import fr.lsmbo.msda.spectra.comp.settings.UserParams;
 import fr.lsmbo.msda.spectra.comp.settings.Version;
 
@@ -47,19 +48,30 @@ public class Config {
 	}
 
 	public static void initialize() {
-		loadUserParams(DefaultParamsFile);
 		loadSpectraCompProps(spectraCompFile);
+		loadUserParams(DefaultParamsFile);
+		loadApplicationConf(applicationFile);
 	}
 
 	/**
 	 * Load application.conf parameters
 	 */
-	private synchronized static void loadApplicationConf() {
-
+	private synchronized static void loadApplicationConf(String connectionParams) {
+		try (InputStream input = Main.class.getClassLoader().getResourceAsStream(connectionParams)) {
+			if (input == null) {
+				System.err.println("Error - RecoverFx properties file: '" + connectionParams + "' does not exist!");
+			} else {
+				Properties connectionProperties = new Properties();
+				connectionProperties.load(input);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * Load spectra-comp version properties
+	 * 
 	 * @param versionFile the file used to load spectra-comp version
 	 */
 	private synchronized static void loadSpectraCompProps(File versionFile) {

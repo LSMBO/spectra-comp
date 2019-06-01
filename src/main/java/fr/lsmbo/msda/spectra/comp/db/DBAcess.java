@@ -6,6 +6,6 @@ package fr.lsmbo.msda.spectra.comp.db;
  * @author Aromdhani
  *
  */
-public class DatabaseAcess {
+public class DBAcess {
 
 }
