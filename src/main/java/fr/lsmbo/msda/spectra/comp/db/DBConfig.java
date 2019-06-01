@@ -37,7 +37,7 @@ public class DBConfig {
 	private void loadProperties() {
 		try (InputStream input = Main.class.getClassLoader().getResourceAsStream(application)) {
 			if (input == null) {
-				System.err.println("Error - RecoverFx properties file: '" + application + "' does not exist!");
+				System.err.println("Error - error while trying to read spectra-comp file: '" + application + "'!");
 			} else {
 				Properties connectionProperties = new Properties();
 				connectionProperties.load(input);
