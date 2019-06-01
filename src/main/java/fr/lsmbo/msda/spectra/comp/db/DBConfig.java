@@ -1,5 +1,11 @@
 package fr.lsmbo.msda.spectra.comp.db;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+import fr.lsmbo.msda.spectra.comp.Main;
+
 /**
  * Handle database connection for spectra-comp
  * 
@@ -8,6 +14,7 @@ package fr.lsmbo.msda.spectra.comp.db;
  */
 public class DBConfig {
 	private static final Object CONFIGURATION_LOCK = new Object();
+	private static String application = "application.conf";
 	private static DBConfig instance;
 	private Integer maxPoolConnection = null;
 	private String user = null;
@@ -15,6 +22,44 @@ public class DBConfig {
 	private Integer port = null;
 	private String host = null;
 	private String dbName = null;
+
+	private DBConfig() {
+		loadProperties();
+	}
+
+	public static DBConfig getInstance() {
+		if (instance == null) {
+			instance = new DBConfig();
+		}
+		return instance;
+	}
+
+	private void loadProperties() {
+		try (InputStream input = Main.class.getClassLoader().getResourceAsStream(application)) {
+			if (input == null) {
+				System.err.println("Error - RecoverFx properties file: '" + application + "' does not exist!");
+			} else {
+				Properties connectionProperties = new Properties();
+				connectionProperties.load(input);
+				maxPoolConnection = Integer.valueOf(connectionProperties.getProperty("db-config.max-pool-connection"));
+				user = connectionProperties.getProperty("auth-config.user");
+				password = connectionProperties.getProperty("auth-config.password");
+				host = connectionProperties.getProperty("host-config.host");
+				port = Integer.valueOf(connectionProperties.getProperty("host-config.port"));
+				dbName = connectionProperties.getProperty("db-name ");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void forcePropertiesFileReload() {
+		synchronized (CONFIGURATION_LOCK) {
+			if (instance != null) {
+				instance = null;
+			}
+		}
+	}
 
 	/**
 	 * @return the maxPoolConnection

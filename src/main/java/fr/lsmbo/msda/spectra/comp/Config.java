@@ -8,6 +8,8 @@ import java.util.Properties;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+
+import fr.lsmbo.msda.spectra.comp.db.DBConfig;
 import fr.lsmbo.msda.spectra.comp.settings.UserParams;
 import fr.lsmbo.msda.spectra.comp.settings.Version;
 
@@ -19,7 +21,7 @@ import fr.lsmbo.msda.spectra.comp.settings.Version;
  */
 
 public class Config {
-	public static String applicationFile = "application.conf";
+
 	public static File spectraCompFile = new File(
 			Main.class.getClassLoader().getResource("spectra-comp.json").getPath());
 	public static File DefaultParamsFile = new File(
@@ -50,23 +52,7 @@ public class Config {
 	public static void initialize() {
 		loadSpectraCompProps(spectraCompFile);
 		loadUserParams(DefaultParamsFile);
-		loadApplicationConf(applicationFile);
-	}
-
-	/**
-	 * Load application.conf parameters
-	 */
-	private synchronized static void loadApplicationConf(String connectionParams) {
-		try (InputStream input = Main.class.getClassLoader().getResourceAsStream(connectionParams)) {
-			if (input == null) {
-				System.err.println("Error - RecoverFx properties file: '" + connectionParams + "' does not exist!");
-			} else {
-				Properties connectionProperties = new Properties();
-				connectionProperties.load(input);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		DBConfig.getInstance();
 	}
 
 	/**
