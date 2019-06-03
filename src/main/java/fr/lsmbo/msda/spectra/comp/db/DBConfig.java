@@ -16,20 +16,13 @@ public class DBConfig {
 	private static final Object CONFIGURATION_LOCK = new Object();
 	private static String application = "application.conf";
 	private static DBConfig instance;
-	private Integer maxPoolConnection = null;
-	private String user = null;
-	private String password = null;
-	private Integer port = null;
-	private String host = null;
-	private String dbName = null;
-	DriverType driverType = null;
-	private String dataSetOwner = null;
-	private Properties connectionProperties = null;
-
-	private DBConfig() {
-		loadProperties();
+	public static void forcePropertiesFileReload() {
+		synchronized (CONFIGURATION_LOCK) {
+			if (instance != null) {
+				instance = null;
+			}
+		}
 	}
-
 	/**
 	 * 
 	 * @return an instance of DBConfig
@@ -39,6 +32,77 @@ public class DBConfig {
 			instance = new DBConfig();
 		}
 		return instance;
+	}
+	private Integer maxPoolConnection = null;
+	private String user = null;
+	private String password = null;
+	private Integer port = null;
+	private String host = null;
+	private String dbName = null;
+	DriverType driverType = null;
+
+	private String dataSetOwner = null;
+
+	private Properties connectionProperties = null;
+
+	private DBConfig() {
+		loadProperties();
+	}
+
+	/**
+	 * @return the dataSetOwner
+	 */
+	public final String getDataSetOwner() {
+		return dataSetOwner;
+	}
+
+	/**
+	 * @return the dbName
+	 */
+	public String getDbName() {
+		return dbName;
+	}
+
+	/**
+	 * @return the driverType
+	 */
+	public final DriverType getDriverType() {
+		return driverType;
+	}
+
+	/**
+	 * @return the host
+	 */
+	public String getHost() {
+		return host;
+	}
+
+	/**
+	 * @return the maxPoolConnection
+	 */
+	public Integer getMaxPoolConnection() {
+		return maxPoolConnection;
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * @return the port
+	 */
+	public Integer getPort() {
+		return port;
+	}
+
+	/**
+	 * @return the user
+	 */
+	public String getUser() {
+		return user;
 	}
 
 	/**
@@ -71,94 +135,12 @@ public class DBConfig {
 		}
 	}
 
-	public static void forcePropertiesFileReload() {
-		synchronized (CONFIGURATION_LOCK) {
-			if (instance != null) {
-				instance = null;
-			}
-		}
-	}
-
 	/**
-	 * @return the maxPoolConnection
+	 * @param dataSetOwner
+	 *            the dataSetOwner to set
 	 */
-	public Integer getMaxPoolConnection() {
-		return maxPoolConnection;
-	}
-
-	/**
-	 * @param maxPoolConnection
-	 *            the maxPoolConnection to set
-	 */
-	public void setMaxPoolConnection(Integer maxPoolConnection) {
-		this.maxPoolConnection = maxPoolConnection;
-	}
-
-	/**
-	 * @return the user
-	 */
-	public String getUser() {
-		return user;
-	}
-
-	/**
-	 * @param user
-	 *            the user to set
-	 */
-	public void setUser(String user) {
-		this.user = user;
-	}
-
-	/**
-	 * @return the password
-	 */
-	public String getPassword() {
-		return password;
-	}
-
-	/**
-	 * @param password
-	 *            the password to set
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	/**
-	 * @return the port
-	 */
-	public Integer getPort() {
-		return port;
-	}
-
-	/**
-	 * @param port
-	 *            the port to set
-	 */
-	public void setPort(Integer port) {
-		this.port = port;
-	}
-
-	/**
-	 * @return the host
-	 */
-	public String getHost() {
-		return host;
-	}
-
-	/**
-	 * @param host
-	 *            the host to set
-	 */
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	/**
-	 * @return the dbName
-	 */
-	public String getDbName() {
-		return dbName;
+	public final void setDataSetOwner(String dataSetOwner) {
+		this.dataSetOwner = dataSetOwner;
 	}
 
 	/**
@@ -170,13 +152,6 @@ public class DBConfig {
 	}
 
 	/**
-	 * @return the driverType
-	 */
-	public final DriverType getDriverType() {
-		return driverType;
-	}
-
-	/**
 	 * @param driverType
 	 *            the driverType to set
 	 */
@@ -185,18 +160,43 @@ public class DBConfig {
 	}
 
 	/**
-	 * @return the dataSetOwner
+	 * @param host
+	 *            the host to set
 	 */
-	public final String getDataSetOwner() {
-		return dataSetOwner;
+	public void setHost(String host) {
+		this.host = host;
 	}
 
 	/**
-	 * @param dataSetOwner
-	 *            the dataSetOwner to set
+	 * @param maxPoolConnection
+	 *            the maxPoolConnection to set
 	 */
-	public final void setDataSetOwner(String dataSetOwner) {
-		this.dataSetOwner = dataSetOwner;
+	public void setMaxPoolConnection(Integer maxPoolConnection) {
+		this.maxPoolConnection = maxPoolConnection;
+	}
+
+	/**
+	 * @param password
+	 *            the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	/**
+	 * @param port
+	 *            the port to set
+	 */
+	public void setPort(Integer port) {
+		this.port = port;
+	}
+
+	/**
+	 * @param user
+	 *            the user to set
+	 */
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 }

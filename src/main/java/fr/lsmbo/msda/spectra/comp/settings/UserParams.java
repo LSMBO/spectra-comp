@@ -46,6 +46,10 @@ public class UserParams {
 		return dataSource;
 	}
 
+	public ParsingRulesSettings getParsingRules() {
+		return parsingRules;
+	}
+
 	public String getSpectraCompVersion() {
 		return spectraCompVersion;
 	}
@@ -66,6 +70,10 @@ public class UserParams {
 		this.dataSource = dataSource;
 	}
 
+	public void setParsingRules(ParsingRulesSettings parsingRules) {
+		this.parsingRules = parsingRules;
+	}
+
 	public void setSpectraCompVersion(String spectraCompVersion) {
 		this.spectraCompVersion = spectraCompVersion;
 	}
@@ -76,14 +84,6 @@ public class UserParams {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
-	}
-
-	public ParsingRulesSettings getParsingRules() {
-		return parsingRules;
-	}
-
-	public void setParsingRules(ParsingRulesSettings parsingRules) {
-		this.parsingRules = parsingRules;
 	}
 
 	@Override

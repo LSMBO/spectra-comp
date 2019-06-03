@@ -14,44 +14,53 @@ import java.sql.Statement;
 
 public class DBSpectraHandler {
 
-	private static final String DATASETS_BY_USER_AND_PROJECT = "SELECT ds.name,pr.name,ow.id FROM data_set ds,"
-			+ "project pr, " + "user_account ow " + "WHERE " + "ds.TYPE='IDENTIFICATION' AND " + "ds.project_id=pr.id "
-			+ "AND pr.owner_id=ow.id " + "AND pr.name=? AND ow.id=?";
-	private static final String ALL_USERS = "SELECT login FROM user_account";
 	private static final String FIND_USER = "SELECT * FROM user_account WHERE login=?";
 	private static final String FIND_PROECT = "SELECT * FROM external_db WHERE name=?";
+	private static final String FIND_PEAKLIST = "SELECT * FROM peaklist";
 	private static final String FIND_SPECTRA_BY_PEAKLIST = "SELECT spec.* FROM peaklist pkl," + "spectrum spec WHERE "
 			+ "spec.peaklist_id=pkl.id " + " AND pkl.path=?";
 
-	/**
-	 * List all users
-	 * 
-	 * @throws SQLException
-	 */
-	public static void findAllUser() throws SQLException {
-		PreparedStatement allUserStmt = DBAccess.createUdsDBConnection().prepareStatement(ALL_USERS);
+	public static void fillSpec(String dataSet) throws SQLException {
+		PreparedStatement findProjectStmt = DBAccess.createUdsDBConnection()
+				.prepareStatement("SELECT * FROM external_db WHERE name=?");
 		try {
-			ResultSet rs = allUserStmt.executeQuery();
-			assert !rs.next() : "User list is empty! Make sure that you have already created a Proline account.";
+			findProjectStmt.setString(1, dataSet);
+			ResultSet rs = findProjectStmt.executeQuery();
+			assert !rs.next() : "Project not found! Make sure that you have entered the right project name.";
 		} finally {
-			tryToCloseStatement(allUserStmt);
+			tryToCloseStatement(findProjectStmt);
 		}
 	}
 
 	/**
-	 * Find an user by login
+	 * Find PeakList
 	 * 
-	 * @param login
 	 * @throws SQLException
 	 */
-	public static void findUser(String login) throws SQLException {
-		PreparedStatement findUserStmt = DBAccess.createUdsDBConnection().prepareStatement(FIND_USER);
+	public static void findPeakList() throws SQLException {
+		PreparedStatement allDatasetsStmt = DBAccess.createUdsDBConnection().prepareStatement(FIND_PEAKLIST);
 		try {
-			findUserStmt.setString(1, login);
-			ResultSet rs = findUserStmt.executeQuery();
-			assert !rs.next() : "Dataset owner not found! Make sure that you have an account.";
+			ResultSet rs = allDatasetsStmt.executeQuery();
+			assert !rs.next() : "Peaklists are empty! Make sure that you have seleced the right Proline project.";
 		} finally {
-			tryToCloseStatement(findUserStmt);
+			tryToCloseStatement(allDatasetsStmt);
+		}
+	}
+
+	/**
+	 * Find all data set by project
+	 * 
+	 * @param path the peaklist path
+	 * @throws SQLException
+	 */
+	public static void findPeakListByName(String msiName, String path) throws SQLException {
+		PreparedStatement allDatasetsStmt = DBAccess.createMsiDBConnection(msiName)
+				.prepareStatement(FIND_SPECTRA_BY_PEAKLIST);
+		try {
+			ResultSet rs = allDatasetsStmt.executeQuery();
+			assert !rs.next() : "Peaklists are empty! Make sure that you have seleced the right Proline project.";
+		} finally {
+			tryToCloseStatement(allDatasetsStmt);
 		}
 	}
 
@@ -73,57 +82,26 @@ public class DBSpectraHandler {
 	}
 
 	/**
-	 * Find all data set by project
+	 * Find an user by login
 	 * 
-	 * @param path
-	 *            the peaklist path
+	 * @param login
 	 * @throws SQLException
 	 */
-	public static void findPeakListByUserAndroject(String path) throws SQLException {
-		PreparedStatement allDatasetsStmt = DBAccess.createUdsDBConnection()
-				.prepareStatement(FIND_SPECTRA_BY_PEAKLIST);
+	public static void findUser(String login) throws SQLException {
+		PreparedStatement findUserStmt = DBAccess.createUdsDBConnection().prepareStatement(FIND_USER);
 		try {
-			ResultSet rs = allDatasetsStmt.executeQuery();
-			assert !rs.next() : "Peaklists are empty! Make sure that you have seleced the right Proline project.";
+			findUserStmt.setString(1, login);
+			ResultSet rs = findUserStmt.executeQuery();
+			assert !rs.next() : "The user does not exist! Make sure that you have a Proline account.";
 		} finally {
-			tryToCloseStatement(allDatasetsStmt);
-		}
-	}
-	/**
-	 * Find all data set by project
-	 * 
-	 * @param projectName
-	 *            the project name
-	 * @throws SQLException
-	 */
-	public static void findDataSetByUserAndroject(String projectName, String login) throws SQLException {
-		PreparedStatement allDatasetsStmt = DBAccess.createUdsDBConnection()
-				.prepareStatement(DATASETS_BY_USER_AND_PROJECT);
-		try {
-			ResultSet rs = allDatasetsStmt.executeQuery();
-			assert !rs.next() : "Datasets are empty! Make sure that you have already created a Proline project.";
-		} finally {
-			tryToCloseStatement(allDatasetsStmt);
-		}
-	}
-
-	public static void fillSpec(String dataSet) throws SQLException {
-		PreparedStatement findProjectStmt = DBAccess.createUdsDBConnection()
-				.prepareStatement("SELECT * FROM external_db WHERE name=?");
-		try {
-			findProjectStmt.setString(1, dataSet);
-			ResultSet rs = findProjectStmt.executeQuery();
-			assert !rs.next() : "Project not found! Make sure that you have entered the right project name.";
-		} finally {
-			tryToCloseStatement(findProjectStmt);
+			tryToCloseStatement(findUserStmt);
 		}
 	}
 
 	/**
 	 * Close statement
 	 * 
-	 * @param stmt
-	 *            the statement to close
+	 * @param stmt the statement to close
 	 */
 	private static void tryToCloseStatement(Statement stmt) {
 		try {
