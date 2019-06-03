@@ -30,7 +30,7 @@ public class DBSpectraHandler {
 	 * @param path the peaklist path
 	 * @throws SQLException
 	 */
-	public static void fill(String msiName, String path) throws SQLException {
+	public static void fillSpecByPeakList(String msiName, String path) throws SQLException {
 		PreparedStatement peakListStmt = DBAccess.createMsiDBConnection(msiName)
 				.prepareStatement(FIND_SPECTRA_BY_PEAKLIST);
 		try {
