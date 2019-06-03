@@ -23,12 +23,17 @@ public class DBConfig {
 	private String host = null;
 	private String dbName = null;
 	DriverType driverType = null;
+	private String dataSetOwner = null;
 	private Properties connectionProperties = null;
 
 	private DBConfig() {
 		loadProperties();
 	}
 
+	/**
+	 * 
+	 * @return an instance of DBConfig
+	 */
 	public static DBConfig getInstance() {
 		if (instance == null) {
 			instance = new DBConfig();
@@ -36,6 +41,9 @@ public class DBConfig {
 		return instance;
 	}
 
+	/**
+	 * Load application.conf properties
+	 */
 	private void loadProperties() {
 		try (InputStream input = Main.class.getClassLoader().getResourceAsStream(application)) {
 			if (input == null) {
@@ -49,6 +57,7 @@ public class DBConfig {
 				host = connectionProperties.getProperty("host-config.host");
 				port = Integer.valueOf(connectionProperties.getProperty("host-config.port"));
 				dbName = connectionProperties.getProperty("db-name");
+				dataSetOwner = connectionProperties.getProperty("ds-owner");
 				if (connectionProperties.getProperty("db-config.driver-type").equals("postgresql")) {
 					driverType = DriverType.POSTGRESQL;
 				} else if (connectionProperties.getProperty("db-config.driver-type").equals("sqlite")) {
@@ -173,6 +182,21 @@ public class DBConfig {
 	 */
 	public final void setDriverType(DriverType driverType) {
 		this.driverType = driverType;
+	}
+
+	/**
+	 * @return the dataSetOwner
+	 */
+	public final String getDataSetOwner() {
+		return dataSetOwner;
+	}
+
+	/**
+	 * @param dataSetOwner
+	 *            the dataSetOwner to set
+	 */
+	public final void setDataSetOwner(String dataSetOwner) {
+		this.dataSetOwner = dataSetOwner;
 	}
 
 }
