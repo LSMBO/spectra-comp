@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * Handle database connection for spectra-comp
+ * Handle databases connection for spectra-comp
  * 
  * @author Aromdhani
  *

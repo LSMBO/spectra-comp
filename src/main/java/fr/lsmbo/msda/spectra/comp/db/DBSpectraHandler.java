@@ -5,6 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import fr.lsmbo.msda.spectra.comp.list.Spectra;
+import fr.lsmbo.msda.spectra.comp.model.Spectrum;
+
 /**
  * Handle spectra from database
  * 
@@ -19,16 +22,32 @@ public class DBSpectraHandler {
 	private static final String FIND_PEAKLIST = "SELECT * FROM peaklist";
 	private static final String FIND_SPECTRA_BY_PEAKLIST = "SELECT spec.* FROM peaklist pkl," + "spectrum spec WHERE "
 			+ "spec.peaklist_id=pkl.id " + " AND pkl.path=?";
+	private static Spectra spectra = new Spectra();
 
-	public static void fillSpec(String dataSet) throws SQLException {
-		PreparedStatement findProjectStmt = DBAccess.createUdsDBConnection()
-				.prepareStatement("SELECT * FROM external_db WHERE name=?");
+	/**
+	 * Find all data set by project
+	 * 
+	 * @param path the peaklist path
+	 * @throws SQLException
+	 */
+	public static void fill(String msiName, String path) throws SQLException {
+		PreparedStatement peakListStmt = DBAccess.createMsiDBConnection(msiName)
+				.prepareStatement(FIND_SPECTRA_BY_PEAKLIST);
 		try {
-			findProjectStmt.setString(1, dataSet);
-			ResultSet rs = findProjectStmt.executeQuery();
-			assert !rs.next() : "Project not found! Make sure that you have entered the right project name.";
+			spectra.initialize();
+			ResultSet rs = peakListStmt.executeQuery();
+			while (rs.next()) {
+				int initialId = rs.getInt("initial_id");
+				Integer precursorCharge = rs.getInt("precursor_charge");
+				Float precursorIntensity = rs.getFloat("precursor_intensity");
+				Double precursorMoz = rs.getDouble("precursor_moz");
+				if (precursorMoz != null && precursorMoz > 0 && precursorIntensity != null && precursorIntensity > 0) {
+					Spectrum spectrum = new Spectrum(initialId, precursorCharge, precursorMoz, precursorIntensity);
+					spectra.addSpectrum(spectrum);
+				}
+			}
 		} finally {
-			tryToCloseStatement(findProjectStmt);
+			tryToCloseStatement(peakListStmt);
 		}
 	}
 
@@ -41,24 +60,7 @@ public class DBSpectraHandler {
 		PreparedStatement allDatasetsStmt = DBAccess.createUdsDBConnection().prepareStatement(FIND_PEAKLIST);
 		try {
 			ResultSet rs = allDatasetsStmt.executeQuery();
-			assert !rs.next() : "Peaklists are empty! Make sure that you have seleced the right Proline project.";
-		} finally {
-			tryToCloseStatement(allDatasetsStmt);
-		}
-	}
 
-	/**
-	 * Find all data set by project
-	 * 
-	 * @param path the peaklist path
-	 * @throws SQLException
-	 */
-	public static void findPeakListByName(String msiName, String path) throws SQLException {
-		PreparedStatement allDatasetsStmt = DBAccess.createMsiDBConnection(msiName)
-				.prepareStatement(FIND_SPECTRA_BY_PEAKLIST);
-		try {
-			ResultSet rs = allDatasetsStmt.executeQuery();
-			assert !rs.next() : "Peaklists are empty! Make sure that you have seleced the right Proline project.";
 		} finally {
 			tryToCloseStatement(allDatasetsStmt);
 		}

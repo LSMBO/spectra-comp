@@ -31,64 +31,48 @@ public class Spectrum {
 	private Integer nbMatch;
 	private Boolean identified;
 	private Float retentionTime;
-	
+
 	public Spectrum() {
 	}
-	
-	
-	
+
+	public Spectrum(int initialId, Integer precursorCharge, Double precursorMoz, Float precursorIntensity) {
+		this.initialId = initialId;
+		this.precursorCharge = precursorCharge;
+		this.precursorCharge = precursorCharge;
+		this.precursorMoz = precursorMoz;
+	}
 
 	public double getCosTheta() {
 		return cosTheta;
 	}
 
-
-
-
 	public Integer getFirstCycle() {
 		return this.firstCycle;
 	}
-
-
-
 
 	public Integer getFirstScan() {
 		return this.firstScan;
 	}
 
-
-
-
 	public Float getFirstTime() {
 		return firstTime;
 	}
-
-
-
 
 	public long getFragmentationRuleSetId() {
 		return fragmentationRuleSetId;
 	}
 
-
-
-
 	public long getId() {
 		return id;
 	}
-
-
-
 
 	public Boolean getIdentified() {
 		return identified;
 	}
 
-
 	public int getInitialId() {
 		return initialId;
 	}
-
 
 	public byte[] getIntensityList() {
 		return this.intensityList;
@@ -246,8 +230,7 @@ public class Spectrum {
 	/**
 	 * Set the retention from title
 	 * 
-	 * @param regex
-	 *            the used regex to retrieve the retention time from title
+	 * @param regex the used regex to retrieve the retention time from title
 	 */
 	public void setRetentionTimeFromTitle(String regex) {
 		try {
@@ -261,9 +244,11 @@ public class Spectrum {
 			e.printStackTrace();
 		}
 	}
+
 	public void setSerializedProperties(String serializedProperties) {
 		this.serializedProperties = serializedProperties;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
