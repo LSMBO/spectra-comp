@@ -13,13 +13,15 @@ import java.sql.Statement;
  */
 
 public class DBSpectraHandler {
-	
+
 	private static final String DATASETS_BY_USER_AND_PROJECT = "SELECT ds.name,pr.name,ow.id FROM data_set ds,"
 			+ "project pr, " + "user_account ow " + "WHERE " + "ds.TYPE='IDENTIFICATION' AND " + "ds.project_id=pr.id "
 			+ "AND pr.owner_id=ow.id " + "AND pr.name=? AND ow.id=?";
 	private static final String ALL_USERS = "SELECT login FROM user_account";
 	private static final String FIND_USER = "SELECT * FROM user_account WHERE login=?";
 	private static final String FIND_PROECT = "SELECT * FROM external_db WHERE name=?";
+	private static final String FIND_SPECTRA_BY_PEAKLIST = "SELECT spec.* FROM peaklist pkl," + "spectrum spec WHERE "
+			+ "spec.peaklist_id=pkl.id " + " AND pkl.path=?";
 
 	/**
 	 * List all users
@@ -73,6 +75,23 @@ public class DBSpectraHandler {
 	/**
 	 * Find all data set by project
 	 * 
+	 * @param path
+	 *            the peaklist path
+	 * @throws SQLException
+	 */
+	public static void findPeakListByUserAndroject(String path) throws SQLException {
+		PreparedStatement allDatasetsStmt = DBAccess.createUdsDBConnection()
+				.prepareStatement(FIND_SPECTRA_BY_PEAKLIST);
+		try {
+			ResultSet rs = allDatasetsStmt.executeQuery();
+			assert !rs.next() : "Peaklists are empty! Make sure that you have seleced the right Proline project.";
+		} finally {
+			tryToCloseStatement(allDatasetsStmt);
+		}
+	}
+	/**
+	 * Find all data set by project
+	 * 
 	 * @param projectName
 	 *            the project name
 	 * @throws SQLException
@@ -111,7 +130,7 @@ public class DBSpectraHandler {
 			if (stmt != null && !stmt.isClosed())
 				stmt.close();
 		} catch (Exception e) {
-			System.out.println("Error while trying to close Statement"+e);
+			System.out.println("Error while trying to close Statement" + e);
 			// logger.error("Error while trying to close Statement", e)
 		}
 	}
