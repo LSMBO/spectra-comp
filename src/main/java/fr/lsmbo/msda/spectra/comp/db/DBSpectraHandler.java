@@ -13,9 +13,13 @@ import java.sql.Statement;
  */
 
 public class DBSpectraHandler {
+	
 	private static final String DATASETS_BY_USER_AND_PROJECT = "SELECT ds.name,pr.name,ow.id FROM data_set ds,"
 			+ "project pr, " + "user_account ow " + "WHERE " + "ds.TYPE='IDENTIFICATION' AND " + "ds.project_id=pr.id "
 			+ "AND pr.owner_id=ow.id " + "AND pr.name=? AND ow.id=?";
+	private static final String ALL_USERS = "SELECT login FROM user_account";
+	private static final String FIND_USER = "SELECT * FROM user_account WHERE login=?";
+	private static final String FIND_PROECT = "SELECT * FROM external_db WHERE name=?";
 
 	/**
 	 * List all users
@@ -23,8 +27,7 @@ public class DBSpectraHandler {
 	 * @throws SQLException
 	 */
 	public static void findAllUser() throws SQLException {
-		PreparedStatement allUserStmt = DBAccess.createUdsDBConnection()
-				.prepareStatement("SELECT login FROM user_account");
+		PreparedStatement allUserStmt = DBAccess.createUdsDBConnection().prepareStatement(ALL_USERS);
 		try {
 			ResultSet rs = allUserStmt.executeQuery();
 			assert !rs.next() : "User list is empty! Make sure that you have already created a Proline account.";
@@ -40,8 +43,7 @@ public class DBSpectraHandler {
 	 * @throws SQLException
 	 */
 	public static void findUser(String login) throws SQLException {
-		PreparedStatement findUserStmt = DBAccess.createUdsDBConnection()
-				.prepareStatement("SELECT * FROM user_account WHERE login=?");
+		PreparedStatement findUserStmt = DBAccess.createUdsDBConnection().prepareStatement(FIND_USER);
 		try {
 			findUserStmt.setString(1, login);
 			ResultSet rs = findUserStmt.executeQuery();
@@ -58,8 +60,7 @@ public class DBSpectraHandler {
 	 * @throws SQLException
 	 */
 	public static void findProject(String name) throws SQLException {
-		PreparedStatement findProjectStmt = DBAccess.createUdsDBConnection()
-				.prepareStatement("SELECT * FROM external_db WHERE name=?");
+		PreparedStatement findProjectStmt = DBAccess.createUdsDBConnection().prepareStatement(FIND_PROECT);
 		try {
 			findProjectStmt.setString(1, name);
 			ResultSet rs = findProjectStmt.executeQuery();
@@ -76,8 +77,7 @@ public class DBSpectraHandler {
 	 *            the project name
 	 * @throws SQLException
 	 */
-	public static void findDataSetByUserAndroject(String projectName, String login)
-			throws SQLException {
+	public static void findDataSetByUserAndroject(String projectName, String login) throws SQLException {
 		PreparedStatement allDatasetsStmt = DBAccess.createUdsDBConnection()
 				.prepareStatement(DATASETS_BY_USER_AND_PROJECT);
 		try {
@@ -111,7 +111,7 @@ public class DBSpectraHandler {
 			if (stmt != null && !stmt.isClosed())
 				stmt.close();
 		} catch (Exception e) {
-			System.out.println(e);
+			System.out.println("Error while trying to close Statement"+e);
 			// logger.error("Error while trying to close Statement", e)
 		}
 	}

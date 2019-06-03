@@ -11,10 +11,6 @@ public class Main extends Application {
 		launch(args);
 	}
 
-	@Override
-	public void start(Stage primaryStage) {
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -24,6 +20,10 @@ public class Main extends Application {
 	public void init() throws Exception {
 		// TODO Auto-generated method stub
 		super.init();
+	}
+
+	@Override
+	public void start(Stage primaryStage) {
 	}
 
 	/*

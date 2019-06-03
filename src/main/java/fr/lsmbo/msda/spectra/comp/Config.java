@@ -2,7 +2,6 @@ package fr.lsmbo.msda.spectra.comp;
 
 import java.io.File;
 import java.io.FileReader;
-import java.sql.SQLException;
 import java.util.Properties;
 
 import com.google.gson.Gson;
@@ -10,7 +9,6 @@ import com.google.gson.stream.JsonReader;
 
 import fr.lsmbo.msda.spectra.comp.db.DBAccess;
 import fr.lsmbo.msda.spectra.comp.db.DBConfig;
-import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.settings.UserParams;
 import fr.lsmbo.msda.spectra.comp.settings.Version;
 
