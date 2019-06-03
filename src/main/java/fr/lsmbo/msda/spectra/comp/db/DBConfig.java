@@ -22,6 +22,8 @@ public class DBConfig {
 	private Integer port = null;
 	private String host = null;
 	private String dbName = null;
+	DriverType driverType = null;
+	private Properties connectionProperties = null;
 
 	private DBConfig() {
 		loadProperties();
@@ -39,14 +41,21 @@ public class DBConfig {
 			if (input == null) {
 				System.err.println("Error - error while trying to read spectra-comp file: '" + application + "'!");
 			} else {
-				Properties connectionProperties = new Properties();
+				connectionProperties = new Properties();
 				connectionProperties.load(input);
 				maxPoolConnection = Integer.valueOf(connectionProperties.getProperty("db-config.max-pool-connection"));
 				user = connectionProperties.getProperty("auth-config.user");
 				password = connectionProperties.getProperty("auth-config.password");
 				host = connectionProperties.getProperty("host-config.host");
 				port = Integer.valueOf(connectionProperties.getProperty("host-config.port"));
-				dbName = connectionProperties.getProperty("db-name ");
+				dbName = connectionProperties.getProperty("db-name");
+				if (connectionProperties.getProperty("db-config.driver-type").equals("postgresql")) {
+					driverType = DriverType.POSTGRESQL;
+				} else if (connectionProperties.getProperty("db-config.driver-type").equals("sqlite")) {
+					driverType = DriverType.SQLITE;
+				} else {
+					driverType = DriverType.H2;
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -69,7 +78,8 @@ public class DBConfig {
 	}
 
 	/**
-	 * @param maxPoolConnection the maxPoolConnection to set
+	 * @param maxPoolConnection
+	 *            the maxPoolConnection to set
 	 */
 	public void setMaxPoolConnection(Integer maxPoolConnection) {
 		this.maxPoolConnection = maxPoolConnection;
@@ -83,7 +93,8 @@ public class DBConfig {
 	}
 
 	/**
-	 * @param user the user to set
+	 * @param user
+	 *            the user to set
 	 */
 	public void setUser(String user) {
 		this.user = user;
@@ -97,7 +108,8 @@ public class DBConfig {
 	}
 
 	/**
-	 * @param password the password to set
+	 * @param password
+	 *            the password to set
 	 */
 	public void setPassword(String password) {
 		this.password = password;
@@ -111,7 +123,8 @@ public class DBConfig {
 	}
 
 	/**
-	 * @param port the port to set
+	 * @param port
+	 *            the port to set
 	 */
 	public void setPort(Integer port) {
 		this.port = port;
@@ -125,7 +138,8 @@ public class DBConfig {
 	}
 
 	/**
-	 * @param host the host to set
+	 * @param host
+	 *            the host to set
 	 */
 	public void setHost(String host) {
 		this.host = host;
@@ -139,10 +153,26 @@ public class DBConfig {
 	}
 
 	/**
-	 * @param dbName the dbName to set
+	 * @param dbName
+	 *            the dbName to set
 	 */
 	public void setDbName(String dbName) {
 		this.dbName = dbName;
+	}
+
+	/**
+	 * @return the driverType
+	 */
+	public final DriverType getDriverType() {
+		return driverType;
+	}
+
+	/**
+	 * @param driverType
+	 *            the driverType to set
+	 */
+	public final void setDriverType(DriverType driverType) {
+		this.driverType = driverType;
 	}
 
 }

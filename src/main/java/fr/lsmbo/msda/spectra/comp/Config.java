@@ -9,6 +9,7 @@ import java.util.Properties;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
+import fr.lsmbo.msda.spectra.comp.db.DBAccess;
 import fr.lsmbo.msda.spectra.comp.db.DBConfig;
 import fr.lsmbo.msda.spectra.comp.settings.UserParams;
 import fr.lsmbo.msda.spectra.comp.settings.Version;
@@ -31,7 +32,8 @@ public class Config {
 	/**
 	 * Return object value. Example: Config.get("max.file.size")
 	 * 
-	 * @param the specified key to retrieve the property value as an object.
+	 * @param the
+	 *            specified key to retrieve the property value as an object.
 	 */
 	private static Object _get(String key) {
 		return properties.getProperty(key);
@@ -40,7 +42,8 @@ public class Config {
 	/**
 	 * Return a property value as String
 	 * 
-	 * @param key the specified key to get the property value
+	 * @param key
+	 *            the specified key to get the property value
 	 */
 	public static String get(String key) {
 		Object value = _get(key);
@@ -50,15 +53,23 @@ public class Config {
 	}
 
 	public static void initialize() {
+		// Load spectra-comp version
 		loadSpectraCompProps(spectraCompFile);
+		// Load Spectra-comp default parameters
 		loadUserParams(DefaultParamsFile);
+		// Load database connection properties
 		DBConfig.getInstance();
+		// Test Database connection
+		DBAccess.createUdsDBConnection();
+		DBAccess.createMsiDBConnection("msi_db_project_1");
+
 	}
 
 	/**
 	 * Load spectra-comp version properties
 	 * 
-	 * @param versionFile the file used to load spectra-comp version
+	 * @param versionFile
+	 *            the file used to load spectra-comp version
 	 */
 	private synchronized static void loadSpectraCompProps(File versionFile) {
 		try {
@@ -75,7 +86,8 @@ public class Config {
 	/**
 	 * Load user parameters. Read and parse parameters file.
 	 * 
-	 * @param paramsFile the file used to load user parameters
+	 * @param paramsFile
+	 *            the file used to load user parameters
 	 */
 	public static void loadUserParams(File paramsFile) {
 		try {
