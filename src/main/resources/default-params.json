@@ -2,6 +2,9 @@
   "userName": "",
   "timestamp": "",
   "spectraCompVersion": "0.0.1-SNAPSHOT",
+  "projectName": "",
+  "firstDataset": "",
+  "secondDataset": "",
   "dataSource":"database",
   "comparison": {
     "deltaMoz": 0.007,
