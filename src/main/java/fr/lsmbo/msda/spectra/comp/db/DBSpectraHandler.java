@@ -115,4 +115,18 @@ public class DBSpectraHandler {
 		}
 	}
 
+	/**
+	 * @return the spectra
+	 */
+	public static Spectra getSpectra() {
+		return spectra;
+	}
+
+	/**
+	 * @param spectra the spectra to set
+	 */
+	public static void setSpectra(Spectra spectra) {
+		DBSpectraHandler.spectra = spectra;
+	}
+
 }
