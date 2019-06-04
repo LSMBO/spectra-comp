@@ -17,10 +17,10 @@ import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 
 public class DBSpectraHandler {
 
-	private static final String FIND_USER = "SELECT * FROM user_account WHERE login=?";
-	private static final String FIND_PROECT = "SELECT * FROM external_db WHERE name=?";
-	private static final String FIND_PEAKLIST = "SELECT * FROM peaklist";
-	private static final String FIND_SPECTRA_BY_PEAKLIST = "SELECT spec.* FROM peaklist pkl," + "spectrum spec WHERE "
+	private static final String USER = "SELECT * FROM user_account WHERE login=?";
+	private static final String PROJECT = "SELECT * FROM external_db WHERE name=?";
+	private static final String PEAKLIST = "SELECT * FROM peaklist";
+	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.* FROM peaklist pkl," + "spectrum spec WHERE "
 			+ "spec.peaklist_id=pkl.id " + " AND pkl.path=?";
 	private static Spectra spectra = new Spectra();
 
@@ -32,7 +32,7 @@ public class DBSpectraHandler {
 	 */
 	public static void fillSpecByPeakList(String msiName, String path) throws SQLException {
 		PreparedStatement peakListStmt = DBAccess.createMsiDBConnection(msiName)
-				.prepareStatement(FIND_SPECTRA_BY_PEAKLIST);
+				.prepareStatement(SPECTRA_BY_PEAKLIST);
 		try {
 			spectra.initialize();
 			ResultSet rs = peakListStmt.executeQuery();
@@ -57,7 +57,7 @@ public class DBSpectraHandler {
 	 * @throws SQLException
 	 */
 	public static void findPeakList() throws SQLException {
-		PreparedStatement allDatasetsStmt = DBAccess.createUdsDBConnection().prepareStatement(FIND_PEAKLIST);
+		PreparedStatement allDatasetsStmt = DBAccess.createUdsDBConnection().prepareStatement(PEAKLIST);
 		try {
 			ResultSet rs = allDatasetsStmt.executeQuery();
 
@@ -73,7 +73,7 @@ public class DBSpectraHandler {
 	 * @throws SQLException
 	 */
 	public static void findProject(String name) throws SQLException {
-		PreparedStatement findProjectStmt = DBAccess.createUdsDBConnection().prepareStatement(FIND_PROECT);
+		PreparedStatement findProjectStmt = DBAccess.createUdsDBConnection().prepareStatement(PROJECT);
 		try {
 			findProjectStmt.setString(1, name);
 			ResultSet rs = findProjectStmt.executeQuery();
@@ -90,7 +90,7 @@ public class DBSpectraHandler {
 	 * @throws SQLException
 	 */
 	public static void findUser(String login) throws SQLException {
-		PreparedStatement findUserStmt = DBAccess.createUdsDBConnection().prepareStatement(FIND_USER);
+		PreparedStatement findUserStmt = DBAccess.createUdsDBConnection().prepareStatement(USER);
 		try {
 			findUserStmt.setString(1, login);
 			ResultSet rs = findUserStmt.executeQuery();
