@@ -56,62 +56,6 @@ public class DBAccess {
 	}
 
 	/**
-	 * Create connection to uds_db database
-	 * 
-	 * @return the connection to uds_db
-	 */
-
-	public static Connection createMsiDBConnection(final String msiDbName) {
-		if (msiDbConnection == null) {
-			DBConfig dbConfig = DBConfig.getInstance();
-			StringBuilder str = new StringBuilder();
-			Properties connProperties = new Properties();
-			connProperties.setProperty("user", dbConfig.getUser());
-			connProperties.setProperty("password", dbConfig.getPassword());
-			connProperties.setProperty("driver", dbConfig.getDriverType().getJdbcDriver());
-			try {
-				str.append("jdbc:postgresql://").append(dbConfig.getHost()).append(":").append(dbConfig.getPort())
-						.append("/").append(msiDbName);
-				msiDbConnection = DriverManager.getConnection(str.toString(), connProperties);
-				return msiDbConnection;
-			} catch (Exception e) {
-				System.out.println("--- Can't connect to " + msiDbName + " !" + e);
-				return msiDbConnection;
-			}
-		} else {
-			return msiDbConnection;
-		}
-	}
-
-	/**
-	 * Create connection to uds_db database
-	 * 
-	 * @return the connection to uds_db
-	 */
-
-	public static Connection createUdsDBConnection() {
-		if (udsDbConnection == null) {
-			DBConfig dbConfig = DBConfig.getInstance();
-			StringBuilder str = new StringBuilder();
-			Properties connProperties = new Properties();
-			connProperties.setProperty("user", dbConfig.getUser());
-			connProperties.setProperty("password", dbConfig.getPassword());
-			connProperties.setProperty("driver", dbConfig.getDriverType().getJdbcDriver());
-			try {
-				str.append("jdbc:postgresql://").append(dbConfig.getHost()).append(":").append(dbConfig.getPort())
-						.append("/").append(dbConfig.getDbName());
-				udsDbConnection = DriverManager.getConnection(str.toString(), connProperties);
-				return udsDbConnection;
-			} catch (Exception e) {
-				System.out.println("--- Can't connect to UDS DB!" + e);
-				return udsDbConnection;
-			}
-		} else {
-			return udsDbConnection;
-		}
-	}
-
-	/**
 	 * initialize msi_db and uds_db connection
 	 * 
 	 */
@@ -158,6 +102,62 @@ public class DBAccess {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Create connection to uds_db database
+	 * 
+	 * @return the connection to uds_db
+	 */
+
+	public static Connection openMsiDBConnection(final String msiDbName) {
+		if (msiDbConnection == null) {
+			DBConfig dbConfig = DBConfig.getInstance();
+			StringBuilder str = new StringBuilder();
+			Properties connProperties = new Properties();
+			connProperties.setProperty("user", dbConfig.getUser());
+			connProperties.setProperty("password", dbConfig.getPassword());
+			connProperties.setProperty("driver", dbConfig.getDriverType().getJdbcDriver());
+			try {
+				str.append("jdbc:postgresql://").append(dbConfig.getHost()).append(":").append(dbConfig.getPort())
+						.append("/").append(msiDbName);
+				msiDbConnection = DriverManager.getConnection(str.toString(), connProperties);
+				return msiDbConnection;
+			} catch (Exception e) {
+				System.out.println("--- Can't connect to " + msiDbName + " !" + e);
+				return msiDbConnection;
+			}
+		} else {
+			return msiDbConnection;
+		}
+	}
+
+	/**
+	 * Create connection to uds_db database
+	 * 
+	 * @return the connection to uds_db
+	 */
+
+	public static Connection openUdsDBConnection() {
+		if (udsDbConnection == null) {
+			DBConfig dbConfig = DBConfig.getInstance();
+			StringBuilder str = new StringBuilder();
+			Properties connProperties = new Properties();
+			connProperties.setProperty("user", dbConfig.getUser());
+			connProperties.setProperty("password", dbConfig.getPassword());
+			connProperties.setProperty("driver", dbConfig.getDriverType().getJdbcDriver());
+			try {
+				str.append("jdbc:postgresql://").append(dbConfig.getHost()).append(":").append(dbConfig.getPort())
+						.append("/").append(dbConfig.getDbName());
+				udsDbConnection = DriverManager.getConnection(str.toString(), connProperties);
+				return udsDbConnection;
+			} catch (Exception e) {
+				System.out.println("--- Can't connect to UDS DB!" + e);
+				return udsDbConnection;
+			}
+		} else {
+			return udsDbConnection;
 		}
 	}
 }

@@ -24,7 +24,7 @@ public class Session {
 
 	public static File REFERENCE_PKLIST_FILE = null;
 	public static File TEST_PKLIST_FILE = null;
-	public static UserParams userParams = null;
+	public static UserParams USER_PARAMS = null;
 	public static String CURRENT_REGEX_RT = "title.regex.data-analysis.rt";
 
 }

@@ -58,8 +58,8 @@ public class Config {
 		// Load database connection properties
 		DBConfig.getInstance();
 		// Test Database connection
-		DBAccess.createUdsDBConnection();
-		DBAccess.createMsiDBConnection("msi_db_project_1");
+		DBAccess.openUdsDBConnection();
+		DBAccess.openMsiDBConnection("msi_db_project_1");
 
 	}
 
@@ -91,8 +91,8 @@ public class Config {
 		try {
 			Gson gson = new Gson();
 			JsonReader reader = new JsonReader(new FileReader(paramsFile));
-			Session.userParams = gson.fromJson(reader, UserParams.class);
-			System.out.println(Session.userParams.toString());
+			Session.USER_PARAMS = gson.fromJson(reader, UserParams.class);
+			System.out.println(Session.USER_PARAMS.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

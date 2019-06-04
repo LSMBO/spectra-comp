@@ -31,7 +31,7 @@ public class DBSpectraHandler {
 	 * @throws SQLException
 	 */
 	public static void fillSpecByPeakList(String msiName, String path) throws SQLException {
-		PreparedStatement peakListStmt = DBAccess.createMsiDBConnection(msiName)
+		PreparedStatement peakListStmt = DBAccess.openMsiDBConnection(msiName)
 				.prepareStatement(SPECTRA_BY_PEAKLIST);
 		try {
 			spectra.initialize();
@@ -57,7 +57,7 @@ public class DBSpectraHandler {
 	 * @throws SQLException
 	 */
 	public static void findPeakList() throws SQLException {
-		PreparedStatement allDatasetsStmt = DBAccess.createUdsDBConnection().prepareStatement(PEAKLIST);
+		PreparedStatement allDatasetsStmt = DBAccess.openUdsDBConnection().prepareStatement(PEAKLIST);
 		try {
 			ResultSet rs = allDatasetsStmt.executeQuery();
 
@@ -73,7 +73,7 @@ public class DBSpectraHandler {
 	 * @throws SQLException
 	 */
 	public static void findProject(String name) throws SQLException {
-		PreparedStatement findProjectStmt = DBAccess.createUdsDBConnection().prepareStatement(PROJECT);
+		PreparedStatement findProjectStmt = DBAccess.openUdsDBConnection().prepareStatement(PROJECT);
 		try {
 			findProjectStmt.setString(1, name);
 			ResultSet rs = findProjectStmt.executeQuery();
@@ -90,28 +90,13 @@ public class DBSpectraHandler {
 	 * @throws SQLException
 	 */
 	public static void findUser(String login) throws SQLException {
-		PreparedStatement findUserStmt = DBAccess.createUdsDBConnection().prepareStatement(USER);
+		PreparedStatement findUserStmt = DBAccess.openUdsDBConnection().prepareStatement(USER);
 		try {
 			findUserStmt.setString(1, login);
 			ResultSet rs = findUserStmt.executeQuery();
 			assert !rs.next() : "The user does not exist! Make sure that you have a Proline account.";
 		} finally {
 			tryToCloseStatement(findUserStmt);
-		}
-	}
-
-	/**
-	 * Close statement
-	 * 
-	 * @param stmt the statement to close
-	 */
-	private static void tryToCloseStatement(Statement stmt) {
-		try {
-			if (stmt != null && !stmt.isClosed())
-				stmt.close();
-		} catch (Exception e) {
-			System.out.println("Error while trying to close Statement" + e);
-			// logger.error("Error while trying to close Statement", e)
 		}
 	}
 
@@ -127,6 +112,21 @@ public class DBSpectraHandler {
 	 */
 	public static void setSpectra(Spectra spectra) {
 		DBSpectraHandler.spectra = spectra;
+	}
+
+	/**
+	 * Close statement
+	 * 
+	 * @param stmt the statement to close
+	 */
+	private static void tryToCloseStatement(Statement stmt) {
+		try {
+			if (stmt != null && !stmt.isClosed())
+				stmt.close();
+		} catch (Exception e) {
+			System.out.println("Error while trying to close Statement" + e);
+			// logger.error("Error while trying to close Statement", e)
+		}
 	}
 
 }
