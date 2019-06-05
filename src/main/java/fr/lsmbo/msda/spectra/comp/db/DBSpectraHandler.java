@@ -21,7 +21,7 @@ public class DBSpectraHandler {
 	private static final String USER = "SELECT * FROM user_account WHERE login=?";
 	private static final String PROJECT = "SELECT * FROM external_db WHERE name=?";
 	private static final String PEAKLIST = "SELECT * FROM peaklist";
-	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.* FROM peaklist pkl,spectrum spec WHERE spec.peaklist_id=pkl.id AND pkl.path=? limit 10";
+	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.* FROM peaklist pkl,spectrum spec WHERE spec.peaklist_id=pkl.id AND pkl.path=?";
 	private static Spectra spectra = new Spectra();
 
 	/**
@@ -52,7 +52,6 @@ public class DBSpectraHandler {
 					Spectrum spectrum = new Spectrum(id, title, precursorCharge, precursorMoz, precursorIntensity,
 							peakCount);
 					spectrum.setRetentionTimeFromTitle();
-					System.out.println(spectrum.toString());
 					spectra.addSpectrum(spectrum);
 				}
 			}

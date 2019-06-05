@@ -21,11 +21,10 @@ public class Session {
 	public static String SPECTRACOMP_RELEASE_VERSION = "";
 	public static String SPECTRACOMP_RELEASE_DATE = "";
 	public static Version SPECTRACOMP_VERSION = null;
-	
+
 	public static String CURRENT_REGEX_RT = "msconvert";
 	public static File REFERENCE_PKLIST_FILE = null;
 	public static File TEST_PKLIST_FILE = null;
 	public static UserParams USER_PARAMS = null;
-
 
 }

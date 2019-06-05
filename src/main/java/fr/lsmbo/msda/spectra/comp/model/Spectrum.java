@@ -268,9 +268,9 @@ public class Spectrum {
 	public String toString() {
 		// TODO Auto-generated method stub
 		StringBuilder str = new StringBuilder();
-		str.append("id: ").append(id).append("; title").append(title).append(" ;Retentio time").append(retentionTime)
-				.append(" ;precursor charge").append(precursorCharge).append(" ;precursor moz").append(precursorMoz)
-				.append(" ;precursor intensity").append(precursorIntensity).append(" ;peaks count").append(peakCount);
+		str.append("id: ").append(id).append("; title: ").append(title).append(" ;Retentio time: ").append(retentionTime)
+				.append(" ;precursor charge: ").append(precursorCharge).append(" ;precursor moz: ").append(precursorMoz)
+				.append(" ;precursor intensity: ").append(precursorIntensity).append(" ;peaks count: ").append(peakCount);
 		return str.toString();
 	}
 
