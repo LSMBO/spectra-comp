@@ -7,6 +7,7 @@ import java.sql.Statement;
 
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
+import fr.lsmbo.msda.spectra.comp.utils.StringUtils;
 
 /**
  * Handle spectra from database
@@ -20,33 +21,43 @@ public class DBSpectraHandler {
 	private static final String USER = "SELECT * FROM user_account WHERE login=?";
 	private static final String PROJECT = "SELECT * FROM external_db WHERE name=?";
 	private static final String PEAKLIST = "SELECT * FROM peaklist";
-	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.* FROM peaklist pkl," + "spectrum spec WHERE "
-			+ "spec.peaklist_id=pkl.id " + " AND pkl.path=?";
+	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.* FROM peaklist pkl,spectrum spec WHERE spec.peaklist_id=pkl.id AND pkl.path=? limit 10";
 	private static Spectra spectra = new Spectra();
 
 	/**
 	 * Find all data set by project
 	 * 
-	 * @param path the peaklist path
+	 * @param path
+	 *            the peaklist path
 	 * @throws SQLException
 	 */
 	public static void fillSpecByPeakList(String msiName, String path) throws SQLException {
-		PreparedStatement peakListStmt = DBAccess.openMsiDBConnection(msiName)
-				.prepareStatement(SPECTRA_BY_PEAKLIST);
+		PreparedStatement peakListStmt = null;
+		ResultSet rs = null;
 		try {
 			spectra.initialize();
-			ResultSet rs = peakListStmt.executeQuery();
+			peakListStmt = DBAccess.openMsiDBConnection(msiName).prepareStatement(SPECTRA_BY_PEAKLIST);
+			System.out.println("--- Start to retrieve spectra from '" + msiName + "' whith the peaklist path:'" + path
+					+ "'. Please wait ...");
+			peakListStmt.setString(1, path);
+			rs = peakListStmt.executeQuery();
 			while (rs.next()) {
-				int initialId = rs.getInt("initial_id");
+				Long id = rs.getLong("id");
+				String title = rs.getString("title");
 				Integer precursorCharge = rs.getInt("precursor_charge");
 				Float precursorIntensity = rs.getFloat("precursor_intensity");
 				Double precursorMoz = rs.getDouble("precursor_moz");
-				if (precursorMoz != null && precursorMoz > 0 && precursorIntensity != null && precursorIntensity > 0) {
-					Spectrum spectrum = new Spectrum(initialId, precursorCharge, precursorMoz, precursorIntensity);
+				Integer peakCount = rs.getInt("peak_count");
+				if ((!StringUtils.isEmpty(title))) {
+					Spectrum spectrum = new Spectrum(id, title, precursorCharge, precursorMoz, precursorIntensity,
+							peakCount);
+					spectrum.setRetentionTimeFromTitle();
+					System.out.println(spectrum.toString());
 					spectra.addSpectrum(spectrum);
 				}
 			}
 		} finally {
+			tryToCloseResultSet(rs);
 			tryToCloseStatement(peakListStmt);
 		}
 	}
@@ -56,13 +67,18 @@ public class DBSpectraHandler {
 	 * 
 	 * @throws SQLException
 	 */
-	public static void findPeakList() throws SQLException {
-		PreparedStatement allDatasetsStmt = DBAccess.openUdsDBConnection().prepareStatement(PEAKLIST);
+	public static void allPeakList() throws SQLException {
+		PreparedStatement allPklistStmt = null;
+		ResultSet rs = null;
+
 		try {
-			ResultSet rs = allDatasetsStmt.executeQuery();
+			allPklistStmt = DBAccess.openUdsDBConnection().prepareStatement(PEAKLIST);
+			rs = allPklistStmt.executeQuery();
 
 		} finally {
-			tryToCloseStatement(allDatasetsStmt);
+
+			tryToCloseResultSet(rs);
+			tryToCloseStatement(allPklistStmt);
 		}
 	}
 
@@ -73,12 +89,15 @@ public class DBSpectraHandler {
 	 * @throws SQLException
 	 */
 	public static void findProject(String name) throws SQLException {
-		PreparedStatement findProjectStmt = DBAccess.openUdsDBConnection().prepareStatement(PROJECT);
+		PreparedStatement findProjectStmt = null;
+		ResultSet rs = null;
 		try {
+			findProjectStmt = DBAccess.openUdsDBConnection().prepareStatement(PROJECT);
 			findProjectStmt.setString(1, name);
-			ResultSet rs = findProjectStmt.executeQuery();
+			rs = findProjectStmt.executeQuery();
 			assert !rs.next() : "Project not found! Make sure that you have entered the right project name.";
 		} finally {
+			tryToCloseResultSet(rs);
 			tryToCloseStatement(findProjectStmt);
 		}
 	}
@@ -90,12 +109,15 @@ public class DBSpectraHandler {
 	 * @throws SQLException
 	 */
 	public static void findUser(String login) throws SQLException {
-		PreparedStatement findUserStmt = DBAccess.openUdsDBConnection().prepareStatement(USER);
+		PreparedStatement findUserStmt = null;
+		ResultSet rs = null;
 		try {
+			findUserStmt = DBAccess.openUdsDBConnection().prepareStatement(USER);
 			findUserStmt.setString(1, login);
-			ResultSet rs = findUserStmt.executeQuery();
+			rs = findUserStmt.executeQuery();
 			assert !rs.next() : "The user does not exist! Make sure that you have a Proline account.";
 		} finally {
+			tryToCloseResultSet(rs);
 			tryToCloseStatement(findUserStmt);
 		}
 	}
@@ -108,7 +130,8 @@ public class DBSpectraHandler {
 	}
 
 	/**
-	 * @param spectra the spectra to set
+	 * @param spectra
+	 *            the spectra to set
 	 */
 	public static void setSpectra(Spectra spectra) {
 		DBSpectraHandler.spectra = spectra;
@@ -117,7 +140,24 @@ public class DBSpectraHandler {
 	/**
 	 * Close statement
 	 * 
-	 * @param stmt the statement to close
+	 * @param stmt
+	 *            the statement to close
+	 */
+	private static void tryToCloseResultSet(ResultSet rs) {
+		try {
+			if (rs != null && !rs.isClosed())
+				rs.close();
+		} catch (Exception e) {
+			System.out.println("Error while trying to close rs: " + e);
+			// logger.error("Error while trying to close Statement", e)
+		}
+	}
+
+	/**
+	 * Close statement
+	 * 
+	 * @param stmt
+	 *            the statement to close
 	 */
 	private static void tryToCloseStatement(Statement stmt) {
 		try {

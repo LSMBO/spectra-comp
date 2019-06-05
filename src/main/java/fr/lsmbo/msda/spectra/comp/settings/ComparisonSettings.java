@@ -1,5 +1,11 @@
 package fr.lsmbo.msda.spectra.comp.settings;
 
+/**
+ * Wrap comparison of spectra settings.
+ * 
+ * @author Aromdhani
+ *
+ */
 public class ComparisonSettings {
 
 	private Float deltaMoz;

@@ -2,13 +2,14 @@ package fr.lsmbo.msda.spectra.comp;
 
 import java.io.File;
 import java.io.FileReader;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import fr.lsmbo.msda.spectra.comp.db.DBAccess;
 import fr.lsmbo.msda.spectra.comp.db.DBConfig;
+import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.settings.UserParams;
 import fr.lsmbo.msda.spectra.comp.settings.Version;
 
@@ -57,10 +58,14 @@ public class Config {
 		loadUserParams(DefaultParamsFile);
 		// Load database connection properties
 		DBConfig.getInstance();
+		// TODO to remove this test
 		// Test Database connection
-		DBAccess.openUdsDBConnection();
-		DBAccess.openMsiDBConnection("msi_db_project_1");
-
+		try {
+			DBSpectraHandler.fillSpecByPeakList("msi_db_project_10", "QE05083.mgf");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -91,7 +96,10 @@ public class Config {
 		try {
 			Gson gson = new Gson();
 			JsonReader reader = new JsonReader(new FileReader(paramsFile));
+			// Update default user parameters
 			Session.USER_PARAMS = gson.fromJson(reader, UserParams.class);
+			// Update Regex
+			Session.CURRENT_REGEX_RT = Session.USER_PARAMS.getParsingRules().getParsingRuleName();
 			System.out.println(Session.USER_PARAMS.toString());
 		} catch (Exception e) {
 			e.printStackTrace();

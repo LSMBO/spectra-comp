@@ -3,13 +3,12 @@ package fr.lsmbo.msda.spectra.comp.model;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import fr.lsmbo.msda.spectra.comp.Config;
 import fr.lsmbo.msda.spectra.comp.Session;
+import fr.lsmbo.msda.spectra.comp.utils.StringUtils;
 
 public class Spectrum {
 
 	private long id;
-	private int initialId;
 	private Integer firstCycle;
 	private Integer firstScan;
 	private Float firstTime;
@@ -35,11 +34,14 @@ public class Spectrum {
 	public Spectrum() {
 	}
 
-	public Spectrum(int initialId, Integer precursorCharge, Double precursorMoz, Float precursorIntensity) {
-		this.initialId = initialId;
-		this.precursorCharge = precursorCharge;
+	public Spectrum(Long id, String title, Integer precursorCharge, Double precursorMoz, Float precursorIntensity,
+			Integer peakCount) {
+		this.id = id;
+		this.title = title;
 		this.precursorCharge = precursorCharge;
 		this.precursorMoz = precursorMoz;
+		this.precursorIntensity = precursorIntensity;
+		this.peakCount = peakCount;
 	}
 
 	public double getCosTheta() {
@@ -68,10 +70,6 @@ public class Spectrum {
 
 	public Boolean getIdentified() {
 		return identified;
-	}
-
-	public int getInitialId() {
-		return initialId;
 	}
 
 	public byte[] getIntensityList() {
@@ -162,10 +160,6 @@ public class Spectrum {
 		this.identified = identified;
 	}
 
-	public void setInitialId(final int pInitialId) {
-		initialId = pInitialId;
-	}
-
 	public void setIntensityList(byte[] intensityList) {
 		this.intensityList = intensityList;
 	}
@@ -222,15 +216,16 @@ public class Spectrum {
 	 * Set the retention time from title
 	 */
 	public void setRetentionTimeFromTitle() {
-		if (!title.isEmpty() && !Session.CURRENT_REGEX_RT.isEmpty() && Config.get(Session.CURRENT_REGEX_RT) != null) {
-			setRetentionTimeFromTitle(Config.get(Session.CURRENT_REGEX_RT));
+		if ((!StringUtils.isEmpty(title)) && (!StringUtils.isEmpty(Session.CURRENT_REGEX_RT))) {
+			setRetentionTimeFromTitle(Session.USER_PARAMS.getParsingRules().getParsingRuleValue());
 		}
 	}
 
 	/**
 	 * Set the retention from title
 	 * 
-	 * @param regex the used regex to retrieve the retention time from title
+	 * @param regex
+	 *            the used regex to retrieve the retention time from title
 	 */
 	public void setRetentionTimeFromTitle(String regex) {
 		try {
@@ -252,4 +247,31 @@ public class Spectrum {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		return super.equals(obj);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		StringBuilder str = new StringBuilder();
+		str.append("id: ").append(id).append("; title").append(title).append(" ;Retentio time").append(retentionTime)
+				.append(" ;precursor charge").append(precursorCharge).append(" ;precursor moz").append(precursorMoz)
+				.append(" ;precursor intensity").append(precursorIntensity).append(" ;peaks count").append(peakCount);
+		return str.toString();
+	}
+
 }

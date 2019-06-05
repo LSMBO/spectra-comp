@@ -116,12 +116,14 @@ public class DBAccess {
 	public static Connection openMsiDBConnection(final String msiDbName) {
 		if (msiDbConnection == null) {
 			DBConfig dbConfig = DBConfig.getInstance();
+			System.out.println("--- Connection config: " + dbConfig.toString() + "");
+			System.out.println("--- Open connection to " + msiDbName + "");
 			StringBuilder str = new StringBuilder();
 			Properties connProperties = new Properties();
-			assert StringUtils.isEmpty(dbConfig.getUser()) : "User name must not be null nor empty!";
-			assert StringUtils.isEmpty(dbConfig.getPassword()) : "Password must not be null nor empty!";
-			assert StringUtils.isEmpty(dbConfig.getDriverType().getJdbcDriver()) : "Driver must not be null nor empty!";
-			assert StringUtils.isEmpty(dbConfig.getHost()) : "Host must not be null nor empty!";
+			assert !StringUtils.isEmpty(dbConfig.getUser()) : "User name must not be null nor empty!";
+			assert !StringUtils.isEmpty(dbConfig.getPassword()) : "Password must not be null nor empty!";
+			assert !StringUtils.isEmpty(dbConfig.getDriverType().getJdbcDriver()) : "Driver must not be null nor empty!";
+			assert !StringUtils.isEmpty(dbConfig.getHost()) : "Host must not be null nor empty!";
 			assert dbConfig.getPort() > 0 : "Port number is not valid!";
 			connProperties.setProperty("user", dbConfig.getUser());
 			connProperties.setProperty("password", dbConfig.getPassword());
@@ -149,12 +151,14 @@ public class DBAccess {
 	public static Connection openUdsDBConnection() {
 		if (udsDbConnection == null) {
 			DBConfig dbConfig = DBConfig.getInstance();
+			System.out.println("--- Connection config: " + dbConfig.toString() + "");
+			System.out.println("--- Open connection to uds_db");
 			StringBuilder str = new StringBuilder();
 			Properties connProperties = new Properties();
-			assert StringUtils.isEmpty(dbConfig.getUser()) : "User name must not be null nor empty!";
-			assert StringUtils.isEmpty(dbConfig.getPassword()) : "Password must not be null nor empty!";
-			assert StringUtils.isEmpty(dbConfig.getDriverType().getJdbcDriver()) : "Driver must not be null nor empty!";
-			assert StringUtils.isEmpty(dbConfig.getHost()) : "Host must not be null nor empty!";
+			assert !StringUtils.isEmpty(dbConfig.getUser()) : "User name must not be null nor empty!";
+			assert !StringUtils.isEmpty(dbConfig.getPassword()) : "Password must not be null nor empty!";
+			assert !StringUtils.isEmpty(dbConfig.getDriverType().getJdbcDriver()) : "Driver must not be null nor empty!";
+			assert !StringUtils.isEmpty(dbConfig.getHost()) : "Host must not be null nor empty!";
 			assert dbConfig.getPort() > 0 : "Port number is not valid!";
 			connProperties.setProperty("user", dbConfig.getUser());
 			connProperties.setProperty("password", dbConfig.getPassword());

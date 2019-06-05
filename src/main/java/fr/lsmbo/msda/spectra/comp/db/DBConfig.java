@@ -16,6 +16,7 @@ public class DBConfig {
 	private static final Object CONFIGURATION_LOCK = new Object();
 	private static String application = "application.conf";
 	private static DBConfig instance;
+
 	public static void forcePropertiesFileReload() {
 		synchronized (CONFIGURATION_LOCK) {
 			if (instance != null) {
@@ -23,6 +24,7 @@ public class DBConfig {
 			}
 		}
 	}
+
 	/**
 	 * 
 	 * @return an instance of DBConfig
@@ -33,6 +35,7 @@ public class DBConfig {
 		}
 		return instance;
 	}
+
 	private Integer maxPoolConnection = null;
 	private String user = null;
 	private String password = null;
@@ -41,7 +44,6 @@ public class DBConfig {
 	private String dbName = null;
 	DriverType driverType = null;
 
-	private String dataSetOwner = null;
 
 	private Properties connectionProperties = null;
 
@@ -49,12 +51,7 @@ public class DBConfig {
 		loadProperties();
 	}
 
-	/**
-	 * @return the dataSetOwner
-	 */
-	public final String getDataSetOwner() {
-		return dataSetOwner;
-	}
+	
 
 	/**
 	 * @return the dbName
@@ -111,8 +108,9 @@ public class DBConfig {
 	private void loadProperties() {
 		try (InputStream input = Main.class.getClassLoader().getResourceAsStream(application)) {
 			if (input == null) {
-				System.err.println("Error - error while trying to read spectra-comp file: '" + application + "'!");
+				System.err.println("Error - Error while trying to read spectra-comp file: '" + application + "'!");
 			} else {
+				System.out.println("--- Load properties from " + application + "");
 				connectionProperties = new Properties();
 				connectionProperties.load(input);
 				maxPoolConnection = Integer.valueOf(connectionProperties.getProperty("db-config.max-pool-connection"));
@@ -121,7 +119,6 @@ public class DBConfig {
 				host = connectionProperties.getProperty("host-config.host");
 				port = Integer.valueOf(connectionProperties.getProperty("host-config.port"));
 				dbName = connectionProperties.getProperty("db-name");
-				dataSetOwner = connectionProperties.getProperty("ds-owner");
 				if (connectionProperties.getProperty("db-config.driver-type").equals("postgresql")) {
 					driverType = DriverType.POSTGRESQL;
 				} else if (connectionProperties.getProperty("db-config.driver-type").equals("sqlite")) {
@@ -134,15 +131,6 @@ public class DBConfig {
 			e.printStackTrace();
 		}
 	}
-
-	/**
-	 * @param dataSetOwner
-	 *            the dataSetOwner to set
-	 */
-	public final void setDataSetOwner(String dataSetOwner) {
-		this.dataSetOwner = dataSetOwner;
-	}
-
 	/**
 	 * @param dbName
 	 *            the dbName to set
@@ -197,6 +185,21 @@ public class DBConfig {
 	 */
 	public void setUser(String user) {
 		this.user = user;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		StringBuilder str = new StringBuilder();
+		str.append("max pool connection: ").append(maxPoolConnection).append(" ;user: ").append(user).append(" ;host: ")
+				.append(host).append(" ;port: ").append(port);
+		return str.toString();
+
 	}
 
 }

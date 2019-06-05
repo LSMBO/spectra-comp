@@ -15,8 +15,8 @@ public class UserParams {
 	private String timestamp;
 	private String spectraCompVersion;
 	private String projectName;
-	private String firstDataset;
-	private String secondDataset;
+	private String firstPklList;
+	private String secondPklList;
 
 	private DataSource dataSource = DataSource.DATABASE;
 	private ComparisonSettings comparison;
@@ -31,7 +31,7 @@ public class UserParams {
 	}
 
 	public UserParams(String userName, String timestamp, String spectraCompVersion, String projectName,
-			String firstDataset, String secondDataset, DataSource dataSource,
+			String firstPklList, String secondPklList, DataSource dataSource,
 
 			ComparisonSettings comparison, ParsingRulesSettings parsingRules) {
 		super();
@@ -39,8 +39,8 @@ public class UserParams {
 		this.timestamp = timestamp;
 		this.spectraCompVersion = spectraCompVersion;
 		this.projectName = projectName;
-		this.firstDataset = firstDataset;
-		this.secondDataset = secondDataset;
+		this.firstPklList = firstPklList;
+		this.secondPklList = secondPklList;
 		this.dataSource = dataSource;
 		this.comparison = comparison;
 		this.parsingRules = parsingRules;
@@ -62,10 +62,10 @@ public class UserParams {
 	}
 
 	/**
-	 * @return the firstDataset
+	 * @return the first peak list
 	 */
-	public String getFirstDataset() {
-		return firstDataset;
+	public String getFirstPklList() {
+		return firstPklList;
 	}
 
 	/**
@@ -83,10 +83,10 @@ public class UserParams {
 	}
 
 	/**
-	 * @return the secondDataset
+	 * @return the second peak list
 	 */
-	public String getSecondDataset() {
-		return secondDataset;
+	public String getSecondPklList() {
+		return secondPklList;
 	}
 
 	/**
@@ -111,63 +111,72 @@ public class UserParams {
 	}
 
 	/**
-	 * @param comparison the comparison to set
+	 * @param comparison
+	 *            the comparison to set
 	 */
 	public void setComparison(ComparisonSettings comparison) {
 		this.comparison = comparison;
 	}
 
 	/**
-	 * @param dataSource the dataSource to set
+	 * @param dataSource
+	 *            the dataSource to set
 	 */
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 
 	/**
-	 * @param firstDataset the firstDataset to set
+	 * @param firstPklList
+	 *            the first peak list to set
 	 */
-	public void setFirstDataset(String firstDataset) {
-		this.firstDataset = firstDataset;
+	public void setFirstPklList(String firstPklList) {
+		this.firstPklList = firstPklList;
 	}
 
 	/**
-	 * @param parsingRules the parsingRules to set
+	 * @param parsingRules
+	 *            the parsingRules to set
 	 */
 	public void setParsingRules(ParsingRulesSettings parsingRules) {
 		this.parsingRules = parsingRules;
 	}
 
 	/**
-	 * @param projectName the projectName to set
+	 * @param projectName
+	 *            the projectName to set
 	 */
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
 
 	/**
-	 * @param secondDataset the secondDataset to set
+	 * @param secondPklList
+	 *            the second peak list to set
 	 */
-	public void setSecondDataset(String secondDataset) {
-		this.secondDataset = secondDataset;
+	public void setSecondPklList(String secondPklList) {
+		this.secondPklList = secondPklList;
 	}
 
 	/**
-	 * @param spectraCompVersion the spectraCompVersion to set
+	 * @param spectraCompVersion
+	 *            the spectraCompVersion to set
 	 */
 	public void setSpectraCompVersion(String spectraCompVersion) {
 		this.spectraCompVersion = spectraCompVersion;
 	}
 
 	/**
-	 * @param timestamp the timestamp to set
+	 * @param timestamp
+	 *            the timestamp to set
 	 */
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	/**
-	 * @param userName the userName to set
+	 * @param userName
+	 *            the userName to set
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;

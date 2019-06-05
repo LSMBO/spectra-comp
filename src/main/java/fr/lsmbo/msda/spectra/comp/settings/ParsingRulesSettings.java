@@ -1,21 +1,26 @@
-/*
- * 
- */
+
 package fr.lsmbo.msda.spectra.comp.settings;
 
-public class ParsingRulesSettings  {
+/**
+ * Wrap Parsing rule settings.
+ * 
+ * @author Aromdhani
+ *
+ */
+
+public class ParsingRulesSettings {
 
 	private String parsingRuleName;
 	private String parsingRuleValue;
 
 	public ParsingRulesSettings() {
-			}
+	}
 
 	public ParsingRulesSettings(String parsingRuleName, String parsingRuleValue) {
 		super();
 		this.parsingRuleName = parsingRuleName;
 		this.parsingRuleValue = parsingRuleValue;
-	
+
 	}
 
 	public String getParsingRuleName() {
@@ -26,7 +31,6 @@ public class ParsingRulesSettings  {
 		return parsingRuleValue;
 	}
 
-	
 	public void setParsingRuleName(String parsingRuleName) {
 		this.parsingRuleName = parsingRuleName;
 	}
@@ -37,7 +41,7 @@ public class ParsingRulesSettings  {
 
 	@Override
 	public String toString() {
-		return "Parsing Rule Name:" + parsingRuleName + " ; " + "parsingRuleValue: " + parsingRuleValue + "\n";
+		return "Parsing Rule Name:" + parsingRuleName + " ; " + "parsingRuleValue: " + parsingRuleValue;
 	}
 
 }
