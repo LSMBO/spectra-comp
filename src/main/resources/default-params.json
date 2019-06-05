@@ -3,8 +3,8 @@
   "timestamp": "",
   "spectraCompVersion": "0.0.1-SNAPSHOT",
   "projectName": "",
-  "firstDataset": "",
-  "secondDataset": "",
+  "firstPklList": "",
+  "secondPklList": "",
   "dataSource":"database",
   "comparison": {
     "deltaMoz": 0.007,
@@ -14,7 +14,7 @@
     "minimumThetaAngle": 11
   },
     "parsingRules": {
-    "parsingRuleName": "msconvert",
-    "parsingRuleValue": "RTmin:\"(\\d+\\.\\d+)\""
+    "parsingRuleName": "proline",
+    "parsingRuleValue": "first_time:(\\d+);"
   }
 }
