@@ -14,7 +14,7 @@
     "minimumThetaAngle": 11
   },
     "parsingRules": {
-    "parsingRuleName": "proline",
-    "parsingRuleValue": "first_time:(\\d+);"
+    "parsingRuleName": "msconvert",
+    "parsingRuleValue": "RTmin:\"(\\d+\\.\\d+)\""
   }
 }
