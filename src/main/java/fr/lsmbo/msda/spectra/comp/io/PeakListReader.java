@@ -7,7 +7,7 @@ import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.db.DataSource;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
-import fr.lsmbo.msda.spectra.comp.utils.StringUtils;
+import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 public class PeakListReader {
 
@@ -69,8 +69,8 @@ public class PeakListReader {
 	@SuppressWarnings("restriction")
 	public static void loadFirstSpectra(String projectName, String firstDataset) throws SQLException {
 		if (Session.USER_PARAMS.getDataSource() == DataSource.DATABASE) {
-			assert StringUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
-			assert StringUtils.isEmpty(firstDataset) : "Dataset name must not be null nor empty!";
+			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
+			assert StringsUtils.isEmpty(firstDataset) : "Dataset name must not be null nor empty!";
 			DBSpectraHandler.fillSpecByPeakList(projectName, firstDataset);
 			ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
@@ -87,8 +87,8 @@ public class PeakListReader {
 	@SuppressWarnings("restriction")
 	public static void loadSecondSpectra(String projectName, String secondDataset) throws SQLException {
 		if (Session.USER_PARAMS.getDataSource() == DataSource.DATABASE) {
-			assert StringUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
-			assert StringUtils.isEmpty(secondDataset) : "Dataset name must not be null nor empty!";
+			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
+			assert StringsUtils.isEmpty(secondDataset) : "Dataset name must not be null nor empty!";
 			DBSpectraHandler.fillSpecByPeakList(projectName, secondDataset);
 			ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());

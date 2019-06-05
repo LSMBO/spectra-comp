@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
-import fr.lsmbo.msda.spectra.comp.utils.StringUtils;
+import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 /**
  * Handle spectra from database
@@ -48,7 +48,7 @@ public class DBSpectraHandler {
 				Float precursorIntensity = rs.getFloat("precursor_intensity");
 				Double precursorMoz = rs.getDouble("precursor_moz");
 				Integer peakCount = rs.getInt("peak_count");
-				if ((!StringUtils.isEmpty(title))) {
+				if ((!StringsUtils.isEmpty(title))) {
 					Spectrum spectrum = new Spectrum(id, title, precursorCharge, precursorMoz, precursorIntensity,
 							peakCount);
 					spectrum.setRetentionTimeFromTitle();

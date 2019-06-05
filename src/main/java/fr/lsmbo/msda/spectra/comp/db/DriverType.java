@@ -1,6 +1,6 @@
 package fr.lsmbo.msda.spectra.comp.db;
 
-import fr.lsmbo.msda.spectra.comp.utils.StringUtils;
+import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 /**
  * 
@@ -17,8 +17,8 @@ public enum DriverType {
 	private final String m_jdbcURLProtocol;
 
 	private DriverType(final String jdbcDriver, final String jdbcURLProtocol) {
-		assert (StringUtils.isEmpty(jdbcDriver)) : "DriverType() invalid jdbcDriver";
-		assert (StringUtils.isEmpty(jdbcURLProtocol)) : "DriverType() invalid jdbcURLProtocol";
+		assert (StringsUtils.isEmpty(jdbcDriver)) : "DriverType() invalid jdbcDriver";
+		assert (StringsUtils.isEmpty(jdbcURLProtocol)) : "DriverType() invalid jdbcURLProtocol";
 
 		m_jdbcDriver = jdbcDriver;
 

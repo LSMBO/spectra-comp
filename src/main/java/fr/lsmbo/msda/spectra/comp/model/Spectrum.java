@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.lsmbo.msda.spectra.comp.Session;
-import fr.lsmbo.msda.spectra.comp.utils.StringUtils;
+import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 public class Spectrum {
 
@@ -216,7 +216,7 @@ public class Spectrum {
 	 * Set the retention time from title
 	 */
 	public void setRetentionTimeFromTitle() {
-		if ((!StringUtils.isEmpty(title)) && (!StringUtils.isEmpty(Session.CURRENT_REGEX_RT))) {
+		if ((!StringsUtils.isEmpty(title)) && (!StringsUtils.isEmpty(Session.CURRENT_REGEX_RT))) {
 			setRetentionTimeFromTitle(Session.USER_PARAMS.getParsingRules().getParsingRuleValue());
 		}
 	}
