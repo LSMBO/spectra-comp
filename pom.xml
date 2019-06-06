@@ -59,7 +59,7 @@
 						</goals>
 						<configuration>
 							<outputDirectory>
-								${project.build.directory}/${project.name}-${project.version}/lib
+								${project.build.directory}/lib
 							</outputDirectory>
 							<overWriteReleases>true</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
@@ -115,20 +115,9 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
+				<version>3.0.0</version> <!-- Latest version checked on 28 July 2015 -->
 			</plugin>
 
 		</plugins>
@@ -149,19 +138,20 @@
 	</repositories>
 
 	<dependencies>
-	 <!-- Databases -->
-      <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>42.1.3</version> <!-- change to 42.1.13 ? -->
-        <!-- Exclude slf4j-simple which the implementation used by logback-classic dependency -->
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
+		<!-- Databases -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.1.3</version> <!-- change to 42.1.13 ? -->
+			<!-- Exclude slf4j-simple which the implementation used by logback-classic 
+				dependency -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 		<dependency>
 			<groupId>de.erichseifert.gral</groupId>
 			<artifactId>gral-core</artifactId>
