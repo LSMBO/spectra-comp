@@ -21,7 +21,9 @@ public class Session {
 	public static String SPECTRACOMP_RELEASE_VERSION = "";
 	public static String SPECTRACOMP_RELEASE_DATE = "";
 	public static Version SPECTRACOMP_VERSION = null;
-
+	public static String FILE_HEADER = "";
+	public static Double HIGHEST_FRAGMENT_MZ = 0d;
+	public static Float  HIGHEST_FRAGMENT_INTENSITY=0f;
 	public static String CURRENT_REGEX_RT = "msconvert";
 	public static File REFERENCE_PKLIST_FILE = null;
 	public static File TEST_PKLIST_FILE = null;

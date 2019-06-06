@@ -9,44 +9,44 @@ import fr.lsmbo.msda.spectra.comp.db.DataSource;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
-public class PeakListReader {
+public class PeakListLoader {
 
 	private static File firstFile = null;
 	private static File secondFile = null;
 	private static String projectName;
-	private static String firstDataset;
-	private static String secondDataset;
+	private static String firstPklList;
+	private static String secondPklList;
 
 	/**
-	 * @return the firstDataset
+	 * @return the first peak list
 	 */
 	public static final String getFirstDataset() {
-		return firstDataset;
+		return firstPklList;
 	}
 
 	/**
-	 * @return the firstFile
+	 * @return the first file
 	 */
 	public static File getFirstFile() {
 		return firstFile;
 	}
 
 	/**
-	 * @return the projectName
+	 * @return the project name
 	 */
 	public static final String getProjectName() {
 		return projectName;
 	}
 
 	/**
-	 * @return the secondDataset
+	 * @return the second peak list
 	 */
 	public static final String getSecondDataset() {
-		return secondDataset;
+		return secondPklList;
 	}
 
 	/**
-	 * @return the secondFile
+	 * @return the second file
 	 */
 	public static File getSecondFile() {
 		return secondFile;
@@ -67,7 +67,7 @@ public class PeakListReader {
 	 * @param projectName
 	 *            the project name
 	 * @param firstPklList
-	 *            the first peaklist
+	 *            the first peak list
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("restriction")
@@ -107,42 +107,42 @@ public class PeakListReader {
 
 	/**
 	 * @param firstDataset
-	 *            the firstDataset to set
+	 *            the first peak list to set
 	 */
 	public static final void setFirstDataset(String firstDataset) {
-		PeakListReader.firstDataset = firstDataset;
+		PeakListLoader.firstPklList = firstDataset;
 	}
 
 	/**
 	 * @param firstFile
-	 *            the firstFile to set
+	 *            the first file to set
 	 */
 	public static void setFirstFile(File firstFile) {
-		PeakListReader.firstFile = firstFile;
+		PeakListLoader.firstFile = firstFile;
 	}
 
 	/**
 	 * @param projectName
-	 *            the projectName to set
+	 *            the project name to set
 	 */
 	public static final void setProjectName(String projectName) {
-		PeakListReader.projectName = projectName;
+		PeakListLoader.projectName = projectName;
 	}
 
 	/**
 	 * @param secondDataset
-	 *            the secondDataset to set
+	 *            the second peak list to set
 	 */
 	public static final void setSecondDataset(String secondDataset) {
-		PeakListReader.secondDataset = secondDataset;
+		PeakListLoader.secondPklList = secondDataset;
 	}
 
 	/**
 	 * @param secondFile
-	 *            the secondFile to set
+	 *            the second file to set
 	 */
 	public static void setSecondFile(File secondFile) {
-		PeakListReader.secondFile = secondFile;
+		PeakListLoader.secondFile = secondFile;
 	}
 
 }

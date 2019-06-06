@@ -1,5 +1,6 @@
 package fr.lsmbo.msda.spectra.comp.model;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +31,12 @@ public class Spectrum {
 	private Integer nbMatch;
 	private Boolean identified;
 	private Float retentionTime;
+	// The index of the line start in file of the spectrum
+	private Integer lineStart = 0;
+	// The index of the line stop in file of the spectrum
+	private Integer lineStop = 0;
+	// May be empty if file is too big
+	private ArrayList<Fragment> fragments = new ArrayList<Fragment>();
 
 	public Spectrum() {
 	}
@@ -257,6 +264,52 @@ public class Spectrum {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	/**
+	 * @return the lineStart
+	 */
+	public final Integer getLineStart() {
+		return lineStart;
+	}
+
+	/**
+	 * @param lineStart
+	 *            the lineStart to set
+	 */
+	public final void setLineStart(Integer lineStart) {
+		this.lineStart = lineStart;
+	}
+
+	/**
+	 * @return the lineStop
+	 */
+	public final Integer getLineStop() {
+		return lineStop;
+	}
+
+	/**
+	 * @param lineStop
+	 *            the lineStop to set
+	 */
+	public final void setLineStop(Integer lineStop) {
+		this.lineStop = lineStop;
+	}
+
+	/**
+	 * @param fragment
+	 *            the fragment to set
+	 */
+	public void addFragment(Fragment fragment) {
+		this.fragments.add(fragment);
+	}
+
+	/**
+	 * @param fragments
+	 *            the list of fragment to set
+	 */
+	public void addFragments(ArrayList<Fragment> fragments) {
+		this.fragments.addAll(fragments);
 	}
 
 	/*

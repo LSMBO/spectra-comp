@@ -4,13 +4,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 import fr.lsmbo.msda.spectra.comp.db.DBConfig;
-import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.settings.UserParams;
 import fr.lsmbo.msda.spectra.comp.settings.Version;
 
