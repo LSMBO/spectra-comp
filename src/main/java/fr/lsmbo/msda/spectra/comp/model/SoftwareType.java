@@ -8,7 +8,7 @@ import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
  *
  */
 
-public enum ParsingRuleType {
+public enum SoftwareType {
 
 	MSCONVERT("MSConvert", "RTmin:\"(\\d+\\.\\d+)\""), PROLINE("Proline", "first_time:(\\d+);"), MASCOT_DLL(
 			"mascot.dll", "Elution: (.+?) to .+? min|Elution: (.+?) min"), ANALYSIS("Data Analysis",
@@ -17,7 +17,7 @@ public enum ParsingRuleType {
 	private final String m_regexName;
 	private final String m_regexValue;
 
-	private ParsingRuleType(final String regexName, final String regexValue) {
+	private SoftwareType(final String regexName, final String regexValue) {
 		assert (StringsUtils.isEmpty(regexName)) : "invalid regex name";
 		assert (StringsUtils.isEmpty(regexValue)) : "invalid regex value";
 
@@ -33,23 +33,30 @@ public enum ParsingRuleType {
 		return m_regexValue;
 	}
 
-	public static ParsingRuleType getSoftwareType(String softwareName) {
-		ParsingRuleType parsingRuleType = ParsingRuleType.MSCONVERT;
+	/**
+	 * Return the parsing rule by the software name
+	 * 
+	 * @param softwareName
+	 *            the software name
+	 * @return the parsing rule
+	 */
+	public static SoftwareType getParsingRule(String softwareName) {
+		SoftwareType parsingRuleType = SoftwareType.MSCONVERT;
 		switch (softwareName) {
 		case "MSConvert":
-			parsingRuleType = ParsingRuleType.MSCONVERT;
+			parsingRuleType = SoftwareType.MSCONVERT;
 			break;
 		case "Proline":
-			parsingRuleType = ParsingRuleType.PROLINE;
+			parsingRuleType = SoftwareType.PROLINE;
 			break;
 		case "mascot.dll":
-			parsingRuleType = ParsingRuleType.MASCOT_DLL;
+			parsingRuleType = SoftwareType.MASCOT_DLL;
 			break;
 		case "Data Analysis":
-			parsingRuleType = ParsingRuleType.ANALYSIS;
+			parsingRuleType = SoftwareType.ANALYSIS;
 			break;
 		case "Mascot Distiller":
-			parsingRuleType = ParsingRuleType.MASCOT_DISTILLER;
+			parsingRuleType = SoftwareType.MASCOT_DISTILLER;
 			break;
 		default:
 			break;

@@ -228,7 +228,7 @@ public class Spectrum {
 	 */
 	public void setRetentionTimeFromTitle() {
 		if ((!StringsUtils.isEmpty(title)) && (!StringsUtils.isEmpty(Session.CURRENT_REGEX_RT))) {
-			setRetentionTimeFromTitle(ParsingRuleType.getSoftwareType(Session.CURRENT_REGEX_RT).getRegexValue());
+			setRetentionTimeFromTitle(SoftwareType.getParsingRule(Session.CURRENT_REGEX_RT).getRegexValue());
 		}
 	}
 
