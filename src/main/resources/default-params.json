@@ -4,7 +4,7 @@
   "spectraCompVersion": "0.0.1-SNAPSHOT",
   "projectName": "msi_db_project_10",
   "firstPklList": "QE05083.mgf",
-  "secondPklList": "",
+  "secondPklList": "QE01425.mgf",
   "dataSource":"database",
   "comparison": {
     "deltaMoz": 0.007,
