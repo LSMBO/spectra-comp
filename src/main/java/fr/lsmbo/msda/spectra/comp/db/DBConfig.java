@@ -27,6 +27,7 @@ public class DBConfig {
 	}
 
 	/**
+	 * Return an instance of DBConfig
 	 * 
 	 * @return an instance of DBConfig
 	 */
@@ -87,20 +88,6 @@ public class DBConfig {
 	}
 
 	/**
-	 * @return the port
-	 */
-	public Integer getPort() {
-		return port;
-	}
-
-	/**
-	 * @return the user
-	 */
-	public String getUser() {
-		return user;
-	}
-
-	/**
 	 * Load application.conf properties
 	 * 
 	 * @throws URISyntaxException
@@ -118,6 +105,20 @@ public class DBConfig {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	/**
+	 * @return the port
+	 */
+	public Integer getPort() {
+		return port;
+	}
+
+	/**
+	 * @return the user
+	 */
+	public String getUser() {
+		return user;
 	}
 
 	private void loadProperties() {

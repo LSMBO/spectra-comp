@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
@@ -27,6 +26,33 @@ public class Config {
 	private static String spectraCompFileName = "spectra-comp.json";
 	private static String defaultParamsFileName = "default-params.json";
 	private static Config instance = null;
+
+	/**
+	 * Force to load configuration properties
+	 */
+	public static void forceToLoadProperties() {
+		instance = null;
+		getInstance();
+	}
+
+	/**
+	 * Return an instance of Config
+	 * 
+	 * @return the instance of Config
+	 */
+	public static Config getInstance() {
+		if (instance == null) {
+			instance = new Config();
+		}
+		return instance;
+	}
+
+	/**
+	 * Private constructor
+	 */
+	private Config() {
+		initialize();
+	}
 
 	/**
 	 * Return the file path
@@ -51,25 +77,6 @@ public class Config {
 	}
 
 	/**
-	 * Return an instance of Config
-	 * 
-	 * @return the instance of Config
-	 */
-	public static Config getInstance() {
-		if (instance == null) {
-			instance = new Config();
-		}
-		return instance;
-	}
-
-	/**
-	 * Private constructor
-	 */
-	private Config() {
-		initialize();
-	}
-
-	/**
 	 * Load configuration files and initialize the values
 	 * 
 	 */
@@ -91,14 +98,6 @@ public class Config {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	/**
-	 * Force to load configuration properties
-	 */
-	public static void forceToLoadProperties() {
-		instance = null;
-		getInstance();
 	}
 
 	/**

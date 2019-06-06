@@ -44,6 +44,17 @@ public class Spectrum {
 		this.peakCount = peakCount;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		return super.equals(obj);
+	}
+
 	public double getCosTheta() {
 		return cosTheta;
 	}
@@ -217,7 +228,7 @@ public class Spectrum {
 	 */
 	public void setRetentionTimeFromTitle() {
 		if ((!StringsUtils.isEmpty(title)) && (!StringsUtils.isEmpty(Session.CURRENT_REGEX_RT))) {
-			setRetentionTimeFromTitle(Session.USER_PARAMS.getParsingRules().getParsingRuleValue());
+			setRetentionTimeFromTitle(ParsingRuleType.getSoftwareType(Session.CURRENT_REGEX_RT).getRegexValue());
 		}
 	}
 
@@ -251,26 +262,16 @@ public class Spectrum {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
-		return super.equals(obj);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
 		StringBuilder str = new StringBuilder();
-		str.append("id: ").append(id).append("; title: ").append(title).append(" ;Retentio time: ").append(retentionTime)
-				.append(" ;precursor charge: ").append(precursorCharge).append(" ;precursor moz: ").append(precursorMoz)
-				.append(" ;precursor intensity: ").append(precursorIntensity).append(" ;peaks count: ").append(peakCount);
+		str.append("id: ").append(id).append("; title: ").append(title).append(" ;Retentio time: ")
+				.append(retentionTime).append(" ;precursor charge: ").append(precursorCharge)
+				.append(" ;precursor moz: ").append(precursorMoz).append(" ;precursor intensity: ")
+				.append(precursorIntensity).append(" ;peaks count: ").append(peakCount);
 		return str.toString();
 	}
 

@@ -1,6 +1,7 @@
 package fr.lsmbo.msda.spectra.comp.utils;
 
 /**
+ * Utilities for string values
  * 
  * @author Aromdhani
  *

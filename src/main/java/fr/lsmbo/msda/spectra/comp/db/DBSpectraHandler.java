@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
@@ -21,48 +22,8 @@ public class DBSpectraHandler {
 	private static final String USER = "SELECT * FROM user_account WHERE login=?";
 	private static final String PROJECT = "SELECT * FROM external_db WHERE name=?";
 	private static final String PEAKLIST = "SELECT * FROM peaklist";
-	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.* FROM peaklist pkl,spectrum spec WHERE spec.peaklist_id=pkl.id AND pkl.path=?";
+	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.*,pklsof.name as pkl_software FROM peaklist pkl,peaklist_software pklsof,spectrum spec WHERE spec.peaklist_id=pkl.id AND pklsof.id=pkl.peaklist_software_id AND pkl.path=?";
 	private static Spectra spectra = new Spectra();
-
-	/**
-	 * Find all data set by project
-	 * 
-	 * @param path
-	 *            the peaklist path
-	 * @throws SQLException
-	 */
-	public static void fillSpecByPeakList(String msiName, String path) throws SQLException {
-		PreparedStatement peakListStmt = null;
-		ResultSet rs = null;
-		try {
-
-			spectra.initialize();
-			peakListStmt = DBAccess.openMsiDBConnection(msiName).prepareStatement(SPECTRA_BY_PEAKLIST);
-			System.out.println("--- Start to retrieve spectra from '" + msiName + "' whith the peaklist path:'" + path
-					+ "'. Please wait ...");
-			peakListStmt.setString(1, path);
-			rs = peakListStmt.executeQuery();
-			while (rs.next()) {
-				Long id = rs.getLong("id");
-				String title = rs.getString("title");
-				Integer precursorCharge = rs.getInt("precursor_charge");
-				Float precursorIntensity = rs.getFloat("precursor_intensity");
-				Double precursorMoz = rs.getDouble("precursor_moz");
-				Integer peakCount = rs.getInt("peak_count");
-				if ((!StringsUtils.isEmpty(title))) {
-					Spectrum spectrum = new Spectrum(id, title, precursorCharge, precursorMoz, precursorIntensity,
-							peakCount);
-					spectrum.setRetentionTimeFromTitle();
-					spectra.addSpectrum(spectrum);
-				}
-			}
-			System.out.println("--- Retrieve spectra has finished. " + spectra.getSpectraAsObservable().size()
-					+ " spectra found.");
-		} finally {
-			tryToCloseResultSet(rs);
-			tryToCloseStatement(peakListStmt);
-		}
-	}
 
 	/**
 	 * Find PeakList
@@ -81,6 +42,48 @@ public class DBSpectraHandler {
 
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(allPklistStmt);
+		}
+	}
+
+	/**
+	 * Find all data set by project
+	 * 
+	 * @param path
+	 *            the peaklist path
+	 * @throws SQLException
+	 */
+	public static void fillSpecByPeakList(String msiName, String path) throws SQLException {
+		PreparedStatement peakListStmt = null;
+		ResultSet rs = null;
+		try {
+			spectra.initialize();
+			peakListStmt = DBAccess.openMsiDBConnection(msiName).prepareStatement(SPECTRA_BY_PEAKLIST);
+			System.out.println("--- Start to retrieve spectra from '" + msiName + "' whith the peaklist path:'" + path
+					+ "'. Please wait ...");
+			peakListStmt.setString(1, path);
+			rs = peakListStmt.executeQuery();
+			while (rs.next()) {
+				Long id = rs.getLong("id");
+				String title = rs.getString("title");
+				Integer precursorCharge = rs.getInt("precursor_charge");
+				Float precursorIntensity = rs.getFloat("precursor_intensity");
+				Double precursorMoz = rs.getDouble("precursor_moz");
+				Integer peakCount = rs.getInt("peak_count");
+				String pklSoftwareName = rs.getString("pkl_software");
+				if ((!StringsUtils.isEmpty(title))) {
+					Spectrum spectrum = new Spectrum(id, title, precursorCharge, precursorMoz, precursorIntensity,
+							peakCount);
+					// Update the current regex
+					Session.CURRENT_REGEX_RT = pklSoftwareName;
+					spectrum.setRetentionTimeFromTitle();
+					spectra.addSpectrum(spectrum);
+				}
+			}
+			System.out.println("--- Retrieve spectra has finished. " + spectra.getSpectraAsObservable().size()
+					+ " spectra found.");
+		} finally {
+			tryToCloseResultSet(rs);
+			tryToCloseStatement(peakListStmt);
 		}
 	}
 
