@@ -51,7 +51,7 @@ public class Config {
 	 * Private constructor
 	 */
 	private Config() {
-		initialize();
+		loadProperties();
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class Config {
 	 *            the file name to get its path
 	 * @return the file path
 	 */
-	public String getPath(String fileName) {
+	public String getConfigFilePath(String fileName) {
 		URI srcPath;
 		try {
 			srcPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
@@ -81,7 +81,7 @@ public class Config {
 	 * 
 	 */
 
-	private void initialize() {
+	private void loadProperties() {
 		if (instance == null) {
 			// Load spectra-comp version
 			loadSpectraCompProps();
@@ -92,7 +92,8 @@ public class Config {
 			// TODO to remove this test
 			// Test Database connection
 			try {
-				DBSpectraHandler.fillSpecByPeakList(Session.USER_PARAMS.getProjectName(),Session.USER_PARAMS.getFirstPklList());
+				DBSpectraHandler.fillSpecByPeakList(Session.USER_PARAMS.getProjectName(),
+						Session.USER_PARAMS.getFirstPklList());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -107,7 +108,7 @@ public class Config {
 	private synchronized void loadSpectraCompProps() {
 		try {
 			Gson gson = new Gson();
-			JsonReader reader = new JsonReader(new FileReader(new File(getPath(spectraCompFileName))));
+			JsonReader reader = new JsonReader(new FileReader(new File(getConfigFilePath(spectraCompFileName))));
 			Session.SPECTRACOMP_VERSION = gson.fromJson(reader, Version.class);
 			System.out.println(Session.SPECTRACOMP_VERSION.toString());
 		} catch (Exception e) {
@@ -122,7 +123,7 @@ public class Config {
 	public void loadUserParams() {
 		try {
 			Gson gson = new Gson();
-			JsonReader reader = new JsonReader(new FileReader(getPath(defaultParamsFileName)));
+			JsonReader reader = new JsonReader(new FileReader(getConfigFilePath(defaultParamsFileName)));
 			// Update default user parameters
 			Session.USER_PARAMS = gson.fromJson(reader, UserParams.class);
 			// Update Regex
