@@ -2,8 +2,8 @@
   "userName": "",
   "timestamp": "",
   "spectraCompVersion": "0.0.1-SNAPSHOT",
-  "projectName": "",
-  "firstPklList": "",
+  "projectName": "msi_db_project_10",
+  "firstPklList": "QE05083.mgf",
   "secondPklList": "",
   "dataSource":"database",
   "comparison": {
