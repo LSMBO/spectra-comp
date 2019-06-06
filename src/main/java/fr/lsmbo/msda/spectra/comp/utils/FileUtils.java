@@ -14,7 +14,7 @@ import java.util.function.Consumer;
  */
 public class FileUtils {
 	/**
-	 * Load file data via input stream
+	 * Read file bytes via input stream and close correctly the input stream
 	 * 
 	 * @param path
 	 *            the file path to load

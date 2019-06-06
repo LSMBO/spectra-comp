@@ -62,16 +62,20 @@ public class PeakListReader {
 	}
 
 	/**
-	 * Load first spectra
+	 * Load first peak list
 	 * 
+	 * @param projectName
+	 *            the project name
+	 * @param firstPklList
+	 *            the first peaklist
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("restriction")
-	public static void loadFirstSpectra(String projectName, String firstDataset) throws SQLException {
+	public static void loadFirstSpectra(String projectName, String firstPklList) throws SQLException {
 		if (Session.USER_PARAMS.getDataSource() == DataSource.DATABASE) {
 			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
-			assert StringsUtils.isEmpty(firstDataset) : "Dataset name must not be null nor empty!";
-			DBSpectraHandler.fillSpecByPeakList(projectName, firstDataset);
+			assert StringsUtils.isEmpty(firstPklList) : "Dataset name must not be null nor empty!";
+			DBSpectraHandler.fillSpecByPeakList(projectName, firstPklList);
 			ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 		} else {
@@ -80,16 +84,20 @@ public class PeakListReader {
 	}
 
 	/**
-	 * Load second spectra
+	 * Load the second peaklist
 	 * 
+	 * @param projectName
+	 *            the project name
+	 * @param secondPklList
+	 *            the second peak list
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("restriction")
-	public static void loadSecondSpectra(String projectName, String secondDataset) throws SQLException {
+	public static void loadSecondSpectra(String projectName, String secondPklList) throws SQLException {
 		if (Session.USER_PARAMS.getDataSource() == DataSource.DATABASE) {
 			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
-			assert StringsUtils.isEmpty(secondDataset) : "Dataset name must not be null nor empty!";
-			DBSpectraHandler.fillSpecByPeakList(projectName, secondDataset);
+			assert StringsUtils.isEmpty(secondPklList) : "Dataset name must not be null nor empty!";
+			DBSpectraHandler.fillSpecByPeakList(projectName, secondPklList);
 			ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 		} else {
@@ -98,35 +106,40 @@ public class PeakListReader {
 	}
 
 	/**
-	 * @param firstDataset the firstDataset to set
+	 * @param firstDataset
+	 *            the firstDataset to set
 	 */
 	public static final void setFirstDataset(String firstDataset) {
 		PeakListReader.firstDataset = firstDataset;
 	}
 
 	/**
-	 * @param firstFile the firstFile to set
+	 * @param firstFile
+	 *            the firstFile to set
 	 */
 	public static void setFirstFile(File firstFile) {
 		PeakListReader.firstFile = firstFile;
 	}
 
 	/**
-	 * @param projectName the projectName to set
+	 * @param projectName
+	 *            the projectName to set
 	 */
 	public static final void setProjectName(String projectName) {
 		PeakListReader.projectName = projectName;
 	}
 
 	/**
-	 * @param secondDataset the secondDataset to set
+	 * @param secondDataset
+	 *            the secondDataset to set
 	 */
 	public static final void setSecondDataset(String secondDataset) {
 		PeakListReader.secondDataset = secondDataset;
 	}
 
 	/**
-	 * @param secondFile the secondFile to set
+	 * @param secondFile
+	 *            the secondFile to set
 	 */
 	public static void setSecondFile(File secondFile) {
 		PeakListReader.secondFile = secondFile;

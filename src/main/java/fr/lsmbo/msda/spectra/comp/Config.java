@@ -89,15 +89,6 @@ public class Config {
 			loadUserParams();
 			// Load database connection properties
 			DBConfig.getInstance();
-			// TODO to remove this test
-			// Test Database connection
-			try {
-				DBSpectraHandler.fillSpecByPeakList(Session.USER_PARAMS.getProjectName(),
-						Session.USER_PARAMS.getFirstPklList());
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 	}
 
@@ -120,7 +111,7 @@ public class Config {
 	 * Load user parameters. Read and parse parameters file.
 	 * 
 	 */
-	public void loadUserParams() {
+	public synchronized void loadUserParams() {
 		try {
 			Gson gson = new Gson();
 			JsonReader reader = new JsonReader(new FileReader(getConfigFilePath(defaultParamsFileName)));
