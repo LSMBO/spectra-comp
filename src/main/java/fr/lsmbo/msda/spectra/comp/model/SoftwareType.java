@@ -15,7 +15,8 @@ public enum SoftwareType {
 					"Cmpd.+MS.+, (\\d+\\.\\d+) min"), MASCOT_DISTILLER("Mascot Distiller",
 							"in range \\d+ \\(rt=(\\d+.\\d+)\\)|\\(rt=(\\d+.\\d+)\\)");
 	/**
-	 * Return the parsing rule by the software name
+	 * Return the parsing rule by the software name. this format has been taken
+	 * from Proline databases.
 	 * 
 	 * @param softwareName
 	 *            the software name
@@ -44,6 +45,7 @@ public enum SoftwareType {
 		}
 		return parsingRuleType;
 	}
+
 	private final String m_regexName;
 
 	private final String m_regexValue;
