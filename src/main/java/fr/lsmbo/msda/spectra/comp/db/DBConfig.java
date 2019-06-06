@@ -1,10 +1,11 @@
 package fr.lsmbo.msda.spectra.comp.db;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
-import fr.lsmbo.msda.spectra.comp.Main;
+import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 
 /**
  * Handle database connection for spectra-comp
@@ -44,14 +45,11 @@ public class DBConfig {
 	private String dbName = null;
 	DriverType driverType = null;
 
-
 	private Properties connectionProperties = null;
 
 	private DBConfig() {
 		loadProperties();
 	}
-
-	
 
 	/**
 	 * @return the dbName
@@ -104,33 +102,43 @@ public class DBConfig {
 
 	/**
 	 * Load application.conf properties
+	 * 
+	 * @throws URISyntaxException
 	 */
-	private void loadProperties() {
-		try (InputStream input = Main.class.getClassLoader().getResourceAsStream(application)) {
-			if (input == null) {
-				System.err.println("Error - Error while trying to read spectra-comp file: '" + application + "'!");
-			} else {
-				System.out.println("--- Load properties from " + application + "");
-				connectionProperties = new Properties();
-				connectionProperties.load(input);
-				maxPoolConnection = Integer.valueOf(connectionProperties.getProperty("db-config.max-pool-connection"));
-				user = connectionProperties.getProperty("auth-config.user");
-				password = connectionProperties.getProperty("auth-config.password");
-				host = connectionProperties.getProperty("host-config.host");
-				port = Integer.valueOf(connectionProperties.getProperty("host-config.port"));
-				dbName = connectionProperties.getProperty("db-name");
-				if (connectionProperties.getProperty("db-config.driver-type").equals("postgresql")) {
-					driverType = DriverType.POSTGRESQL;
-				} else if (connectionProperties.getProperty("db-config.driver-type").equals("sqlite")) {
-					driverType = DriverType.SQLITE;
-				} else {
-					driverType = DriverType.H2;
-				}
-			}
-		} catch (IOException e) {
+	private String getPath() {
+		URI srcPath;
+		try {
+			srcPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
+			String path = new File(srcPath).getParent().replaceAll("\\\\", "/");
+			String applicationConf = path + File.separator + "config" + File.separator + application;
+			System.out.println("--- Load properties from: " + applicationConf + "");
+			return applicationConf;
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 	}
+
+	private void loadProperties() {
+		FileUtils.readBytesFrmFile(getPath(), properties -> {
+			maxPoolConnection = Integer.valueOf(properties.getProperty("db-config.max-pool-connection"));
+			user = properties.getProperty("auth-config.user");
+			password = properties.getProperty("auth-config.password");
+			host = properties.getProperty("host-config.host");
+			port = Integer.valueOf(properties.getProperty("host-config.port"));
+			dbName = properties.getProperty("db-name");
+			if (properties.getProperty("db-config.driver-type").equals("postgresql")) {
+				driverType = DriverType.POSTGRESQL;
+			} else if (properties.getProperty("db-config.driver-type").equals("sqlite")) {
+				driverType = DriverType.SQLITE;
+			} else {
+				driverType = DriverType.H2;
+			}
+		});
+
+	}
+
 	/**
 	 * @param dbName
 	 *            the dbName to set

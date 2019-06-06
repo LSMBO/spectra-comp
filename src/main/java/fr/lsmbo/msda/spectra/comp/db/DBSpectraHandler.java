@@ -35,6 +35,7 @@ public class DBSpectraHandler {
 		PreparedStatement peakListStmt = null;
 		ResultSet rs = null;
 		try {
+
 			spectra.initialize();
 			peakListStmt = DBAccess.openMsiDBConnection(msiName).prepareStatement(SPECTRA_BY_PEAKLIST);
 			System.out.println("--- Start to retrieve spectra from '" + msiName + "' whith the peaklist path:'" + path
@@ -55,6 +56,8 @@ public class DBSpectraHandler {
 					spectra.addSpectrum(spectrum);
 				}
 			}
+			System.out.println("--- Retrieve spectra has finished. " + spectra.getSpectraAsObservable().size()
+					+ " spectra found.");
 		} finally {
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(peakListStmt);
