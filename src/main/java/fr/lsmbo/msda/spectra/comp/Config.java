@@ -65,7 +65,7 @@ public class Config {
 			srcPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
 			String path = new File(srcPath).getParent().replaceAll("\\\\", "/");
 			String filePath = path + File.separator + "config" + File.separator + fileName;
-			System.out.println("--- Load properties from: " + fileName + "");
+			System.out.println("INFO - Load properties from: " + fileName + "");
 			return filePath;
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block

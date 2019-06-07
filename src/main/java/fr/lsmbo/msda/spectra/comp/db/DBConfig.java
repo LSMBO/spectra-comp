@@ -98,7 +98,7 @@ public class DBConfig {
 			srcPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
 			String path = new File(srcPath).getParent().replaceAll("\\\\", "/");
 			String applicationConf = path + File.separator + "config" + File.separator + application;
-			System.out.println("--- Load properties from: " + applicationConf + "");
+			System.out.println("INFO - Load properties from: " + applicationConf + "");
 			return applicationConf;
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block

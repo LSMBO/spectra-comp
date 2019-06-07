@@ -11,7 +11,7 @@ import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 /**
- * Load peak lists to compare from database(Proline) or from files.
+ * Load peak lists from databases(Proline) or from files.
  * 
  * @author Aromdhani
  *
@@ -54,6 +54,7 @@ public class PeakListProvider {
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadFirstSpectra(String projectName, String firstPklList) throws SQLException {
+		System.out.println("--- Start to retrieve spectra. Please wait ...");
 		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
 			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
 			assert StringsUtils.isEmpty(firstPklList) : "First peak list name must not be null nor empty!";
@@ -61,7 +62,7 @@ public class PeakListProvider {
 			ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 		} else {
-			System.out.println("From file" + firstPklList);
+			System.out.println("INFO - Load spectra from file: " + firstPklList);
 			assert (!StringsUtils.isEmpty(firstPklList) && (new File(firstPklList).exists())) : "Invalid file path!";
 			File firstPklListFile = new File(firstPklList);
 			PeaklistReader.load(firstPklListFile);
@@ -79,6 +80,7 @@ public class PeakListProvider {
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadSecondSpectra(String projectName, String secondPklList) throws SQLException {
+		System.out.println("--- Start to retrieve spectra. Please wait ...");
 		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
 			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
 			assert StringsUtils.isEmpty(secondPklList) : "Second peak list name must not be null nor empty!";
@@ -86,7 +88,7 @@ public class PeakListProvider {
 			ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 		} else {
-			System.out.println("From file" + secondPklList);
+			System.out.println("INFO - Load spectra from file: " + secondPklList);
 			PeaklistReader.isSecondPeakList = true;
 			assert (!StringsUtils.isEmpty(secondPklList) && (new File(secondPklList).exists())) : "Invalid file path!";
 			File secondPklListFile = new File(secondPklList);
