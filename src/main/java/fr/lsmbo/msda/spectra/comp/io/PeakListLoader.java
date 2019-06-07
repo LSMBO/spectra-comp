@@ -7,28 +7,27 @@ import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.db.DataSource;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
+import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
+/**
+ * Load peak lists to compare from database(Proline) or from files.
+ * 
+ * @author Aromdhani
+ *
+ */
 public class PeakListLoader {
 
-	private static File firstFile = null;
-	private static File secondFile = null;
 	private static String projectName;
 	private static String firstPklList;
 	private static String secondPklList;
+	public static boolean isSecondPeakList = false;
 
 	/**
 	 * @return the first peak list
 	 */
-	public static final String getFirstDataset() {
+	public static final String getFirstPklList() {
 		return firstPklList;
-	}
-
-	/**
-	 * @return the first file
-	 */
-	public static File getFirstFile() {
-		return firstFile;
 	}
 
 	/**
@@ -41,24 +40,8 @@ public class PeakListLoader {
 	/**
 	 * @return the second peak list
 	 */
-	public static final String getSecondDataset() {
+	public static final String getSecondPklList() {
 		return secondPklList;
-	}
-
-	/**
-	 * @return the second file
-	 */
-	public static File getSecondFile() {
-		return secondFile;
-	}
-
-	/**
-	 * Load spectra from file
-	 * 
-	 * @param file
-	 */
-
-	private static void loadFile(File file) {
 	}
 
 	/**
@@ -74,12 +57,15 @@ public class PeakListLoader {
 	public static void loadFirstSpectra(String projectName, String firstPklList) throws SQLException {
 		if (Session.USER_PARAMS.getDataSource() == DataSource.DATABASE) {
 			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
-			assert StringsUtils.isEmpty(firstPklList) : "Dataset name must not be null nor empty!";
+			assert StringsUtils.isEmpty(firstPklList) : "First peak list name must not be null nor empty!";
 			DBSpectraHandler.fillSpecByPeakList(projectName, firstPklList);
 			ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 		} else {
-			loadFile(firstFile);
+			if (FileUtils.isValidMgf(firstPklList)) {
+				File firstPklListFile = new File(firstPklList);
+				PeaklistReader.load(firstPklListFile);
+			}
 		}
 	}
 
@@ -96,29 +82,24 @@ public class PeakListLoader {
 	public static void loadSecondSpectra(String projectName, String secondPklList) throws SQLException {
 		if (Session.USER_PARAMS.getDataSource() == DataSource.DATABASE) {
 			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
-			assert StringsUtils.isEmpty(secondPklList) : "Dataset name must not be null nor empty!";
+			assert StringsUtils.isEmpty(secondPklList) : "Second peak list name must not be null nor empty!";
 			DBSpectraHandler.fillSpecByPeakList(projectName, secondPklList);
 			ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 		} else {
-			loadFile(secondFile);
+			if (FileUtils.isValidMgf(secondPklList)) {
+				File secondPklListFile = new File(secondPklList);
+				PeaklistReader.load(secondPklListFile);
+			}
 		}
 	}
 
 	/**
-	 * @param firstDataset
+	 * @param firstPklList
 	 *            the first peak list to set
 	 */
-	public static final void setFirstDataset(String firstDataset) {
-		PeakListLoader.firstPklList = firstDataset;
-	}
-
-	/**
-	 * @param firstFile
-	 *            the first file to set
-	 */
-	public static void setFirstFile(File firstFile) {
-		PeakListLoader.firstFile = firstFile;
+	public static final void setFirstPklList(String firstPklList) {
+		PeakListLoader.firstPklList = firstPklList;
 	}
 
 	/**
@@ -130,19 +111,11 @@ public class PeakListLoader {
 	}
 
 	/**
-	 * @param secondDataset
+	 * @param secondPklList
 	 *            the second peak list to set
 	 */
-	public static final void setSecondDataset(String secondDataset) {
-		PeakListLoader.secondPklList = secondDataset;
-	}
-
-	/**
-	 * @param secondFile
-	 *            the second file to set
-	 */
-	public static void setSecondFile(File secondFile) {
-		PeakListLoader.secondFile = secondFile;
+	public static final void setSecondPklList(String secondPklList) {
+		PeakListLoader.secondPklList = secondPklList;
 	}
 
 }
