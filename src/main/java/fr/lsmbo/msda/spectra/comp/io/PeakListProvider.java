@@ -7,7 +7,6 @@ import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.db.DataSource;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
-import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 /**

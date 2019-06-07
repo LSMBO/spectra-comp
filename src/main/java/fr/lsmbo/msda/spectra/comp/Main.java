@@ -3,7 +3,6 @@ package fr.lsmbo.msda.spectra.comp;
 import java.sql.SQLException;
 
 import fr.lsmbo.msda.spectra.comp.db.DBAccess;
-import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.io.PeakListProvider;
 import javafx.application.Application;
 import javafx.stage.Stage;

@@ -1,8 +1,6 @@
 
 package fr.lsmbo.msda.spectra.comp.settings;
 
-import fr.lsmbo.msda.spectra.comp.db.DataSource;
-
 /**
  * Builds user parameters.
  * 
