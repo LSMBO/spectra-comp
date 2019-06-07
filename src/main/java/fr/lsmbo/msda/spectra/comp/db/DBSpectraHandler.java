@@ -83,7 +83,6 @@ public class DBSpectraHandler {
 					Session.CURRENT_REGEX_RT = pklSoftwareName;
 					spectrum.setRetentionTimeFromTitle();
 					spectra.addSpectrum(spectrum);
-					System.out.println(spectrum.getMasses()[0]);
 				}
 
 			}
