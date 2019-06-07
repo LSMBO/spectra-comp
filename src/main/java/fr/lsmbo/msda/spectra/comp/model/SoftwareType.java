@@ -10,10 +10,14 @@ import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 public enum SoftwareType {
 
-	MSCONVERT("MSConvert", "RTmin:\"(\\d+\\.\\d+)\""), PROLINE("Proline", "first_time:(\\d+);"), MASCOT_DLL(
-			"mascot.dll", "Elution: (.+?) to .+? min|Elution: (.+?) min"), ANALYSIS("Data Analysis",
-					"Cmpd.+MS.+, (\\d+\\.\\d+) min"), MASCOT_DISTILLER("Mascot Distiller",
-							"in range \\d+ \\(rt=(\\d+.\\d+)\\)|\\(rt=(\\d+.\\d+)\\)");
+	MS_CONVERT("MSConvert", "RTmin:\"(\\d+\\.\\d+)\""),
+	PROLINE("Proline", "first_time:(\\d+);"),
+	MASCOT_DLL("mascot.dll", "Elution: (.+?) to .+? min|Elution: (.+?) min"),
+	ANALYSIS_4_0("Data Analysis 4.0","Cmpd.+MSn.+, (\\d+\\.\\d+) min"),
+	ANALYSIS_4_1("Data Analysis 4.1","Cmpd.+MS\\d.+, (\\d+\\.\\d+) min"),
+	MASCOT_DISTILLER("Mascot Distiller","in range \\d+ \\(rt=(\\d+.\\d+)\\)||\\(rt=(\\d+.\\d+)\\)"),
+	SPECTRUM_MILL_RULE("Spectrum Mill", "Cmpd.+MSn.+, (\\d+\\.\\d+) min");
+
 	/**
 	 * Return the parsing rule by the software name. this format has been taken
 	 * from Proline databases.
@@ -23,10 +27,10 @@ public enum SoftwareType {
 	 * @return the parsing rule
 	 */
 	public static SoftwareType getParsingRule(String softwareName) {
-		SoftwareType parsingRuleType = SoftwareType.MSCONVERT;
+		SoftwareType parsingRuleType = SoftwareType.PROLINE;
 		switch (softwareName) {
 		case "MSConvert":
-			parsingRuleType = SoftwareType.MSCONVERT;
+			parsingRuleType = SoftwareType.MS_CONVERT;
 			break;
 		case "Proline":
 			parsingRuleType = SoftwareType.PROLINE;
@@ -34,8 +38,14 @@ public enum SoftwareType {
 		case "mascot.dll":
 			parsingRuleType = SoftwareType.MASCOT_DLL;
 			break;
-		case "Data Analysis":
-			parsingRuleType = SoftwareType.ANALYSIS;
+		case "Data Analysis 4.0":
+			parsingRuleType = SoftwareType.ANALYSIS_4_0;
+			break;
+		case "Data Analysis 4.1":
+			parsingRuleType = SoftwareType.ANALYSIS_4_1;
+			break;
+		case "Spectrum Mill":
+			parsingRuleType = SoftwareType.SPECTRUM_MILL_RULE;
 			break;
 		case "Mascot Distiller":
 			parsingRuleType = SoftwareType.MASCOT_DISTILLER;
