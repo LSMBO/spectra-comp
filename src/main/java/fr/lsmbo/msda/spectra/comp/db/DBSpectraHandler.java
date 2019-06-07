@@ -23,7 +23,7 @@ public class DBSpectraHandler {
 	private static final String USER = "SELECT * FROM user_account WHERE login=?";
 	private static final String PROJECT = "SELECT * FROM external_db WHERE name=?";
 	private static final String PEAKLIST = "SELECT * FROM peaklist";
-	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.*,pklsof.name as pkl_software FROM peaklist pkl,peaklist_software pklsof,spectrum spec WHERE spec.peaklist_id=pkl.id AND pklsof.id=pkl.peaklist_software_id AND pkl.path=? limit 10";
+	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.*,pklsof.name as pkl_software FROM peaklist pkl,peaklist_software pklsof,spectrum spec WHERE spec.peaklist_id=pkl.id AND pklsof.id=pkl.peaklist_software_id AND pkl.path=?";
 	private static Spectra spectra = new Spectra();
 
 	/**
@@ -81,11 +81,10 @@ public class DBSpectraHandler {
 					Spectrum spectrum = new Spectrum(id, firstScan, firstTime, lastTime, intensityList, mozeList,
 							precursorCharge, precursorIntensity, precursorMoz, title);
 					// Create fragment
-					System.out.println(spectrum.getM_title());
 					for (int i = 0; i < spectrum.getMasses().length; i++) {
 						double mz = spectrum.getMasses()[i];
 						float intensity = (float) spectrum.getIntensities()[i];
-						if (mz > 0 && intensity > 0) {
+						if (mz > 0) {
 							Fragment fragment = new Fragment(i, mz, intensity);
 							spectrum.addFragment(fragment);
 						} else {
