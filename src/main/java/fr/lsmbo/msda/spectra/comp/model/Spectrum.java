@@ -36,7 +36,7 @@ public class Spectrum {
 	private double cosTheta;
 	private Integer nbMatch;
 	private Boolean identified;
-	private Float retentionTime;
+	private float retentionTime;
 	// The index of the line start in file of the spectrum
 	private Integer lineStart = 0;
 	// The index of the line stop in file of the spectrum

@@ -21,7 +21,6 @@ public class PeakListProvider {
 	private static String projectName;
 	private static String firstPklList;
 	private static String secondPklList;
-	public static boolean isSecondPeakList = false;
 
 	/**
 	 * @return the first peak list
@@ -55,17 +54,17 @@ public class PeakListProvider {
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadFirstSpectra(String projectName, String firstPklList) throws SQLException {
-		if (Session.USER_PARAMS.getDataSource() == DataSource.DATABASE) {
+		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
 			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
 			assert StringsUtils.isEmpty(firstPklList) : "First peak list name must not be null nor empty!";
 			DBSpectraHandler.fillSpecByPeakList(projectName, firstPklList);
 			ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 		} else {
-			if (FileUtils.isValidMgf(firstPklList)) {
-				File firstPklListFile = new File(firstPklList);
-				PeaklistReader.load(firstPklListFile);
-			}
+			System.out.println("From file" + firstPklList);
+			assert (!StringsUtils.isEmpty(firstPklList) && (new File(firstPklList).exists())) : "Invalid file path!";
+			File firstPklListFile = new File(firstPklList);
+			PeaklistReader.load(firstPklListFile);
 		}
 	}
 
@@ -80,17 +79,18 @@ public class PeakListProvider {
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadSecondSpectra(String projectName, String secondPklList) throws SQLException {
-		if (Session.USER_PARAMS.getDataSource() == DataSource.DATABASE) {
+		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
 			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
 			assert StringsUtils.isEmpty(secondPklList) : "Second peak list name must not be null nor empty!";
 			DBSpectraHandler.fillSpecByPeakList(projectName, secondPklList);
 			ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 		} else {
-			if (FileUtils.isValidMgf(secondPklList)) {
-				File secondPklListFile = new File(secondPklList);
-				PeaklistReader.load(secondPklListFile);
-			}
+			System.out.println("From file" + secondPklList);
+			PeaklistReader.isSecondPeakList = true;
+			assert (!StringsUtils.isEmpty(secondPklList) && (new File(secondPklList).exists())) : "Invalid file path!";
+			File secondPklListFile = new File(secondPklList);
+			PeaklistReader.load(secondPklListFile);
 		}
 	}
 

@@ -26,7 +26,8 @@ import fr.lsmbo.msda.spectra.comp.model.Spectrum;
  */
 public class PeaklistReader {
 
-	private static Boolean isRetentionTimeMissing = true;
+	private static boolean isRetentionTimeMissing = true;
+	public static boolean isSecondPeakList = false;
 
 	/**
 	 * Load peakList file
@@ -130,17 +131,17 @@ public class PeaklistReader {
 
 			lineNumber++;
 		}
-		Session.FILE_HEADER = textBeforeFirstSpectrum;
 		// Add spectra as a first spectra
-		if (!PeakListProvider.isSecondPeakList) {
+		if (!isSecondPeakList) {
 			System.out.println("INFO - Add first peaklist");
 			ListOfSpectra.addFirstSpectra(spectra);
 		}
 		// Add spectra as a second spectra
-		if (PeakListProvider.isSecondPeakList == true) {
+		if (isSecondPeakList) {
 			System.out.println("INFO - Add second peaklist");
 			ListOfSpectra.addSecondSpectra(spectra);
 		}
+		isRetentionTimeMissing = false;
 	}
 
 	/**
@@ -201,12 +202,12 @@ public class PeaklistReader {
 			lineNumber++;
 		}
 		// Add spectra as a first spectra
-		if (!PeakListProvider.isSecondPeakList) {
+		if (!isSecondPeakList) {
 			System.out.println("INFO - Add first peaklist");
 			ListOfSpectra.addFirstSpectra(spectra);
 		}
 		// Add spectra as a second spectra
-		if (PeakListProvider.isSecondPeakList == true) {
+		if (isSecondPeakList) {
 			System.out.println("INFO - Add second peaklist");
 			ListOfSpectra.addSecondSpectra(spectra);
 		}

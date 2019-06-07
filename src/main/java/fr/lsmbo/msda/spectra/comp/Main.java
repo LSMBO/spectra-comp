@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import fr.lsmbo.msda.spectra.comp.db.DBAccess;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
+import fr.lsmbo.msda.spectra.comp.io.PeakListProvider;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -13,9 +14,9 @@ public class Main extends Application {
 		Config.getInstance();
 		// TODO to remove this test
 				try {
-					DBSpectraHandler.fillSpecByPeakList(Session.USER_PARAMS.getProjectName(),
+					PeakListProvider.loadFirstSpectra(Session.USER_PARAMS.getProjectName(),
 							Session.USER_PARAMS.getFirstPklList());
-					DBSpectraHandler.fillSpecByPeakList(Session.USER_PARAMS.getProjectName(),
+					PeakListProvider.loadSecondSpectra(Session.USER_PARAMS.getProjectName(),
 							Session.USER_PARAMS.getSecondPklList());
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block

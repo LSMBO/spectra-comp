@@ -18,22 +18,21 @@ public class UserParams {
 	private String firstPklList;
 	private String secondPklList;
 
-	private DataSource dataSource = DataSource.DATABASE;
+	private String dataSource;
 	private ComparisonSettings comparison;
 	private ParsingRulesSettings parsingRules;
 
 	public UserParams() {
-		this("", "", "", "", "", "", DataSource.DATABASE, new ComparisonSettings(), new ParsingRulesSettings());
+		this("", "", "", "", "", "", "", new ComparisonSettings(), new ParsingRulesSettings());
 	}
 
 	public UserParams(ComparisonSettings comparison, ParsingRulesSettings parsingRules) {
-		this("", "", "", "", "", "", DataSource.DATABASE, comparison, parsingRules);
+		this("", "", "", "", "", "", "", comparison, parsingRules);
 	}
 
 	public UserParams(String userName, String timestamp, String spectraCompVersion, String projectName,
-			String firstPklList, String secondPklList, DataSource dataSource,
-
-			ComparisonSettings comparison, ParsingRulesSettings parsingRules) {
+			String firstPklList, String secondPklList, String dataSource, ComparisonSettings comparison,
+			ParsingRulesSettings parsingRules) {
 		super();
 		this.userName = userName;
 		this.timestamp = timestamp;
@@ -44,7 +43,6 @@ public class UserParams {
 		this.dataSource = dataSource;
 		this.comparison = comparison;
 		this.parsingRules = parsingRules;
-
 	}
 
 	/**
@@ -57,7 +55,7 @@ public class UserParams {
 	/**
 	 * @return the dataSource
 	 */
-	public DataSource getDataSource() {
+	public String getDataSource() {
 		return dataSource;
 	}
 
@@ -122,7 +120,7 @@ public class UserParams {
 	 * @param dataSource
 	 *            the dataSource to set
 	 */
-	public void setDataSource(DataSource dataSource) {
+	public void setDataSource(String dataSource) {
 		this.dataSource = dataSource;
 	}
 
@@ -181,7 +179,7 @@ public class UserParams {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-
+	
 	@Override
 	public String toString() {
 		StringBuilder userParamsStr = new StringBuilder();

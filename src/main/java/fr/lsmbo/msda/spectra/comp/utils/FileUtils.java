@@ -42,14 +42,4 @@ public class FileUtils {
 			}
 		}
 	}
-
-	/**
-	 * Determines whether it's valid file
-	 * 
-	 * @return <code> true </code> when it's valid file.
-	 */
-	public static boolean isValidMgf(String path) {
-		assert (path != null && new File(path).exists()) : "File path must be a valid!";
-		return (path != null && new File(path).exists() && new File(path).canRead());
-	}
 }
