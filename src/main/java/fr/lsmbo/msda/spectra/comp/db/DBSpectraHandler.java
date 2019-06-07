@@ -83,7 +83,7 @@ public class DBSpectraHandler {
 					// Create fragment
 					System.out.println(spectrum.getM_title());
 					for (int i = 0; i < spectrum.getMasses().length; i++) {
-						double mz = (double) spectrum.getMasses()[i];
+						double mz = spectrum.getMasses()[i];
 						float intensity = (float) spectrum.getIntensities()[i];
 						if (mz > 0 && intensity > 0) {
 							Fragment fragment = new Fragment(i, mz, intensity);
