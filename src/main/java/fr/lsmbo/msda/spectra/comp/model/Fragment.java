@@ -42,6 +42,22 @@ public class Fragment {
 
 	/**
 	 * 
+	 * @param id
+	 *            the fragment id
+	 * @param mz
+	 *            the fragment Moz
+	 * @param intensity
+	 *            the fragment intensity
+	 */
+	public Fragment(Integer id, Double mz, float intensity) {
+		super();
+		this.id = id;
+		this.mz = mz;
+		this.intensity = intensity;
+	}
+
+	/**
+	 * 
 	 * @return the fragment charge
 	 */
 	public Integer getCharge() {

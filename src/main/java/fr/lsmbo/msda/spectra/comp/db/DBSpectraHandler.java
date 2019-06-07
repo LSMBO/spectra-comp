@@ -7,6 +7,7 @@ import java.sql.Statement;
 
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
+import fr.lsmbo.msda.spectra.comp.model.Fragment;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
@@ -22,7 +23,7 @@ public class DBSpectraHandler {
 	private static final String USER = "SELECT * FROM user_account WHERE login=?";
 	private static final String PROJECT = "SELECT * FROM external_db WHERE name=?";
 	private static final String PEAKLIST = "SELECT * FROM peaklist";
-	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.*,pklsof.name as pkl_software FROM peaklist pkl,peaklist_software pklsof,spectrum spec WHERE spec.peaklist_id=pkl.id AND pklsof.id=pkl.peaklist_software_id AND pkl.path=?";
+	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.*,pklsof.name as pkl_software FROM peaklist pkl,peaklist_software pklsof,spectrum spec WHERE spec.peaklist_id=pkl.id AND pklsof.id=pkl.peaklist_software_id AND pkl.path=? limit 10";
 	private static Spectra spectra = new Spectra();
 
 	/**
@@ -79,6 +80,18 @@ public class DBSpectraHandler {
 				if (id > 0L && (!StringsUtils.isEmpty(title))) {
 					Spectrum spectrum = new Spectrum(id, firstScan, firstTime, lastTime, intensityList, mozeList,
 							precursorCharge, precursorIntensity, precursorMoz, title);
+					// Create fragment
+					System.out.println(spectrum.getM_title());
+					for (int i = 0; i < spectrum.getMasses().length; i++) {
+						double mz = (double) spectrum.getMasses()[i];
+						float intensity = (float) spectrum.getIntensities()[i];
+						if (mz > 0 && intensity > 0) {
+							Fragment fragment = new Fragment(i, mz, intensity);
+							spectrum.addFragment(fragment);
+						} else {
+							System.out.println("Invalid fragment! moz and intenisty must be greater than 0!");
+						}
+					}
 					// Update the current regex
 					Session.CURRENT_REGEX_RT = pklSoftwareName;
 					spectrum.setRetentionTimeFromTitle();
@@ -88,7 +101,9 @@ public class DBSpectraHandler {
 			}
 			System.out.println("--- Retrieve spectra has finished. " + spectra.getSpectraAsObservable().size()
 					+ " spectra found.");
-		} finally {
+		} finally
+
+		{
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(peakListStmt);
 		}
