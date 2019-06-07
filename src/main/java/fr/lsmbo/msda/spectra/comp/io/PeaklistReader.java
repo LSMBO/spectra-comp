@@ -30,6 +30,15 @@ public class PeaklistReader {
 	public static boolean isSecondPeakList = false;
 
 	/**
+	 * Determines whether the retention is defined.
+	 * 
+	 * @return <code> true </code> if the retention time is defined
+	 */
+	public static Boolean isRetentionTimesDefined() {
+		return isRetentionTimeMissing;
+	}
+
+	/**
 	 * Load peakList file
 	 * 
 	 * @param file
@@ -212,14 +221,5 @@ public class PeaklistReader {
 			ListOfSpectra.addSecondSpectra(spectra);
 		}
 		isRetentionTimeMissing = false;
-	}
-
-	/**
-	 * Determines whether the retention is defined.
-	 * 
-	 * @return <code> true </code> if the retention time is defined
-	 */
-	public static Boolean isRetentionTimesDefined() {
-		return isRetentionTimeMissing;
 	}
 }
