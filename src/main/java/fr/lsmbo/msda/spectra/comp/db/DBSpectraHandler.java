@@ -64,20 +64,28 @@ public class DBSpectraHandler {
 			rs = peakListStmt.executeQuery();
 			while (rs.next()) {
 				Long id = rs.getLong("id");
-				String title = rs.getString("title");
+				Integer firstScan = rs.getInt("first_scan");
+				Float firstTime = rs.getFloat("first_time");
+				Float lastTime = rs.getFloat("last_time");
+				byte[] intensityList = rs.getBytes("intensity_list");
+				byte[] mozeList = rs.getBytes("moz_list");
 				Integer precursorCharge = rs.getInt("precursor_charge");
 				Float precursorIntensity = rs.getFloat("precursor_intensity");
 				Double precursorMoz = rs.getDouble("precursor_moz");
-				Integer peakCount = rs.getInt("peak_count");
+				String title = rs.getString("title");
+				// Retrieve the used peak list software to determine the parsing
+				// rule
 				String pklSoftwareName = rs.getString("pkl_software");
-				if ((!StringsUtils.isEmpty(title))) {
-					Spectrum spectrum = new Spectrum(id, title, precursorCharge, precursorMoz, precursorIntensity,
-							peakCount);
+				if (id > 0L && (!StringsUtils.isEmpty(title))) {
+					Spectrum spectrum = new Spectrum(id, firstScan, firstTime, lastTime, intensityList, mozeList,
+							precursorCharge, precursorIntensity, precursorMoz, title);
 					// Update the current regex
 					Session.CURRENT_REGEX_RT = pklSoftwareName;
 					spectrum.setRetentionTimeFromTitle();
 					spectra.addSpectrum(spectrum);
+					System.out.println(spectrum.getMasses()[0]);
 				}
+
 			}
 			System.out.println("--- Retrieve spectra has finished. " + spectra.getSpectraAsObservable().size()
 					+ " spectra found.");

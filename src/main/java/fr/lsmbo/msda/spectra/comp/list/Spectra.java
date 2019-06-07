@@ -160,7 +160,7 @@ public class Spectra {
 		Spectrum specificSpectrum = null;
 		for (int i = 0; i < nb; i++) {
 			Spectrum spectrum = getSpectraAsObservable().get(i);
-			if (spectrum.getTitle().equalsIgnoreCase(title)) {
+			if (spectrum.getM_title().equalsIgnoreCase(title)) {
 				specificSpectrum = spectrum;
 			}
 		}

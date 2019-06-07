@@ -10,9 +10,7 @@ package fr.lsmbo.msda.spectra.comp.model;
 public class Fragment {
 
 	private Integer id = 0;
-	// TODO maybe we should use BigDecimal instead for precision?
 	private Double mz = 0D;
-	// TODO maybe we should use BigDecimal instead for precision?
 	private float intensity = 0;
 	private Integer charge = 1;
 
@@ -110,8 +108,8 @@ public class Fragment {
 	@Override
 	public String toString() {
 		StringBuilder strBldr = new StringBuilder();
-		strBldr.append("###Fragment id:").append(id).append(" ;moz: ").append(mz).append(" ;intensity: ").append(intensity)
-				.append(" ;charge: ").append(charge);
+		strBldr.append("###Fragment id:").append(id).append(" ;moz: ").append(mz).append(" ;intensity: ")
+				.append(intensity).append(" ;charge: ").append(charge);
 		return strBldr.toString();
 	}
 
