@@ -132,12 +132,12 @@ public class PeaklistReader {
 		}
 		Session.FILE_HEADER = textBeforeFirstSpectrum;
 		// Add spectra as a first spectra
-		if (!PeakListLoader.isSecondPeakList) {
+		if (!PeakListProvider.isSecondPeakList) {
 			System.out.println("INFO - Add first peaklist");
 			ListOfSpectra.addFirstSpectra(spectra);
 		}
 		// Add spectra as a second spectra
-		if (PeakListLoader.isSecondPeakList == true) {
+		if (PeakListProvider.isSecondPeakList == true) {
 			System.out.println("INFO - Add second peaklist");
 			ListOfSpectra.addSecondSpectra(spectra);
 		}
@@ -201,12 +201,12 @@ public class PeaklistReader {
 			lineNumber++;
 		}
 		// Add spectra as a first spectra
-		if (!PeakListLoader.isSecondPeakList) {
+		if (!PeakListProvider.isSecondPeakList) {
 			System.out.println("INFO - Add first peaklist");
 			ListOfSpectra.addFirstSpectra(spectra);
 		}
 		// Add spectra as a second spectra
-		if (PeakListLoader.isSecondPeakList == true) {
+		if (PeakListProvider.isSecondPeakList == true) {
 			System.out.println("INFO - Add second peaklist");
 			ListOfSpectra.addSecondSpectra(spectra);
 		}

@@ -16,7 +16,7 @@ import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
  * @author Aromdhani
  *
  */
-public class PeakListLoader {
+public class PeakListProvider {
 
 	private static String projectName;
 	private static String firstPklList;
@@ -99,7 +99,7 @@ public class PeakListLoader {
 	 *            the first peak list to set
 	 */
 	public static final void setFirstPklList(String firstPklList) {
-		PeakListLoader.firstPklList = firstPklList;
+		PeakListProvider.firstPklList = firstPklList;
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class PeakListLoader {
 	 *            the project name to set
 	 */
 	public static final void setProjectName(String projectName) {
-		PeakListLoader.projectName = projectName;
+		PeakListProvider.projectName = projectName;
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class PeakListLoader {
 	 *            the second peak list to set
 	 */
 	public static final void setSecondPklList(String secondPklList) {
-		PeakListLoader.secondPklList = secondPklList;
+		PeakListProvider.secondPklList = secondPklList;
 	}
 
 }
