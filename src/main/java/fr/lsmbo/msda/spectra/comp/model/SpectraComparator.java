@@ -15,7 +15,7 @@ import fr.lsmbo.msda.spectra.comp.list.Spectra;
 
  *
  */
-public class ComparisonSpectra {
+public class SpectraComparator {
 	// Spectra to make comparison
 	private static Spectra secondSpectra;
 	// A sub list of spectra
@@ -288,12 +288,12 @@ public class ComparisonSpectra {
 		secondSpectra = ListOfSpectra.getSecondSpectra();
 		subListSecondSpectra.initialize();
 		validSpectra.initialize();
-		deltaMoz = ConstantComparisonSpectra.getDeltaMoz();
-		deltaRT = ConstantComparisonSpectra.getDeltaRT();
-		nbPeaksMin = ConstantComparisonSpectra.getNbPeaksMin();
-		thetaMin = ConstantComparisonSpectra.getThetaMin();
+		deltaMoz = SpectraComparatorParams.getDeltaMoz();
+		deltaRT = SpectraComparatorParams.getDeltaRT();
+		nbPeaksMin = SpectraComparatorParams.getNbPeaksMin();
+		thetaMin = SpectraComparatorParams.getThetaMin();
 		cosThetaMin = Math.cos(Math.toRadians(thetaMin));
-		nbPeaks = ConstantComparisonSpectra.getNbPeaks();
+		nbPeaks = SpectraComparatorParams.getNbPeaks();
 	}
 
 	/**

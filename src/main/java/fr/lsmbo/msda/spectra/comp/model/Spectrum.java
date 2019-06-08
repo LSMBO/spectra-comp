@@ -147,7 +147,7 @@ public class Spectrum {
 	 * computeNbIntensePeaks()
 	 */
 	private void computeListSquareRootNbIntensePeaks() {
-		nbPeaks = ConstantComparisonSpectra.getNbPeaks();
+		nbPeaks = SpectraComparatorParams.getNbPeaks();
 		squareRootnbIntensePeaks = new Double[nbPeaks];
 
 		for (int i = 0; i < nbPeaks; i++) {
@@ -163,7 +163,7 @@ public class Spectrum {
 	 * intense peaks of the spectrum
 	 */
 	private void computeNbIntensePeaks() {
-		nbPeaks = ConstantComparisonSpectra.getNbPeaks();
+		nbPeaks = SpectraComparatorParams.getNbPeaks();
 		nbIntensePeaks = new Fragment[nbPeaks];
 		if (getNbFragments() >= nbPeaks) {
 			int firstValue = getNbFragments() - 1;

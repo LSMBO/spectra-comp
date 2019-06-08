@@ -9,7 +9,7 @@ package fr.lsmbo.msda.spectra.comp.model;
  * @author Aromdhani
  *
  */
-public class ConstantComparisonSpectra {
+public class SpectraComparatorParams {
 	private static float deltaMoz = 0.007F;
 	private static Integer deltaRT = 90;
 	private static Integer nbPeaksMin = 4;
