@@ -12,17 +12,18 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		Config.getInstance();
 		// TODO to remove this test
-				try {
-					PeakListProvider.loadFirstSpectra(Session.USER_PARAMS.getProjectName(),
-							Session.USER_PARAMS.getFirstPklList());
-					PeakListProvider.loadSecondSpectra(Session.USER_PARAMS.getProjectName(),
-							Session.USER_PARAMS.getSecondPklList());
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		try {
+			PeakListProvider.loadFirstSpectra(Session.USER_PARAMS.getProjectName(),
+					Session.USER_PARAMS.getFirstPklList());
+			PeakListProvider.loadSecondSpectra(Session.USER_PARAMS.getProjectName(),
+					Session.USER_PARAMS.getSecondPklList());
+			PeakListProvider.compareSpectra();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		launch(args);
-		
+
 	}
 
 	/*

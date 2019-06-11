@@ -5,15 +5,13 @@ import java.util.ArrayList;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
 
-
-
 /**
  * Provides a comparison of spectra.
  * 
  * @author Aromdhani
  * @author ABU
-
  *
+ * 
  */
 public class SpectraComparator {
 	// Spectra to make comparison
@@ -28,9 +26,7 @@ public class SpectraComparator {
 	// Number of peaks equals between reference spectrum (RS) and tested
 	// spectrum(TS) (same MOZ and same RT)
 	private static int nbPeaksEquals;
-
 	private static Integer nbPeaks;
-
 	private static Double cosTheta;
 
 	// Arrays which contain at the same index the same peaks (same moz +/-
@@ -116,7 +112,6 @@ public class SpectraComparator {
 			}
 		}
 		rightDenominator = Math.sqrt(sumIntensityTestedSpectrum);
-
 		cosTheta = numeratorCosTheta / (leftDenominator * rightDenominator);
 	}
 
@@ -212,7 +207,7 @@ public class SpectraComparator {
 		// get fragment of the reference spectrum
 		for (int i = 0; i < nbIntensePeaks.length; i++) {
 			Fragment fragmentReferenceSpectrum = nbIntensePeaks[i];
-
+            System.out.println(fragmentReferenceSpectrum.toString());
 			// set the range of moz
 			double minMozFragmentReferenceSpectrum = fragmentReferenceSpectrum.getMz() - deltaMoz;
 			double maxMozFragmentReferenceSpectrum = fragmentReferenceSpectrum.getMz() + deltaMoz;
@@ -275,7 +270,7 @@ public class SpectraComparator {
 	 * 
 	 * @return spectra within the validated spectrum
 	 */
-	public static Spectra getValidSpectrum() {
+	public static Spectra getValidSpectra() {
 		return validSpectra;
 	}
 
@@ -301,7 +296,7 @@ public class SpectraComparator {
 	 * @param spectrumRef
 	 *            the spectrum to set as reference.
 	 */
-	public static void main(Spectrum spectrumRef) {
+	public static void run(Spectrum spectrumRef) {
 
 		referenceSpectrum = spectrumRef;
 		setReferenceSpectrum(referenceSpectrum);
@@ -319,8 +314,8 @@ public class SpectraComparator {
 					if (cosTheta >= cosThetaMin) {
 						testedSpectrum.setCosTheta(cosTheta);
 						testedSpectrum.setTitleReferenceSpectrum(referenceSpectrum.getM_title());
-						testedSpectrum
-								.setDeltaMozWithReferenceSpectrum(testedSpectrum.getM_precursorMoz() - referenceSpectrum.getM_precursorMoz());
+						testedSpectrum.setDeltaMozWithReferenceSpectrum(
+								testedSpectrum.getM_precursorMoz() - referenceSpectrum.getM_precursorMoz());
 						testedSpectrum.setDeltaRetentionTimeWithReferenceSpectrum(
 								(int) ((testedSpectrum.getRetentionTime() * 60)
 										- (referenceSpectrum.getRetentionTime() * 60)));

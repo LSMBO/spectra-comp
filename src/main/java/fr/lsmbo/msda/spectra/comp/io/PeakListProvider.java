@@ -7,6 +7,8 @@ import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.db.DataSource;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
+import fr.lsmbo.msda.spectra.comp.model.SpectraComparator;
+import fr.lsmbo.msda.spectra.comp.model.SpectraComparatorParams;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 /**
@@ -60,6 +62,7 @@ public class PeakListProvider {
 			DBSpectraHandler.fillSpecByPeakList(projectName, firstPklList);
 			ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
+
 		} else {
 			System.out.println("INFO - Load spectra from file: " + firstPklList);
 			assert (!StringsUtils.isEmpty(firstPklList) && (new File(firstPklList).exists())) : "Invalid file path!";
@@ -93,6 +96,22 @@ public class PeakListProvider {
 			File secondPklListFile = new File(secondPklList);
 			PeaklistReader.load(secondPklListFile);
 		}
+	}
+
+	/**
+	 * Compare spectra using dot product method.
+	 * 
+	 * @see SpectraComparator
+	 * @see SpectraComparatorParams
+	 */
+	public static void compareSpectra() {
+		System.out.println("INFO - Start to compare: " + ListOfSpectra.getFirstSpectra().getSpectraAsObservable().size()
+				+ " as a reference sepctra vs " + ListOfSpectra.getSecondSpectra().getSpectraAsObservable().size()
+				+ " spectra. please wait ...");
+		ListOfSpectra.getFirstSpectra().getSpectraAsObservable().forEach(sepctrum -> {
+			SpectraComparator.run(sepctrum);
+		});
+		System.out.println("INFO - " + SpectraComparator.getValidSpectra().getNbSpectra()+" valid spectra found.");
 	}
 
 	/**

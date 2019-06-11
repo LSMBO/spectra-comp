@@ -168,7 +168,6 @@ public class Spectrum {
 		if (getNbFragments() >= nbPeaks) {
 			int firstValue = getNbFragments() - 1;
 			int lastValue = firstValue - nbPeaks;
-
 			for (int i = firstValue; i > lastValue; i--) {
 				Fragment fragment = getSortedFragments().get(i);
 				nbIntensePeaks[firstValue - i] = fragment;
