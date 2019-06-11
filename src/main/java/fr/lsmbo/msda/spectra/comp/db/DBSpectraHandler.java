@@ -59,7 +59,7 @@ public class DBSpectraHandler {
 		try {
 			spectra.initialize();
 			peakListStmt = DBAccess.openMsiDBConnection(msiName).prepareStatement(SPECTRA_BY_PEAKLIST);
-			System.out.println("INFO - Load spectra from '" + msiName + "' whith the peaklist path: '" + path +"'.");
+			System.out.println("INFO - Load spectra from '" + msiName + "' whith the peaklist path: '" + path + "'.");
 			peakListStmt.setString(1, path);
 			rs = peakListStmt.executeQuery();
 			while (rs.next()) {
@@ -87,7 +87,7 @@ public class DBSpectraHandler {
 							Fragment fragment = new Fragment(i, mz, intensity);
 							spectrum.addFragment(fragment);
 						} else {
-							System.out.println("Invalid fragment! moz and intenisty must be greater than 0!");
+							System.out.println("Invalid fragment! moz must be greater than 0!");
 						}
 					}
 					// Update the current regex
