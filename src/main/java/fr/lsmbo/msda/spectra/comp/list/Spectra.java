@@ -1,6 +1,7 @@
 
 package fr.lsmbo.msda.spectra.comp.list;
 
+
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,16 +11,14 @@ import javafx.collections.ObservableList;
  * spectrum in the observable list, update retention time for all spectrum,
  * check the number of spectrum recovered and find a spectrum with its title.
  * 
- * @author aromdhani
+ * @author Aromdhani
  */
 public class Spectra {
 
 	private ObservableList<Spectrum> spectra = initialiseList();
 	private Integer nbSpectra = 0;
-	private Integer nbRecover = 0;
 	private Integer nbIdentified = 0;
 	private Integer nbMatched = 0;
-	private Float percentageRecover = 0F;
 	private Float percentageIdentified = 0F;
 
 	/**
@@ -51,14 +50,7 @@ public class Spectra {
 
 	}
 
-	/**
-	 * Compute the percentage of recovered spectrum
-	 */
-	private void computePercentageRecover() {
-		if (nbSpectra != 0) {
-			percentageRecover = (((float) nbRecover / (float) nbSpectra) * 100);
-		}
-	}
+	
 
 	/**
 	 * Count the number of matched spectrum
@@ -105,15 +97,7 @@ public class Spectra {
 		return nbMatched;
 	}
 
-	/**
-	 * Return the number of recovered spectra.
-	 * 
-	 * @return nbRecover
-	 */
-	public Integer getNbRecover() {
-		countRecoveredAndIdentifiedSpectra();
-		return nbRecover;
-	}
+	
 
 	/**
 	 * Return the number of spectra.
@@ -132,13 +116,7 @@ public class Spectra {
 		return percentageIdentified;
 	}
 
-	/**
-	 * Return the percentage of recovered spectrum
-	 */
-	public Float getPercentageRecover() {
-		computePercentageRecover();
-		return percentageRecover;
-	}
+	
 
 	/**
 	 * Return an observable list of spectra.
@@ -184,10 +162,8 @@ public class Spectra {
 		if (!spectra.isEmpty())
 			spectra.clear();
 		nbSpectra = 0;
-		nbRecover = 0;
 		nbIdentified = 0;
 		percentageIdentified = 0F;
-		percentageRecover = 0F;
 		nbMatched = 0;
 	}
 

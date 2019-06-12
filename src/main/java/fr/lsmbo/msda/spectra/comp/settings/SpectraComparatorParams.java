@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class SpectraComparatorParams {
 
-	private float deltaMoz = 0.007F;
+	private double deltaMoz = 0.007F;
 	private Integer deltaRT = 90;
 	private Integer nbPeaksMin = 4;
 	private Integer thetaMin = 11;
@@ -24,7 +24,7 @@ public class SpectraComparatorParams {
 		this.initialize();
 	}
 
-	public SpectraComparatorParams(float deltaMoz, Integer deltaRT, Integer nbPeaksMin, Integer thetaMin,
+	public SpectraComparatorParams(double deltaMoz, Integer deltaRT, Integer nbPeaksMin, Integer thetaMin,
 			Integer nbPeaks) {
 		deltaMoz = this.deltaMoz;
 		deltaRT = this.deltaRT;
@@ -50,7 +50,7 @@ public class SpectraComparatorParams {
 	/**
 	 * @return the deltaMoz
 	 */
-	public final float getDeltaMoz() {
+	public final double getDeltaMoz() {
 		return deltaMoz;
 	}
 

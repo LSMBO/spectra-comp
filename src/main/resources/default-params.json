@@ -3,15 +3,15 @@
   "timestamp": "",
   "spectraCompVersion": "0.0.1-SNAPSHOT",
   "projectName": "msi_db_project_10",
-  "firstPklList": "QE05083.mgf",
-  "secondPklList": "QE01425.mgf",
-  "dataSource":"database",
+  "firstPklList": "C:\\Users\\Administrateur\\Desktop\\Algo_Beaux_Spectres\\X004081MROLM.mgf",
+  "secondPklList": "C:\\Users\\Administrateur\\Desktop\\Algo_Beaux_Spectres\\X004081MROLM.mgf",
+  "dataSource":"file",
   "comparison": {
     "deltaMoz": 0.007,
     "deltaRT": 90,
-    "numberOfPeaksToCompare": 8,
-    "minimumNumberOfIdenticalPeaks": 4,
-    "minimumThetaAngle": 11
+    "nbPeaksMin": 4,
+    "thetaMin":11,
+    "nbPeaks": 8
   },
     "parsingRules": {
     "parsingRuleName": "msconvert",

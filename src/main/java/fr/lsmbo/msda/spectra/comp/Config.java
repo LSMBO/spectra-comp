@@ -75,7 +75,7 @@ public class Config {
 	}
 
 	/**
-	 * Load configuration files and initialize the values
+	 * Reload configuration files and initialize the values
 	 * 
 	 */
 
@@ -86,6 +86,7 @@ public class Config {
 			// Load Spectra-comp default parameters
 			loadUserParams();
 			// Load database connection properties
+			DBConfig.forcePropertiesFileReload();
 			DBConfig.getInstance();
 		}
 	}

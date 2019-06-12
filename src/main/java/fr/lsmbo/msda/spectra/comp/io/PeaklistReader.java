@@ -10,10 +10,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
 import fr.lsmbo.msda.spectra.comp.model.Fragment;
+import fr.lsmbo.msda.spectra.comp.model.SpectraComparator;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 
 /**
@@ -25,7 +29,7 @@ import fr.lsmbo.msda.spectra.comp.model.Spectrum;
  *
  */
 public class PeaklistReader {
-
+	private static final Logger logger = LogManager.getLogger(PeaklistReader.class);
 	private static boolean isRetentionTimeMissing = true;
 	public static boolean isSecondPeakList = false;
 
@@ -141,12 +145,12 @@ public class PeaklistReader {
 		}
 		// Add spectra as a first spectra
 		if (!isSecondPeakList) {
-			System.out.println("INFO - Add first peaklist");
+			logger.info("Add first peaklist");
 			ListOfSpectra.addFirstSpectra(spectra);
 		}
 		// Add spectra as a second spectra
 		if (isSecondPeakList) {
-			System.out.println("INFO - Add second peaklist");
+			logger.info("Add second peaklist");
 			ListOfSpectra.addSecondSpectra(spectra);
 		}
 		isRetentionTimeMissing = false;
@@ -211,12 +215,12 @@ public class PeaklistReader {
 		}
 		// Add spectra as a first spectra
 		if (!isSecondPeakList) {
-			System.out.println("INFO - Add first peaklist");
+			logger.info("Add first peaklist");
 			ListOfSpectra.addFirstSpectra(spectra);
 		}
 		// Add spectra as a second spectra
 		if (isSecondPeakList) {
-			System.out.println("INFO - Add second peaklist");
+			logger.info("Add second peaklist");
 			ListOfSpectra.addSecondSpectra(spectra);
 		}
 		isRetentionTimeMissing = false;

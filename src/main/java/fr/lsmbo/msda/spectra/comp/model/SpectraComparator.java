@@ -2,6 +2,9 @@ package fr.lsmbo.msda.spectra.comp.model;
 
 import java.util.ArrayList;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
@@ -15,6 +18,7 @@ import fr.lsmbo.msda.spectra.comp.list.Spectra;
  * 
  */
 public class SpectraComparator {
+	private static final Logger logger = LogManager.getLogger(SpectraComparator.class);
 	// Spectra to make comparison
 	private static Spectra secondSpectra;
 	// A sub list of spectra
@@ -23,7 +27,6 @@ public class SpectraComparator {
 	private static Spectra validSpectra = new Spectra();
 	// Spectrum reference
 	private static Spectrum referenceSpectrum;
-
 	// Number of peaks equals between reference spectrum (RS) and tested
 	// spectrum(TS) (same MOZ and same RT)
 	private static int nbPeaksEquals;
@@ -39,25 +42,26 @@ public class SpectraComparator {
 	private static Double[] listSquareRootpeaksReferenceSpectrum;
 
 	// Constant
-	private static Float deltaMoz;
+	private static Double deltaMoz;
 	private static Integer deltaRT;
 	private static Integer nbPeaksMin;
 	private static Integer thetaMin;
 	private static double cosThetaMin;
 
 	/**
+	 * Add a new value in the array
 	 * 
 	 * @param intensityFragmentReferenceSpectrum
 	 * @param index
 	 */
-	// add a new value in the array
 	private static void addPeakReferenceSpectrum(float intensityFragmentReferenceSpectrum, int index) {
 		listPeaksReferenceSpectrum[index] = intensityFragmentReferenceSpectrum;
 	}
 
 	/**
-	 * add a new value in the array of TS, if a value is present for the same
+	 * Add a new value in the array of TS, if a value is present for the same
 	 * peak of RS, keep the most intense value of intensity
+	 * 
 	 **/
 	private static void addPeakTestedSpectrum(float intensityFragmentSubListSpectrum, int index) {
 		if (listPeaksTestedSpectrum[index] == 0) {
@@ -154,16 +158,13 @@ public class SpectraComparator {
 	 * moz +/- deltamoz and same RT +/- deltaRT)
 	 */
 	private static void computeSubListSecondSpectra() {
-
+		logger.info("Start to compute a sublist of the second spectra ...");
 		double referenceSpectrumMoz = referenceSpectrum.getM_precursorMoz();
 		// RT of reference spectrum in sec.
 		// TODO think if RT was already in seconds
 		int referenceSpectrumRTSec = (int) (referenceSpectrum.getRetentionTime() * 60);
-
 		int nbSpectra = secondSpectra.getSpectraAsObservable().size();
-
 		for (int i = 0; i < nbSpectra; i++) {
-
 			Spectrum testedSpectrum = secondSpectra.getSpectraAsObservable().get(i);
 			// check if the moz precursor of the tested spectrum is equals to
 			// moz precursor of reference spectrum (+/- deltamoz)
@@ -179,9 +180,12 @@ public class SpectraComparator {
 				}
 			}
 		}
+		logger.info("subList of second spectra size: {}", subListSecondSpectra.getSpectraAsObservable().size());
 	}
 
-	/** count the number of peak which matched between RS and TS */
+	/**
+	 * Count the number of peak which matched between RS and TS
+	 */
 	private static void countNbPeak() {
 		nbPeaksEquals = 0;
 		for (float f : listPeaksTestedSpectrum) {
@@ -192,53 +196,56 @@ public class SpectraComparator {
 	}
 
 	/**
-	 * Check if the number of peaks of the reference spectrum can have their
-	 * equivalent in a spectrum of sublist (same moz +/- deltaMoz)
+	 * Determines whether the number of peaks of the reference spectrum can have
+	 * their equivalent in a spectrum of sublist (same moz +/- deltaMoz)
 	 */
-	private static void findFragment(Spectrum spectrumSubList) {
+	private static void findFragment(Spectrum spectrumOfSecSpectraSubList) {
 		// Recover the nbpeaks most intense of the reference spectrum
+		logger.info("Start to compare between ref spectrum and tested spectum in sublist fragments");
 		Fragment[] nbIntensePeaks = referenceSpectrum.getNbIntensePeaks();
-
-		ArrayList<Fragment> fragmentEquals = spectrumSubList.getFragmentEqualsToChart();
+		if (nbIntensePeaks != null) {
+			logger.info("The number of intense peaks is: {}", nbIntensePeaks.length);
+		} else {
+			logger.info("The number of spectrum peaks is under than {}.",
+					Session.USER_PARAMS.getComparison().getNbPeaks());
+		}
+		ArrayList<Fragment> fragmentEquals = spectrumOfSecSpectraSubList.getFragmentEqualsToChart();
 		fragmentEquals.clear();
-		// reset value of arrays
+		// Reset value of arrays
 		resetPeaks();
 		//
-		int nbFragmentSpectrumSubList = spectrumSubList.getNbFragments();
+		int nbFragmentSpectrumSubList = spectrumOfSecSpectraSubList.getNbFragments();
 		// get fragment of the reference spectrum
-		for (int i = 0; i < nbIntensePeaks.length; i++) {
+		for (int i = 0; nbIntensePeaks != null && i < nbIntensePeaks.length; i++) {
 			Fragment fragmentReferenceSpectrum = nbIntensePeaks[i];
-			System.out.println(fragmentReferenceSpectrum.toString());
 			// set the range of moz
 			double minMozFragmentReferenceSpectrum = fragmentReferenceSpectrum.getMz() - deltaMoz;
 			double maxMozFragmentReferenceSpectrum = fragmentReferenceSpectrum.getMz() + deltaMoz;
-
 			// get fragment of the tested spectrum
 			for (int j = 0; j < nbFragmentSpectrumSubList; j++) {
-				Fragment fragmentSubListSpectrum = spectrumSubList.getFragments().get(j);
+				Fragment fragmentSubListSpectrum = spectrumOfSecSpectraSubList.getFragments().get(j);
 				double mozFragmentSubListSpectrum = fragmentSubListSpectrum.getMz();
-
 				// check if fragments have the same moz (+/- deltaMoz)
 				if (mozFragmentSubListSpectrum >= minMozFragmentReferenceSpectrum
 						&& mozFragmentSubListSpectrum <= maxMozFragmentReferenceSpectrum) {
 					// if the condition was respected, save the value of the
-					// intensity of the fragment in the array (for RS and TS) at
+					// intensity of the fragment in the array (for RS and
+					// TS) at
 					// the same index
 					addPeakReferenceSpectrum(fragmentReferenceSpectrum.getIntensity(), i);
 					addPeakTestedSpectrum(fragmentSubListSpectrum.getIntensity(), i);
-
-					// add in the ArrayList of fragmentEquals the most intense
+					// add in the ArrayList of fragmentEquals the most
+					// intense
 					// fragment (between RS and TS)
 					if (fragmentReferenceSpectrum.getIntensity() > fragmentSubListSpectrum.getIntensity()) {
-
 						fragmentEquals.add(fragmentReferenceSpectrum);
 					} else {
-
 						fragmentEquals.add(fragmentSubListSpectrum);
 					}
 				}
 			}
 		}
+
 	}
 
 	/**
@@ -283,7 +290,7 @@ public class SpectraComparator {
 	private static void initialize() {
 		secondSpectra = ListOfSpectra.getSecondSpectra();
 		subListSecondSpectra.initialize();
-		validSpectra.initialize();
+		// validSpectra.initialize();
 		deltaMoz = Session.USER_PARAMS.getComparison().getDeltaMoz();
 		deltaRT = Session.USER_PARAMS.getComparison().getDeltaRT();
 		nbPeaksMin = Session.USER_PARAMS.getComparison().getNbPeaksMin();
@@ -298,20 +305,22 @@ public class SpectraComparator {
 	 *            the spectrum to set as reference.
 	 */
 	public static void run(Spectrum spectrumRef) {
-
 		referenceSpectrum = spectrumRef;
 		setReferenceSpectrum(referenceSpectrum);
+		logger.info("Reference spectrum : {} ", spectrumRef.getM_title());
 		initialize();
 		computeSubListSecondSpectra();
 		if (subListSecondSpectra.getSpectraAsObservable().size() != 0) {
 			for (int i = 0; i < subListSecondSpectra.getSpectraAsObservable().size(); i++) {
 				Spectrum testedSpectrum = subListSecondSpectra.getSpectraAsObservable().get(i);
+				logger.info("Tested spectrum : {} ", testedSpectrum.getM_title());
 				findFragment(testedSpectrum);
 				countNbPeak();
+				logger.info("number of equal peaks: {}", nbPeaksEquals);
+				logger.info("min peaks: {}", nbPeaksMin);
 				testedSpectrum.setNbPeaksIdenticalWithReferenceSpectrum(nbPeaksEquals);
 				if (nbPeaksEquals >= nbPeaksMin) {
 					computeCosTheta();
-
 					if (cosTheta >= cosThetaMin) {
 						testedSpectrum.setCosTheta(cosTheta);
 						testedSpectrum.setTitleReferenceSpectrum(referenceSpectrum.getM_title());
@@ -321,21 +330,22 @@ public class SpectraComparator {
 								(int) ((testedSpectrum.getRetentionTime() * 60)
 										- (referenceSpectrum.getRetentionTime() * 60)));
 						validSpectra.addSpectrum(testedSpectrum);
-
 					}
 				}
 			}
-
 		}
 	}
 
-	/** Reset the array */
+	/**
+	 * Reset the arrays
+	 */
 	private static void resetPeaks() {
 		listPeaksReferenceSpectrum = new float[nbPeaks];
 		listPeaksTestedSpectrum = new float[nbPeaks];
 	}
 
 	/**
+	 * Set as reference spectrum
 	 * 
 	 * @param _referenceSpectrum
 	 *            the reference spectrum to set.
