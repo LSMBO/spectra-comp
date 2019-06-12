@@ -3,6 +3,9 @@ package fr.lsmbo.msda.spectra.comp.io;
 import java.io.File;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.db.DataSource;
@@ -18,7 +21,7 @@ import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
  *
  */
 public class PeakListProvider {
-
+	private static final Logger logger = LogManager.getLogger(PeakListProvider.class);
 	private static String projectName;
 	private static String firstPklList;
 	private static String secondPklList;
@@ -109,9 +112,16 @@ public class PeakListProvider {
 				+ " as a reference sepctra vs " + ListOfSpectra.getSecondSpectra().getSpectraAsObservable().size()
 				+ " spectra. please wait ...");
 		ListOfSpectra.getFirstSpectra().getSpectraAsObservable().forEach(sepctrum -> {
+			logger.info(sepctrum.toString());
+			sepctrum.getFragments().forEach(frag -> {
+				logger.info(frag.toString());
+			});
+
+		});
+		ListOfSpectra.getFirstSpectra().getSpectraAsObservable().forEach(sepctrum -> {
 			SpectraComparator.run(sepctrum);
 		});
-		System.out.println("INFO - " + SpectraComparator.getValidSpectra().getNbSpectra()+" valid spectra found.");
+		System.out.println("INFO - " + SpectraComparator.getValidSpectra().getNbSpectra() + " valid spectra found.");
 	}
 
 	/**

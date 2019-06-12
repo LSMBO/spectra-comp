@@ -124,7 +124,7 @@ public class Fragment {
 	@Override
 	public String toString() {
 		StringBuilder strBldr = new StringBuilder();
-		strBldr.append("###Fragment id:").append(id).append(" ;moz: ").append(mz).append(" ;intensity: ")
+		strBldr.append("##Fragment id:").append(id).append(" ;moz: ").append(mz).append(" ;intensity: ")
 				.append(intensity).append(" ;charge: ").append(charge);
 		return strBldr.toString();
 	}

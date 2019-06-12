@@ -133,7 +133,6 @@ public class PeaklistReader {
 				} catch (Exception e) {
 				}
 				spectrum.addFragment(fragment);
-
 			} else if (spectrum == null) {
 				textBeforeFirstSpectrum += line;
 			}
