@@ -17,20 +17,20 @@ public class UserParams {
 	private String secondPklList;
 
 	private String dataSource;
-	private ComparisonSettings comparison;
-	private ParsingRulesSettings parsingRules;
+	private SpectraComparatorParams comparison;
+	private ParsingRulesParams parsingRules;
 
 	public UserParams() {
-		this("", "", "", "", "", "", "", new ComparisonSettings(), new ParsingRulesSettings());
+		this("", "", "", "", "", "", "", new SpectraComparatorParams(), new ParsingRulesParams());
 	}
 
-	public UserParams(ComparisonSettings comparison, ParsingRulesSettings parsingRules) {
+	public UserParams(SpectraComparatorParams comparison, ParsingRulesParams parsingRules) {
 		this("", "", "", "", "", "", "", comparison, parsingRules);
 	}
 
 	public UserParams(String userName, String timestamp, String spectraCompVersion, String projectName,
-			String firstPklList, String secondPklList, String dataSource, ComparisonSettings comparison,
-			ParsingRulesSettings parsingRules) {
+			String firstPklList, String secondPklList, String dataSource, SpectraComparatorParams comparison,
+			ParsingRulesParams parsingRules) {
 		super();
 		this.userName = userName;
 		this.timestamp = timestamp;
@@ -46,7 +46,7 @@ public class UserParams {
 	/**
 	 * @return the comparison
 	 */
-	public ComparisonSettings getComparison() {
+	public SpectraComparatorParams getComparison() {
 		return comparison;
 	}
 
@@ -67,7 +67,7 @@ public class UserParams {
 	/**
 	 * @return the parsingRules
 	 */
-	public ParsingRulesSettings getParsingRules() {
+	public ParsingRulesParams getParsingRules() {
 		return parsingRules;
 	}
 
@@ -110,7 +110,7 @@ public class UserParams {
 	 * @param comparison
 	 *            the comparison to set
 	 */
-	public void setComparison(ComparisonSettings comparison) {
+	public void setComparison(SpectraComparatorParams comparison) {
 		this.comparison = comparison;
 	}
 
@@ -134,7 +134,7 @@ public class UserParams {
 	 * @param parsingRules
 	 *            the parsingRules to set
 	 */
-	public void setParsingRules(ParsingRulesSettings parsingRules) {
+	public void setParsingRules(ParsingRulesParams parsingRules) {
 		this.parsingRules = parsingRules;
 	}
 

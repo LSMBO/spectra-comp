@@ -8,15 +8,15 @@ package fr.lsmbo.msda.spectra.comp.settings;
  *
  */
 
-public class ParsingRulesSettings {
+public class ParsingRulesParams {
 
 	private String parsingRuleName;
 	private String parsingRuleValue;
 
-	public ParsingRulesSettings() {
+	public ParsingRulesParams() {
 	}
 
-	public ParsingRulesSettings(String parsingRuleName, String parsingRuleValue) {
+	public ParsingRulesParams(String parsingRuleName, String parsingRuleValue) {
 		super();
 		this.parsingRuleName = parsingRuleName;
 		this.parsingRuleValue = parsingRuleValue;

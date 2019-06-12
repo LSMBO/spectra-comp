@@ -2,6 +2,7 @@ package fr.lsmbo.msda.spectra.comp.model;
 
 import java.util.ArrayList;
 
+import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
 
@@ -207,7 +208,7 @@ public class SpectraComparator {
 		// get fragment of the reference spectrum
 		for (int i = 0; i < nbIntensePeaks.length; i++) {
 			Fragment fragmentReferenceSpectrum = nbIntensePeaks[i];
-            System.out.println(fragmentReferenceSpectrum.toString());
+			System.out.println(fragmentReferenceSpectrum.toString());
 			// set the range of moz
 			double minMozFragmentReferenceSpectrum = fragmentReferenceSpectrum.getMz() - deltaMoz;
 			double maxMozFragmentReferenceSpectrum = fragmentReferenceSpectrum.getMz() + deltaMoz;
@@ -283,12 +284,12 @@ public class SpectraComparator {
 		secondSpectra = ListOfSpectra.getSecondSpectra();
 		subListSecondSpectra.initialize();
 		validSpectra.initialize();
-		deltaMoz = SpectraComparatorParams.getDeltaMoz();
-		deltaRT = SpectraComparatorParams.getDeltaRT();
-		nbPeaksMin = SpectraComparatorParams.getNbPeaksMin();
-		thetaMin = SpectraComparatorParams.getThetaMin();
+		deltaMoz = Session.USER_PARAMS.getComparison().getDeltaMoz();
+		deltaRT = Session.USER_PARAMS.getComparison().getDeltaRT();
+		nbPeaksMin = Session.USER_PARAMS.getComparison().getNbPeaksMin();
+		thetaMin = Session.USER_PARAMS.getComparison().getThetaMin();
 		cosThetaMin = Math.cos(Math.toRadians(thetaMin));
-		nbPeaks = SpectraComparatorParams.getNbPeaks();
+		nbPeaks = Session.USER_PARAMS.getComparison().getNbPeaks();
 	}
 
 	/**

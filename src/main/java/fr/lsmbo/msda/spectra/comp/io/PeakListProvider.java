@@ -11,7 +11,7 @@ import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.db.DataSource;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.model.SpectraComparator;
-import fr.lsmbo.msda.spectra.comp.model.SpectraComparatorParams;
+import fr.lsmbo.msda.spectra.comp.settings.SpectraComparatorParams;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 /**
@@ -111,13 +111,7 @@ public class PeakListProvider {
 		System.out.println("INFO - Start to compare: " + ListOfSpectra.getFirstSpectra().getSpectraAsObservable().size()
 				+ " as a reference sepctra vs " + ListOfSpectra.getSecondSpectra().getSpectraAsObservable().size()
 				+ " spectra. please wait ...");
-		ListOfSpectra.getFirstSpectra().getSpectraAsObservable().forEach(sepctrum -> {
-			logger.info(sepctrum.toString());
-			sepctrum.getFragments().forEach(frag -> {
-				logger.info(frag.toString());
-			});
-
-		});
+		logger.info(Session.USER_PARAMS.getComparison().toString());
 		ListOfSpectra.getFirstSpectra().getSpectraAsObservable().forEach(sepctrum -> {
 			SpectraComparator.run(sepctrum);
 		});
