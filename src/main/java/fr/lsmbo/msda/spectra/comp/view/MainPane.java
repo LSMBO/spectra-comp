@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
@@ -49,7 +50,7 @@ public class MainPane extends StackPane {
 		SplitPane peaklist1SplitPane = new SplitPane();
 		peaklist1SplitPane.setOrientation(Orientation.VERTICAL);
 		peaklist1SplitPane.setPrefHeight(320);
-		peaklist1SplitPane.setDividerPositions(0.2f, 0.8f);
+		peaklist1SplitPane.setDividerPositions(0.3f, 0.7f);
 
 		VBox warningPane = new VBox(2);
 		Label emptyFirstPklListLabel = new Label(
@@ -99,7 +100,10 @@ public class MainPane extends StackPane {
 		defaultButton.setGraphic(new ImageView(IconResource.getImage(ICON.RESET)));
 		HBox connectionPane = new HBox(10);
 		connectionPane.getChildren().addAll(defaultButton, connectButton);
-
+		//
+		Label userProjectLabel = new Label("User project:");
+		ComboBox<String> userProjectsCBX = new ComboBox<String>();
+        
 		GridPane refPklListDBPane = new GridPane();
 		refPklListDBPane.setAlignment(Pos.TOP_LEFT);
 		refPklListDBPane.setPadding(new Insets(15));
@@ -115,6 +119,8 @@ public class MainPane extends StackPane {
 		refPklListDBPane.add(passwordLabel, 0, 4, 1, 1);
 		refPklListDBPane.add(passwordTF, 1, 4, 1, 1);
 		refPklListDBPane.add(connectionPane, 1, 5, 2, 1);
+		refPklListDBPane.add(userProjectLabel, 0, 6, 2, 1);
+		refPklListDBPane.add(userProjectsCBX, 1, 6, 2, 1);
 		refPklListDBPane.setHgrow(hostNameTF, Priority.ALWAYS);
 
 		peaklist1SplitPane.getItems().addAll(refPklListPane, refPklListDBPane);

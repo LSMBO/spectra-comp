@@ -8,7 +8,6 @@ import fr.lsmbo.msda.spectra.comp.db.DBAccess;
 import fr.lsmbo.msda.spectra.comp.view.MainPane;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ShowPopupDialog;
 import javafx.application.Application;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
