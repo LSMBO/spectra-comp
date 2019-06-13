@@ -28,6 +28,11 @@ public class MainPane extends StackPane {
 		// Create the main view
 		BorderPane mainView = new BorderPane();
 		mainView.setPrefSize(1400, 800);
+		// Create main Splite pane
+		SplitPane mainSplitPane = new SplitPane();
+		mainSplitPane.setOrientation(Orientation.VERTICAL);
+		mainSplitPane.setPrefHeight(320);
+		mainSplitPane.setDividerPositions(0.8f, 0.2f);
 		// Create the peaklists pane
 		SplitPane peaklistSplitPane = new SplitPane();
 		peaklistSplitPane.setOrientation(Orientation.HORIZONTAL);
@@ -44,7 +49,7 @@ public class MainPane extends StackPane {
 		SplitPane peaklist1SplitPane = new SplitPane();
 		peaklist1SplitPane.setOrientation(Orientation.VERTICAL);
 		peaklist1SplitPane.setPrefHeight(320);
-		peaklist1SplitPane.setDividerPositions(0.5f, 0.5f);
+		peaklist1SplitPane.setDividerPositions(0.2f, 0.8f);
 
 		VBox warningPane = new VBox(2);
 		Label emptyFirstPklListLabel = new Label(
@@ -116,7 +121,8 @@ public class MainPane extends StackPane {
 
 		// Create the 2 peak list pane
 		peaklistSplitPane.getItems().addAll(peaklist1SplitPane);
-		this.getChildren().addAll(peaklistSplitPane);
+		mainSplitPane.getItems().addAll(peaklistSplitPane, ConsoleView.getInstance());
+		this.getChildren().addAll(mainSplitPane);
 	}
 
 }
