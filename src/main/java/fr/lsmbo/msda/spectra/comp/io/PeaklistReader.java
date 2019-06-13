@@ -17,7 +17,6 @@ import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
 import fr.lsmbo.msda.spectra.comp.model.Fragment;
-import fr.lsmbo.msda.spectra.comp.model.SpectraComparator;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 
 /**
