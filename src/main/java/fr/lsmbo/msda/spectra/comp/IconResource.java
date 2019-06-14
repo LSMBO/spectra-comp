@@ -15,7 +15,7 @@ public class IconResource {
 	 * Enum type that indicates the name of the icon.
 	 */
 	public enum ICON {
-		SPECTRA_COMP, TICK, CONSOLE, HELP, INFORMATION, WARNING, RESET, EXIT, LOAD;
+		SPECTRA_COMP, TICK, CONSOLE, HELP, INFORMATION, WARNING, RESET, EXIT, LOAD, LOGIN, CROSS;
 	}
 
 	private static HashMap<ICON, Image> images = new HashMap<ICON, Image>();
@@ -32,6 +32,9 @@ public class IconResource {
 			switch (icon) {
 			case SPECTRA_COMP:
 				images.put(icon, new Image(IconResource.class.getResourceAsStream("/images/spectra-comp.png")));
+				break;
+			case LOGIN:
+				images.put(icon, new Image(IconResource.class.getResourceAsStream("/images/login.gif")));
 				break;
 			case LOAD:
 				images.put(icon, new Image(IconResource.class.getResourceAsStream("/images/load.png")));
@@ -56,6 +59,9 @@ public class IconResource {
 				break;
 			case CONSOLE:
 				images.put(icon, new Image(IconResource.class.getResourceAsStream("/images/console.png")));
+				break;
+			case CROSS:
+				images.put(icon, new Image(IconResource.class.getResourceAsStream("/images/cross.png")));
 				break;
 			default:
 				break;

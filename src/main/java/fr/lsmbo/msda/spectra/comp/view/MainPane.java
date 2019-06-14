@@ -1,17 +1,15 @@
 package fr.lsmbo.msda.spectra.comp.view;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Observable;
 
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
-import fr.lsmbo.msda.spectra.comp.db.DBAccess;
 import fr.lsmbo.msda.spectra.comp.db.DBConfig;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
+import fr.lsmbo.msda.spectra.comp.view.dialog.LoginDialog;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -93,6 +91,14 @@ public class MainPane extends StackPane {
 		refPklListPane.add(loadRefPklListButton, 2, 2, 1, 1);
 		refPklListPane.setHgrow(refPklListTF, Priority.ALWAYS);
 		// from database
+		Button ButtonConnection = new Button("Connect ...");
+		ButtonConnection.setGraphic(new ImageView(IconResource.getImage(ICON.LOGIN)));
+		ButtonConnection.setOnAction(e -> {
+			LoginDialog loginDialog = new LoginDialog();
+			loginDialog.showAndWait().ifPresent(userProject -> {
+
+			});
+		});
 		VBox warningDbPane = new VBox(2);
 		Label emptyFirstPklListDbLabel = new Label("Choose properties to connect to Proline databases!");
 		emptyFirstPklListDbLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
@@ -129,8 +135,8 @@ public class MainPane extends StackPane {
 			try {
 				System.out.println(userNameTF.getText());
 				login(userNameTF.getText());
-				 userProjectsCBX.setItems(getUserProjects(userNameTF.getText()));
-			   
+				userProjectsCBX.setItems(getUserProjects(userNameTF.getText()));
+
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -166,7 +172,7 @@ public class MainPane extends StackPane {
 		projectsPane.add(root, 0, 1, 1, 6);
 
 		Label userProjectLabel = new Label("User projects:");
-	 userProjectsCBX = new ComboBox<String>();
+		userProjectsCBX = new ComboBox<String>();
 
 		GridPane refPklListDBPane = new GridPane();
 		refPklListDBPane.setAlignment(Pos.TOP_LEFT);
@@ -175,18 +181,19 @@ public class MainPane extends StackPane {
 		refPklListDBPane.setVgap(15);
 
 		refPklListDBPane.add(pklListRefDBRB, 0, 0, 3, 1);
-		refPklListDBPane.add(warningDbPane, 0, 1, 3, 1);
-		refPklListDBPane.add(hostNameLabel, 0, 2, 1, 1);
-		refPklListDBPane.add(hostNameTF, 1, 2, 1, 1);
-		refPklListDBPane.add(userNameLabel, 0, 3, 1, 1);
-		refPklListDBPane.add(userNameTF, 1, 3, 1, 1);
-		refPklListDBPane.add(passwordLabel, 0, 4, 1, 1);
-		refPklListDBPane.add(passwordTF, 1, 4, 1, 1);
-		refPklListDBPane.add(connectionPane, 1, 5, 2, 1);
-		refPklListDBPane.add(userProjectLabel, 0, 6, 2, 1);
-		refPklListDBPane.add(userProjectsCBX, 1, 6, 2, 1);
-		refPklListDBPane.add(root, 0, 7, 3, 1);
-		refPklListDBPane.setHgrow(hostNameTF, Priority.ALWAYS);
+		refPklListDBPane.add(ButtonConnection, 3, 0, 1, 1);
+//		refPklListDBPane.add(warningDbPane, 0, 1, 3, 1);
+//		refPklListDBPane.add(hostNameLabel, 0, 2, 1, 1);
+//		refPklListDBPane.add(hostNameTF, 1, 2, 1, 1);
+//		refPklListDBPane.add(userNameLabel, 0, 3, 1, 1);
+//		refPklListDBPane.add(userNameTF, 1, 3, 1, 1);
+//		refPklListDBPane.add(passwordLabel, 0, 4, 1, 1);
+//		refPklListDBPane.add(passwordTF, 1, 4, 1, 1);
+//		refPklListDBPane.add(connectionPane, 1, 5, 2, 1);
+//		refPklListDBPane.add(userProjectLabel, 0, 6, 2, 1);
+//		refPklListDBPane.add(userProjectsCBX, 1, 6, 2, 1);
+//		refPklListDBPane.add(root, 0, 7, 3, 1);
+//		refPklListDBPane.setHgrow(hostNameTF, Priority.ALWAYS);
 
 		peaklist1SplitPane.getItems().addAll(refPklListPane, refPklListDBPane);
 		// Control
