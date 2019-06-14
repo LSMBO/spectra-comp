@@ -1,8 +1,13 @@
 package fr.lsmbo.msda.spectra.comp.view;
 
+import java.util.List;
+
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
+import fr.lsmbo.msda.spectra.comp.Session;
+import fr.lsmbo.msda.spectra.comp.db.DBConfig;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
+import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -15,6 +20,8 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -24,6 +31,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class MainPane extends StackPane {
+	TextField userNameTF;
+	PasswordField passwordTF;
+	TextField hostNameTF;
 
 	public MainPane() {
 		// Create the main view
@@ -41,10 +51,10 @@ public class MainPane extends StackPane {
 		peaklistSplitPane.setDividerPositions(0.5f, 0.5f);
 		// Create the 1 peak list pane
 		ToggleGroup group = new ToggleGroup();
-		RadioButton pklListRefFileRB = new RadioButton("Select a peaklist as a reference from a mgf file");
+		RadioButton pklListRefFileRB = new RadioButton("Select a peaklist file as a reference");
 		pklListRefFileRB.setToggleGroup(group);
 		pklListRefFileRB.setSelected(true);
-		RadioButton pklListRefDBRB = new RadioButton("Select a peaklist as a reference from a Proline databases");
+		RadioButton pklListRefDBRB = new RadioButton("Select a peaklist as a reference from Proline databases");
 		pklListRefDBRB.setToggleGroup(group);
 
 		SplitPane peaklist1SplitPane = new SplitPane();
@@ -60,6 +70,7 @@ public class MainPane extends StackPane {
 		warningPane.getChildren().addAll(emptyFirstPklListLabel);
 		Label refPklListLabel = new Label("Reference peaklist:");
 		TextField refPklListTF = new TextField();
+		refPklListTF.setText(Session.USER_PARAMS.getFirstPklList());
 		refPklListTF.setTooltip(new Tooltip("Select a reference peak list"));
 		Button loadRefPklListButton = new Button("Load");
 		loadRefPklListButton.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
@@ -83,27 +94,62 @@ public class MainPane extends StackPane {
 		warningDbPane.getChildren().addAll(emptyFirstPklListDbLabel);
 		//
 		Label hostNameLabel = new Label("Server host: ");
-		TextField hostNameTF = new TextField();
+		hostNameTF = new TextField();
+		if (!StringsUtils.isEmpty(DBConfig.getInstance().getHost()))
+			hostNameTF.setText(DBConfig.getInstance().getHost());
+		else
+			hostNameTF.setText("proline");
 		hostNameTF.setTooltip(new Tooltip("Enter a hsot name"));
 
 		Label userNameLabel = new Label("User: ");
-		TextField userNameTF = new TextField();
+		userNameTF = new TextField();
+		if (!StringsUtils.isEmpty(DBConfig.getInstance().getUser()))
+			userNameTF.setText(DBConfig.getInstance().getUser());
+		else
+			userNameTF.setText("proline");
 		userNameTF.setTooltip(new Tooltip("Enter a user name"));
 
 		Label passwordLabel = new Label("Password: ");
-		PasswordField passwordTF = new PasswordField();
+		passwordTF = new PasswordField();
+		if (!StringsUtils.isEmpty(DBConfig.getInstance().getPassword()))
+			passwordTF.setText(DBConfig.getInstance().getHost());
+		else
+			passwordTF.setText("proline");
 		passwordLabel.setTooltip(new Tooltip("Enter a user password"));
 
 		Button connectButton = new Button("Connect");
 		connectButton.setGraphic(new ImageView(IconResource.getImage(ICON.TICK)));
 		Button defaultButton = new Button("Default");
+		defaultButton.setOnAction(e -> {
+			setDefaultValues();
+		});
 		defaultButton.setGraphic(new ImageView(IconResource.getImage(ICON.RESET)));
 		HBox connectionPane = new HBox(10);
 		connectionPane.getChildren().addAll(defaultButton, connectButton);
-		//
-		Label userProjectLabel = new Label("User project:");
+
+		// Create dialog components
+		Label fileLocationLabel = new Label("User peak lists:");
+		fileLocationLabel.setPrefWidth(580);
+		StackPane root = new StackPane();
+		root.setPadding(new Insets(5));
+		// Set components control
+		TreeItem rootItem = new TreeItem("peak lists");
+		rootItem.setExpanded(true);
+		rootItem.getChildren().addAll();
+		TreeView treeView = new TreeView(rootItem);
+		root.getChildren().add(treeView);
+		// Layout
+		GridPane projectsPane = new GridPane();
+		projectsPane.setAlignment(Pos.TOP_LEFT);
+		projectsPane.setPadding(new Insets(10));
+		projectsPane.setHgap(15);
+		projectsPane.setVgap(15);
+		projectsPane.addRow(0, fileLocationLabel);
+		projectsPane.add(root, 0, 1, 1, 6);
+
+		Label userProjectLabel = new Label("User projects:");
 		ComboBox<String> userProjectsCBX = new ComboBox<String>();
-        
+
 		GridPane refPklListDBPane = new GridPane();
 		refPklListDBPane.setAlignment(Pos.TOP_LEFT);
 		refPklListDBPane.setPadding(new Insets(15));
@@ -121,9 +167,11 @@ public class MainPane extends StackPane {
 		refPklListDBPane.add(connectionPane, 1, 5, 2, 1);
 		refPklListDBPane.add(userProjectLabel, 0, 6, 2, 1);
 		refPklListDBPane.add(userProjectsCBX, 1, 6, 2, 1);
+		refPklListDBPane.add(root, 0, 7, 3, 1);
 		refPklListDBPane.setHgrow(hostNameTF, Priority.ALWAYS);
 
 		peaklist1SplitPane.getItems().addAll(refPklListPane, refPklListDBPane);
+		// Control
 
 		// Create the 2 peak list pane
 		peaklistSplitPane.getItems().addAll(peaklist1SplitPane);
@@ -131,4 +179,36 @@ public class MainPane extends StackPane {
 		this.getChildren().addAll(mainSplitPane);
 	}
 
+	/**
+	 * Set database connection default values
+	 */
+	private void setDefaultValues() {
+		if (!StringsUtils.isEmpty(DBConfig.getInstance().getHost()))
+			hostNameTF.setText(DBConfig.getInstance().getHost());
+		else
+			hostNameTF.setText("proline");
+		if (!StringsUtils.isEmpty(DBConfig.getInstance().getUser()))
+			userNameTF.setText(DBConfig.getInstance().getUser());
+		else
+			userNameTF.setText("proline");
+		if (!StringsUtils.isEmpty(DBConfig.getInstance().getPassword()))
+			passwordTF.setText(DBConfig.getInstance().getHost());
+		else
+			passwordTF.setText("proline");
+	}
+
+	/**
+	 * Return the list of user projects
+	 */
+	private List<String> getUserProjects() {
+		return null;
+
+	}
+
+	/**
+	 * Test connection to database
+	 */
+	private void connect() {
+
+	}
 }
