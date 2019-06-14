@@ -92,7 +92,7 @@ public class MainPane extends StackPane {
 		refPklListPane.setHgrow(refPklListTF, Priority.ALWAYS);
 		// from database
 		Button ButtonConnection = new Button("Connect ...");
-		ButtonConnection.setGraphic(new ImageView(IconResource.getImage(ICON.LOGIN)));
+		ButtonConnection.setGraphic(new ImageView(IconResource.getImage(ICON.ADMIN)));
 		ButtonConnection.setOnAction(e -> {
 			LoginDialog loginDialog = new LoginDialog();
 			loginDialog.showAndWait().ifPresent(userProject -> {

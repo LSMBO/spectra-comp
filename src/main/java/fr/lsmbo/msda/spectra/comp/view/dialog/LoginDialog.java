@@ -17,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -90,7 +91,7 @@ public class LoginDialog extends Dialog<Boolean> {
 		loginPane.add(userNameTF, 1, 3, 1, 1);
 		loginPane.add(passwordLabel, 0, 4, 1, 1);
 		loginPane.add(passwordTF, 1, 4, 1, 1);
-
+		loginPane.setHgrow(hostNameTF, Priority.ALWAYS);
 		/********************
 		 * Main dialog pane *
 		 ********************/
@@ -99,10 +100,10 @@ public class LoginDialog extends Dialog<Boolean> {
 		DialogPane dialogPane = new DialogPane();
 		dialogPane.setContent(loginPane);
 		dialogPane.setHeaderText("Server connection");
-		dialogPane.setGraphic(new ImageView(IconResource.getImage(ICON.SPECTRA_COMP)));
-		dialogPane.setPrefSize(400, 400);
+		dialogPane.setGraphic(new ImageView(IconResource.getImage(ICON.ADMIN)));
+		dialogPane.setPrefSize(400, 350);
 		Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
-		stage.getIcons().add(new ImageView(IconResource.getImage(ICON.SPECTRA_COMP)).getImage());
+		stage.getIcons().add(new ImageView(IconResource.getImage(ICON.ADMIN)).getImage());
 		dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 		Button buttonCancel = (Button) dialogPane.lookupButton(ButtonType.CANCEL);
 		buttonCancel.setGraphic(new ImageView(IconResource.getImage(ICON.CROSS)));
