@@ -1,10 +1,14 @@
 package fr.lsmbo.msda.spectra.comp.view.dialog;
 
+import java.sql.SQLException;
+
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.db.DBConfig;
+import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -27,7 +31,7 @@ import javafx.stage.Stage;
  * @author Aromdhani
  *
  */
-public class LoginDialog extends Dialog<Boolean> {
+public class LoginDialog extends Dialog<ObservableList<String>> {
 	TextField userNameTF;
 	PasswordField passwordTF;
 	TextField hostNameTF;
@@ -92,6 +96,11 @@ public class LoginDialog extends Dialog<Boolean> {
 		loginPane.add(passwordLabel, 0, 4, 1, 1);
 		loginPane.add(passwordTF, 1, 4, 1, 1);
 		loginPane.setHgrow(hostNameTF, Priority.ALWAYS);
+		// Control
+		emptyUserNameLabel.visibleProperty().bind(hostNameTF.textProperty().isEmpty());
+		emptyPasswordLabel.visibleProperty().bind(passwordTF.textProperty().isEmpty());
+		emptyHostLabel.visibleProperty().bind(hostNameTF.textProperty().isEmpty());
+
 		/********************
 		 * Main dialog pane *
 		 ********************/
@@ -114,11 +123,34 @@ public class LoginDialog extends Dialog<Boolean> {
 		// On apply button
 		this.setResultConverter(buttonType -> {
 			if (buttonType == ButtonType.OK) {
-				return null;
+				try {
+					return getUserProjects(userNameTF.getText());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return null;
+				}
 			} else {
 				return null;
 			}
 		});
+	}
+
+	/**
+	 * Return the list of user projects
+	 */
+	private ObservableList<String> getUserProjects(String login) throws Exception {
+		return DBSpectraHandler.findProjects(login);
+
+	}
+
+	/**
+	 * Test connection to database
+	 * 
+	 * @throws SQLException
+	 */
+	private void login(String login) throws Exception {
+		DBSpectraHandler.findUser(login);
 	}
 
 }

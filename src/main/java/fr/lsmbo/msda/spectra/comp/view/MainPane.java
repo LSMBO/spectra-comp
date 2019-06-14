@@ -96,7 +96,7 @@ public class MainPane extends StackPane {
 		ButtonConnection.setOnAction(e -> {
 			LoginDialog loginDialog = new LoginDialog();
 			loginDialog.showAndWait().ifPresent(userProject -> {
-
+				userProjectsCBX.setItems(userProject);
 			});
 		});
 		VBox warningDbPane = new VBox(2);
@@ -182,19 +182,10 @@ public class MainPane extends StackPane {
 
 		refPklListDBPane.add(pklListRefDBRB, 0, 0, 3, 1);
 		refPklListDBPane.add(ButtonConnection, 3, 0, 1, 1);
-//		refPklListDBPane.add(warningDbPane, 0, 1, 3, 1);
-//		refPklListDBPane.add(hostNameLabel, 0, 2, 1, 1);
-//		refPklListDBPane.add(hostNameTF, 1, 2, 1, 1);
-//		refPklListDBPane.add(userNameLabel, 0, 3, 1, 1);
-//		refPklListDBPane.add(userNameTF, 1, 3, 1, 1);
-//		refPklListDBPane.add(passwordLabel, 0, 4, 1, 1);
-//		refPklListDBPane.add(passwordTF, 1, 4, 1, 1);
-//		refPklListDBPane.add(connectionPane, 1, 5, 2, 1);
-//		refPklListDBPane.add(userProjectLabel, 0, 6, 2, 1);
-//		refPklListDBPane.add(userProjectsCBX, 1, 6, 2, 1);
-//		refPklListDBPane.add(root, 0, 7, 3, 1);
-//		refPklListDBPane.setHgrow(hostNameTF, Priority.ALWAYS);
-
+		refPklListDBPane.add(userProjectLabel, 0, 1, 2, 1);
+		refPklListDBPane.add(userProjectsCBX, 3, 1, 1, 1);
+		refPklListDBPane.add(root, 0, 2, 4, 1);
+		refPklListDBPane.setHgrow(pklListRefDBRB, Priority.ALWAYS);
 		peaklist1SplitPane.getItems().addAll(refPklListPane, refPklListDBPane);
 		// Control
 
