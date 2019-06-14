@@ -12,6 +12,8 @@ import fr.lsmbo.msda.spectra.comp.list.Spectra;
 import fr.lsmbo.msda.spectra.comp.model.Fragment;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * Handle spectra from database
@@ -163,23 +165,23 @@ public class DBSpectraHandler {
 	 * @param login
 	 * @throws Exception
 	 */
-	public static List<String> findProjects(String login) throws Exception {
+	public static ObservableList<String> findProjects(String login) throws Exception {
 		PreparedStatement findUserStmt = null;
 		ResultSet rs = null;
-		List<String> projects = new ArrayList<>();
+		ObservableList<String> list = FXCollections.observableArrayList();
 		try {
 			assert DBAccess.openUdsDBConnection() != null : "Can't connect to uds_db!";
 			findUserStmt = DBAccess.openUdsDBConnection().prepareStatement(PROJECT_BY_OWNER);
 			findUserStmt.setString(1, login);
 			rs = findUserStmt.executeQuery();
 			while (rs.next()) {
-				projects.add(rs.getString("name"));
+				list.add(rs.getString("name"));
 			}
 		} finally {
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(findUserStmt);
 		}
-		return projects;
+		return list;
 	}
 
 	/**

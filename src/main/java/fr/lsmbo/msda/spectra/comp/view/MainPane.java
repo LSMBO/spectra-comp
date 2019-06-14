@@ -2,6 +2,7 @@ package fr.lsmbo.msda.spectra.comp.view;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Observable;
 
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
@@ -11,6 +12,7 @@ import fr.lsmbo.msda.spectra.comp.db.DBConfig;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -37,6 +39,7 @@ public class MainPane extends StackPane {
 	TextField userNameTF;
 	PasswordField passwordTF;
 	TextField hostNameTF;
+	ComboBox<String> userProjectsCBX;
 
 	public MainPane() {
 		// Create the main view
@@ -126,6 +129,8 @@ public class MainPane extends StackPane {
 			try {
 				System.out.println(userNameTF.getText());
 				login(userNameTF.getText());
+				 userProjectsCBX.setItems(getUserProjects(userNameTF.getText()));
+			   
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -161,7 +166,7 @@ public class MainPane extends StackPane {
 		projectsPane.add(root, 0, 1, 1, 6);
 
 		Label userProjectLabel = new Label("User projects:");
-		ComboBox<String> userProjectsCBX = new ComboBox<String>();
+	 userProjectsCBX = new ComboBox<String>();
 
 		GridPane refPklListDBPane = new GridPane();
 		refPklListDBPane.setAlignment(Pos.TOP_LEFT);
@@ -213,16 +218,17 @@ public class MainPane extends StackPane {
 	/**
 	 * Return the list of user projects
 	 */
-	private List<String> getUserProjects(String login)throws Exception {
+	private ObservableList<String> getUserProjects(String login) throws Exception {
 		return DBSpectraHandler.findProjects(login);
 
 	}
 
 	/**
 	 * Test connection to database
-	 * @throws SQLException 
+	 * 
+	 * @throws SQLException
 	 */
 	private void login(String login) throws Exception {
-			DBSpectraHandler.findUser(login);
+		DBSpectraHandler.findUser(login);
 	}
 }
