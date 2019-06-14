@@ -1,11 +1,14 @@
 package fr.lsmbo.msda.spectra.comp.view;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
+import fr.lsmbo.msda.spectra.comp.db.DBAccess;
 import fr.lsmbo.msda.spectra.comp.db.DBConfig;
+import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 import javafx.geometry.Insets;
@@ -112,18 +115,28 @@ public class MainPane extends StackPane {
 		Label passwordLabel = new Label("Password: ");
 		passwordTF = new PasswordField();
 		if (!StringsUtils.isEmpty(DBConfig.getInstance().getPassword()))
-			passwordTF.setText(DBConfig.getInstance().getHost());
+			passwordTF.setText(DBConfig.getInstance().getPassword());
 		else
 			passwordTF.setText("proline");
 		passwordLabel.setTooltip(new Tooltip("Enter a user password"));
 
 		Button connectButton = new Button("Connect");
 		connectButton.setGraphic(new ImageView(IconResource.getImage(ICON.TICK)));
+		connectButton.setOnAction(e -> {
+			try {
+				System.out.println(userNameTF.getText());
+				login(userNameTF.getText());
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
 		Button defaultButton = new Button("Default");
+		defaultButton.setGraphic(new ImageView(IconResource.getImage(ICON.RESET)));
 		defaultButton.setOnAction(e -> {
 			setDefaultValues();
 		});
-		defaultButton.setGraphic(new ImageView(IconResource.getImage(ICON.RESET)));
+
 		HBox connectionPane = new HBox(10);
 		connectionPane.getChildren().addAll(defaultButton, connectButton);
 
@@ -192,7 +205,7 @@ public class MainPane extends StackPane {
 		else
 			userNameTF.setText("proline");
 		if (!StringsUtils.isEmpty(DBConfig.getInstance().getPassword()))
-			passwordTF.setText(DBConfig.getInstance().getHost());
+			passwordTF.setText(DBConfig.getInstance().getPassword());
 		else
 			passwordTF.setText("proline");
 	}
@@ -200,15 +213,16 @@ public class MainPane extends StackPane {
 	/**
 	 * Return the list of user projects
 	 */
-	private List<String> getUserProjects() {
-		return null;
+	private List<String> getUserProjects(String login)throws Exception {
+		return DBSpectraHandler.findProjects(login);
 
 	}
 
 	/**
 	 * Test connection to database
+	 * @throws SQLException 
 	 */
-	private void connect() {
-
+	private void login(String login) throws Exception {
+			DBSpectraHandler.findUser(login);
 	}
 }

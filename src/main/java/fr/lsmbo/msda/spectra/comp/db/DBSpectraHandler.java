@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
@@ -20,10 +22,11 @@ import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 public class DBSpectraHandler {
 
-	private static final String USER = "SELECT * FROM user_account WHERE login=?";
+	private static final String USER = "SELECT login FROM user_account WHERE login=?";
 	private static final String PROJECT = "SELECT * FROM external_db WHERE name=?";
 	private static final String PEAKLIST = "SELECT * FROM peaklist";
 	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.*,pklsof.name as pkl_software FROM peaklist pkl,peaklist_software pklsof,spectrum spec WHERE spec.peaklist_id=pkl.id AND pklsof.id=pkl.peaklist_software_id AND pkl.path=?";
+	private static final String PROJECT_BY_OWNER = "SELECT project.name as name FROM user_account ,project WHERE user_account.id=project.owner_id AND user_account.login=?";
 	private static Spectra spectra = new Spectra();
 
 	/**
@@ -113,10 +116,11 @@ public class DBSpectraHandler {
 	 * @param login
 	 * @throws SQLException
 	 */
-	public static void findProject(String name) throws SQLException {
+	public static void findProject(String name) throws Exception {
 		PreparedStatement findProjectStmt = null;
 		ResultSet rs = null;
 		try {
+			assert DBAccess.openUdsDBConnection() != null : "Can't connect to uds_db!";
 			findProjectStmt = DBAccess.openUdsDBConnection().prepareStatement(PROJECT);
 			findProjectStmt.setString(1, name);
 			rs = findProjectStmt.executeQuery();
@@ -131,20 +135,51 @@ public class DBSpectraHandler {
 	 * Find an user by login
 	 * 
 	 * @param login
-	 * @throws SQLException
+	 * @throws Exception
 	 */
-	public static void findUser(String login) throws SQLException {
+	public static void findUser(String login) throws Exception {
 		PreparedStatement findUserStmt = null;
 		ResultSet rs = null;
+		String userLogin = null;
 		try {
+			assert DBAccess.openUdsDBConnection() != null : "Can't connect to uds_db!";
 			findUserStmt = DBAccess.openUdsDBConnection().prepareStatement(USER);
 			findUserStmt.setString(1, login);
 			rs = findUserStmt.executeQuery();
-			assert !rs.next() : "The user does not exist! Make sure that you have a Proline account.";
+			while (rs.next()) {
+				userLogin = rs.getString("login");
+			}
+			if (userLogin == null)
+				throw new Exception("The user does not exist! Make sure that you have a Proline account.");
 		} finally {
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(findUserStmt);
 		}
+	}
+
+	/**
+	 * Find an user by login
+	 * 
+	 * @param login
+	 * @throws Exception
+	 */
+	public static List<String> findProjects(String login) throws Exception {
+		PreparedStatement findUserStmt = null;
+		ResultSet rs = null;
+		List<String> projects = new ArrayList<>();
+		try {
+			assert DBAccess.openUdsDBConnection() != null : "Can't connect to uds_db!";
+			findUserStmt = DBAccess.openUdsDBConnection().prepareStatement(PROJECT_BY_OWNER);
+			findUserStmt.setString(1, login);
+			rs = findUserStmt.executeQuery();
+			while (rs.next()) {
+				projects.add(rs.getString("name"));
+			}
+		} finally {
+			tryToCloseResultSet(rs);
+			tryToCloseStatement(findUserStmt);
+		}
+		return projects;
 	}
 
 	/**
