@@ -52,19 +52,15 @@ public class LoginDialog extends Dialog<ObservableList<String>> {
 		Label emptyHostLabel = new Label("Host name must not be empty!");
 		emptyHostLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
 		emptyHostLabel.setStyle(JavaFxUtils.RED_ITALIC);
-		Label connetionFailedLabel = new Label("Connection failed!");
-		connetionFailedLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
-		connetionFailedLabel.setStyle(JavaFxUtils.RED_ITALIC);
-		warningDbPane.getChildren().addAll(emptyUserNameLabel, emptyPasswordLabel, emptyHostLabel,
-				connetionFailedLabel);
+		warningDbPane.getChildren().addAll(emptyUserNameLabel, emptyPasswordLabel);
 		Label hostNameLabel = new Label("Server host: ");
 		hostNameTF = new TextField();
 		if (!StringsUtils.isEmpty(DBConfig.getInstance().getHost()))
 			hostNameTF.setText(DBConfig.getInstance().getHost());
 		else
 			hostNameTF.setText("proline");
-		hostNameTF.setTooltip(new Tooltip("Enter a hsot name"));
-
+		hostNameTF.setTooltip(new Tooltip("Enter a host name"));
+		hostNameTF.setDisable(true);
 		Label userNameLabel = new Label("User: ");
 		userNameTF = new TextField();
 		if (!StringsUtils.isEmpty(DBConfig.getInstance().getUser()))
@@ -96,10 +92,6 @@ public class LoginDialog extends Dialog<ObservableList<String>> {
 		loginPane.add(passwordLabel, 0, 4, 1, 1);
 		loginPane.add(passwordTF, 1, 4, 1, 1);
 		loginPane.setHgrow(hostNameTF, Priority.ALWAYS);
-		// Control
-		emptyUserNameLabel.visibleProperty().bind(hostNameTF.textProperty().isEmpty());
-		emptyPasswordLabel.visibleProperty().bind(passwordTF.textProperty().isEmpty());
-		emptyHostLabel.visibleProperty().bind(hostNameTF.textProperty().isEmpty());
 
 		/********************
 		 * Main dialog pane *
@@ -110,7 +102,7 @@ public class LoginDialog extends Dialog<ObservableList<String>> {
 		dialogPane.setContent(loginPane);
 		dialogPane.setHeaderText("Server connection");
 		dialogPane.setGraphic(new ImageView(IconResource.getImage(ICON.ADMIN)));
-		dialogPane.setPrefSize(400, 350);
+		dialogPane.setPrefSize(350, 300);
 		Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
 		stage.getIcons().add(new ImageView(IconResource.getImage(ICON.ADMIN)).getImage());
 		dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -118,16 +110,21 @@ public class LoginDialog extends Dialog<ObservableList<String>> {
 		buttonCancel.setGraphic(new ImageView(IconResource.getImage(ICON.CROSS)));
 		Button buttonOk = (Button) dialogPane.lookupButton(ButtonType.OK);
 		buttonOk.setGraphic(new ImageView(IconResource.getImage(ICON.TICK)));
+
 		this.setTitle("Server connection");
 		this.setDialogPane(dialogPane);
+		// Control
+		emptyUserNameLabel.visibleProperty().bind(userNameTF.textProperty().isEmpty());
+		emptyPasswordLabel.visibleProperty().bind(passwordTF.textProperty().isEmpty());
+		emptyHostLabel.visibleProperty().bind(hostNameTF.textProperty().isEmpty());
 		// On apply button
 		this.setResultConverter(buttonType -> {
-			if (buttonType == ButtonType.OK) {
+			if (buttonType == ButtonType.OK && login(userNameTF.getText())) {
 				try {
 					return getUserProjects(userNameTF.getText());
-				} catch (Exception e) {
+				} catch (Exception e1) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					e1.printStackTrace();
 					return null;
 				}
 			} else {
@@ -149,8 +146,16 @@ public class LoginDialog extends Dialog<ObservableList<String>> {
 	 * 
 	 * @throws SQLException
 	 */
-	private void login(String login) throws Exception {
-		DBSpectraHandler.findUser(login);
+	private boolean login(String login) {
+		try {
+			DBSpectraHandler.findUser(login);
+			return true;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+
 	}
 
 }
