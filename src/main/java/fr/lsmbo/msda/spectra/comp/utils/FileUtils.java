@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.function.Consumer;
 
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
 /**
  * 
  * @author Aromdhani
@@ -42,4 +45,29 @@ public class FileUtils {
 			}
 		}
 	}
+	
+	/**
+	 * Open peak list file.
+	 * 
+	 * @param peakListConsumer
+	 *            a Consumer of peak list file when the file is loaded.
+	 * @param fileChooserTitle
+	 *            the parent stage of this file chooser.
+	 */
+	public static void openPeakListFile(Consumer<File> peakListConsumer, Stage stage) {
+		// Default folder is 'Documents'
+		File initialDirectory = new File(System.getProperty("user.home"));
+		FileChooser fileChooser = new FileChooser();
+		// Set extension filter
+		fileChooser.setInitialDirectory(initialDirectory);
+		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Mgf files (*.mgf)", "*.mgf"),
+				new FileChooser.ExtensionFilter("PeakList files (*.pkl)", "*.pkl"));
+		fileChooser.setTitle("Open file");
+		// Show open file dialog
+		File file = fileChooser.showOpenDialog(stage);
+		if (file != null) {
+			peakListConsumer.accept(file);
+		}
+	}
+
 }
