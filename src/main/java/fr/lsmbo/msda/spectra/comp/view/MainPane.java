@@ -113,7 +113,7 @@ public class MainPane extends StackPane {
 		warningDbPane.getChildren().addAll(connectionLabel);
 		// Create dialog components
 		Label fileLocationLabel = new Label("User peaklists:");
-		fileLocationLabel.setPrefWidth(580);
+		connectionLabel.setPrefWidth(580);
 		StackPane root = new StackPane();
 		root.setPadding(new Insets(5));
 		// Set components control
@@ -140,8 +140,8 @@ public class MainPane extends StackPane {
 		refPklListDBPane.setHgap(15);
 		refPklListDBPane.setVgap(15);
 
-		refPklListDBPane.add(warningDbPane, 0, 0, 3, 1);
-		refPklListDBPane.add(pklListRefDBRB, 0, 1, 3, 1);
+		refPklListDBPane.add(pklListRefDBRB, 0, 0, 3, 1);
+		refPklListDBPane.add(warningDbPane, 0, 1, 3, 1);
 		refPklListDBPane.add(ButtonConnection, 3, 1, 1, 1);
 		refPklListDBPane.add(userProjectLabel, 0, 2, 2, 1);
 		refPklListDBPane.add(userProjectsCBX, 3, 2, 1, 1);
@@ -245,8 +245,8 @@ public class MainPane extends StackPane {
 		secondPklListDBPane.setHgap(15);
 		secondPklListDBPane.setVgap(15);
 
-		secondPklListDBPane.add(warning2DbPane, 0, 0, 3, 1);
-		secondPklListDBPane.add(secondPklListDBRB, 0, 1, 3, 1);
+		secondPklListDBPane.add(secondPklListDBRB, 0, 0, 3, 1);
+		secondPklListDBPane.add(warning2DbPane, 0, 1, 3, 1);
 		secondPklListDBPane.add(secondButtonConnection, 3, 1, 1, 1);
 		secondPklListDBPane.add(secondUserProjectLabel, 0, 2, 2, 1);
 		secondPklListDBPane.add(secondUserProjectsCBX, 3, 2, 1, 1);
@@ -268,7 +268,9 @@ public class MainPane extends StackPane {
 		// Create the 2 peak list pane
 		peaklistSplitPane.getItems().addAll(peaklist1SplitPane, peaklist2SplitPane);
 		peaklistSplitPane.setPadding(new Insets(10));
-		mainSplitPane.getItems().addAll(peaklistSplitPane, ConsoleView.getInstance());
+		Button compareButton = new Button("Compare");
+		compareButton.setGraphic(new ImageView(IconResource.getImage(ICON.EXECUTE)));
+		mainSplitPane.getItems().addAll(peaklistSplitPane,compareButton, ConsoleView.getInstance());
 		this.getChildren().addAll(mainSplitPane);
 	}
 
