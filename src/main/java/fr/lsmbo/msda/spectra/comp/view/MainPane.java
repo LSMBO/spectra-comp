@@ -117,6 +117,7 @@ public class MainPane extends StackPane {
 		loadRefPklListButton.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
 		loadRefPklListButton.setOnAction(e -> {
 			load(refPklListTF);
+			model.loadFirstPkl("reference_pkl", refPklListTF.getText());
 		});
 		// Layout
 		GridPane refPklListPane = new GridPane();
@@ -222,6 +223,7 @@ public class MainPane extends StackPane {
 		loadSecondPklListButton.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
 		loadSecondPklListButton.setOnAction(e -> {
 			load(secondPklListTF);
+			model.loadSecondPkl("test_pkl", secondPklListTF.getText());
 		});
 		// Layout
 		GridPane secondPklListPane = new GridPane();

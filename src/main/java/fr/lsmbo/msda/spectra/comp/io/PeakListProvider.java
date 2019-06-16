@@ -15,7 +15,7 @@ import fr.lsmbo.msda.spectra.comp.settings.SpectraComparatorParams;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 /**
- * Load spectra from databases(Proline) or from peak list files.
+ * Load spectra from Proline projects or from peak list files.
  * 
  * @author Aromdhani
  *
