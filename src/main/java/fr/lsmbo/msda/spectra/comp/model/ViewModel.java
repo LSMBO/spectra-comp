@@ -2,11 +2,14 @@ package fr.lsmbo.msda.spectra.comp.model;
 
 import java.sql.SQLException;
 
+import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
-import fr.lsmbo.msda.spectra.comp.db.DataSource;
 import fr.lsmbo.msda.spectra.comp.io.PeakListProvider;
-
+import fr.lsmbo.msda.spectra.comp.utils.ConfirmDialog;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 public class ViewModel {
+	public static Stage stage ; 
 	public void compare() {
 		PeakListProvider.compareSpectra();
 	}
@@ -30,4 +33,16 @@ public class ViewModel {
 			e.printStackTrace();
 		}
 	}
+	
+			public void onExit() {
+			
+				System.out.println("WARN | Exit spectra-comp");
+				new ConfirmDialog<Object>(ICON.EXIT, "Exit spectra-comp", "Are you sure you want to exit spectra-comp ?", () -> {
+					Platform.exit();
+					System.exit(0);
+					return null;
+				}, stage);
+			}
+		
+	
 }

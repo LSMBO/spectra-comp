@@ -59,6 +59,7 @@ public class PeakListProvider {
 	@SuppressWarnings("restriction")
 	public static void loadFirstSpectra(String projectName,String firstPklList) throws SQLException {
 		logger.info("--- Start to retrieve spectra. Please wait ...");
+		System.out.println("INFO | --- Start to retrieve spectra. Please wait ...");
 		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
 			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
 			assert StringsUtils.isEmpty(firstPklList) : "First peak list name must not be null nor empty!";
@@ -68,6 +69,7 @@ public class PeakListProvider {
 
 		} else {
 			logger.info("Load spectra from first file: " + firstPklList);
+			System.out.println("INFO | Load spectra from first file to set as reference : " + firstPklList);
 			assert (!StringsUtils.isEmpty(firstPklList) && (new File(firstPklList).exists())) : "Invalid file path!";
 			File firstPklListFile = new File(firstPklList);
 			PeaklistReader.load(firstPklListFile);
@@ -86,6 +88,7 @@ public class PeakListProvider {
 	@SuppressWarnings("restriction")
 	public static void loadSecondSpectra(String projectName, String secondPklList) throws SQLException {
 		logger.info("--- Start to retrieve spectra. Please wait ...");
+		System.out.println("INFO | --- Start to retrieve spectra. Please wait ...");
 		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
 			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
 			assert StringsUtils.isEmpty(secondPklList) : "Second peak list name must not be null nor empty!";
@@ -93,7 +96,8 @@ public class PeakListProvider {
 			ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 		} else {
-			logger.info("Load spectra from second file: {}", secondPklList);
+			logger.info("Load spectra from second file to test : {}", secondPklList);
+			System.out.println("INFO | Load spectra from second file to test: "+ secondPklList);
 			PeaklistReader.isSecondPeakList = true;
 			assert (!StringsUtils.isEmpty(secondPklList) && (new File(secondPklList).exists())) : "Invalid file path!";
 			File secondPklListFile = new File(secondPklList);

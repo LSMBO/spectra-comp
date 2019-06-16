@@ -10,7 +10,6 @@ import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
 import fr.lsmbo.msda.spectra.comp.view.dialog.LoginDialog;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -35,10 +34,10 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class MainPane extends StackPane {
@@ -57,6 +56,7 @@ public class MainPane extends StackPane {
 		// Create the main view
 		BorderPane mainView = new BorderPane();
 		mainView.setPrefSize(1400, 800);
+		model.stage = MainPane.stage;
 		// Create the glassePane
 		VBox glassPane = new VBox();
 		ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -74,10 +74,12 @@ public class MainPane extends StackPane {
 		exitFile.setGraphic(new ImageView(IconResource.getImage(ICON.EXIT)));
 		exitFile.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
 		exitFile.setOnAction((e) -> {
-			System.exit(0);
+			model.onExit();
 		});
-
 		fileMenu.getItems().addAll(exitFile);
+		menuBar.getMenus().addAll(fileMenu);
+		mainView.setTop(menuBar);
+
 		// Create main Splite pane
 		SplitPane mainSplitPane = new SplitPane();
 		mainSplitPane.setPadding(new Insets(10));
