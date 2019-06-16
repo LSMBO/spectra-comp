@@ -10,6 +10,7 @@ import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
 import fr.lsmbo.msda.spectra.comp.view.dialog.LoginDialog;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -68,7 +69,7 @@ public class MainPane extends StackPane {
 		// Create menu and menu items
 		MenuBar menuBar = new MenuBar();
 		/* File menu items */
-		Menu fileMenu = new Menu(" Actions ");
+		Menu fileMenu = new Menu(" settings ");
 		// Exit
 		MenuItem exitFile = new MenuItem(" Exit ");
 		exitFile.setGraphic(new ImageView(IconResource.getImage(ICON.EXIT)));
@@ -76,8 +77,25 @@ public class MainPane extends StackPane {
 		exitFile.setOnAction((e) -> {
 			model.onExit();
 		});
+		/* Help menu items */
+		// User guide menu item
+		Menu helpMenu = new Menu(" Help ");
+		MenuItem userGuide = new MenuItem(" User guide ");
+		userGuide.setAccelerator(new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN));
+		userGuide.setGraphic(new ImageView(IconResource.getImage(ICON.HELP)));
+		userGuide.setOnAction((ActionEvent t) -> {
+			model.onOpenUserGuide();
+		});
+		// About Recover menu item
+		MenuItem aboutSpectraComp = new MenuItem(" About ");
+		aboutSpectraComp.setAccelerator(new KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN));
+		aboutSpectraComp.setGraphic(new ImageView(IconResource.getImage(ICON.INFORMATION)));
+		aboutSpectraComp.setOnAction((ActionEvent t) -> {
+			model.onAboutSpectraComp();
+		});
+		helpMenu.getItems().addAll(userGuide, aboutSpectraComp);
 		fileMenu.getItems().addAll(exitFile);
-		menuBar.getMenus().addAll(fileMenu);
+		menuBar.getMenus().addAll(fileMenu,helpMenu);
 		mainView.setTop(menuBar);
 
 		// Create main Splite pane
