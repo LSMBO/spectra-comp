@@ -57,7 +57,7 @@ public class PeakListProvider {
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("restriction")
-	public static void loadFirstSpectra(String projectName, String firstPklList) throws SQLException {
+	public static void loadFirstSpectra(String projectName,String firstPklList) throws SQLException {
 		logger.info("--- Start to retrieve spectra. Please wait ...");
 		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
 			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";

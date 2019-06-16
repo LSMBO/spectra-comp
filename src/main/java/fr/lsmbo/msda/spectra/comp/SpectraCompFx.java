@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.db.DBAccess;
+import fr.lsmbo.msda.spectra.comp.model.ViewModel;
 import fr.lsmbo.msda.spectra.comp.view.MainPane;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ShowPopupDialog;
 import javafx.application.Application;
@@ -26,7 +27,8 @@ public class SpectraCompFx extends Application {
 			new ShowPopupDialog("Exception", "Exception was thrown on Java-FX thread: " + ex.getMessage(),
 					primaryStage);
 		});
-		MainPane mainPane = new MainPane();
+		ViewModel model = new ViewModel();
+		MainPane mainPane = new MainPane(model);
 		mainPane.stage = primaryStage;
 		primaryStage.getIcons().add(new ImageView(IconResource.getImage(ICON.SPECTRA_COMP)).getImage());
 		Scene scene = new Scene(mainPane, 1224, 800);

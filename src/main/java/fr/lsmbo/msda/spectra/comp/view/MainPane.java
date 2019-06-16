@@ -4,6 +4,7 @@ import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
+import fr.lsmbo.msda.spectra.comp.model.ViewModel;
 import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
 import fr.lsmbo.msda.spectra.comp.view.dialog.LoginDialog;
@@ -52,7 +53,7 @@ public class MainPane extends StackPane {
 
 	public static Stage stage;
 
-	public MainPane() {
+	public MainPane(ViewModel model) {
 		// Create the main view
 		BorderPane mainView = new BorderPane();
 		mainView.setPrefSize(1400, 800);
@@ -82,7 +83,7 @@ public class MainPane extends StackPane {
 		mainSplitPane.setPadding(new Insets(10));
 		mainSplitPane.setOrientation(Orientation.VERTICAL);
 		mainSplitPane.setPrefHeight(320);
-		mainSplitPane.setDividerPositions(0.6f,0.2f, 0.1f);
+		mainSplitPane.setDividerPositions(0.6f, 0.2f, 0.1f);
 		// Create the peaklists pane
 		SplitPane peaklistSplitPane = new SplitPane();
 		peaklistSplitPane.setOrientation(Orientation.HORIZONTAL);
@@ -301,8 +302,13 @@ public class MainPane extends StackPane {
 		// Create the 2 peak list pane
 		peaklistSplitPane.getItems().addAll(peaklist1SplitPane, peaklist2SplitPane);
 		peaklistSplitPane.setPadding(new Insets(10));
+		peaklistSplitPane.setMinHeight(350);
 		Button compareButton = new Button("Compare");
+		compareButton.setOnAction(e -> {
+			model.compare();
+		});
 		BorderPane graphicsPane = new BorderPane();
+		graphicsPane.setMinHeight(150);
 		// Create and Set SwingContent(swingNode);
 		HBox compareButtonPane = new HBox();
 		compareButtonPane.getChildren().addAll(compareButton);
@@ -311,7 +317,7 @@ public class MainPane extends StackPane {
 		graphicsPane.setTop(compareButtonPane);
 		graphicsPane.setCenter(swingNodeForChart);
 		compareButton.setGraphic(new ImageView(IconResource.getImage(ICON.EXECUTE)));
-		mainSplitPane.getItems().addAll(peaklistSplitPane,  graphicsPane, ConsoleView.getInstance());
+		mainSplitPane.getItems().addAll(peaklistSplitPane, graphicsPane, ConsoleView.getInstance());
 		mainView.setTop(menuBar);
 		mainView.setCenter(mainSplitPane);
 		this.getChildren().addAll(mainView);
