@@ -8,13 +8,19 @@ import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
 import fr.lsmbo.msda.spectra.comp.view.dialog.LoginDialog;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingNode;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
@@ -23,11 +29,15 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class MainPane extends StackPane {
@@ -38,18 +48,41 @@ public class MainPane extends StackPane {
 	private ComboBox<String> secondUserProjectsCBX;
 	private Label connectionLabel;
 	private Label secondConnectionLabel;
+	private final SwingNode swingNodeForChart = new SwingNode();
+
 	public static Stage stage;
 
 	public MainPane() {
 		// Create the main view
 		BorderPane mainView = new BorderPane();
 		mainView.setPrefSize(1400, 800);
+		// Create the glassePane
+		VBox glassPane = new VBox();
+		ProgressIndicator progressIndicator = new ProgressIndicator();
+		progressIndicator.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+		progressIndicator.setVisible(true);
+		glassPane.getChildren().add(progressIndicator);
+		glassPane.setAlignment(Pos.CENTER);
+		glassPane.setVisible(false);
+		// Create menu and menu items
+		MenuBar menuBar = new MenuBar();
+		/* File menu items */
+		Menu fileMenu = new Menu(" Actions ");
+		// Exit
+		MenuItem exitFile = new MenuItem(" Exit ");
+		exitFile.setGraphic(new ImageView(IconResource.getImage(ICON.EXIT)));
+		exitFile.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
+		exitFile.setOnAction((e) -> {
+			System.exit(0);
+		});
+
+		fileMenu.getItems().addAll(exitFile);
 		// Create main Splite pane
 		SplitPane mainSplitPane = new SplitPane();
 		mainSplitPane.setPadding(new Insets(10));
 		mainSplitPane.setOrientation(Orientation.VERTICAL);
 		mainSplitPane.setPrefHeight(320);
-		mainSplitPane.setDividerPositions(0.8f, 0.2f);
+		mainSplitPane.setDividerPositions(0.6f,0.2f, 0.1f);
 		// Create the peaklists pane
 		SplitPane peaklistSplitPane = new SplitPane();
 		peaklistSplitPane.setOrientation(Orientation.HORIZONTAL);
@@ -107,7 +140,7 @@ public class MainPane extends StackPane {
 			});
 		});
 		VBox warningDbPane = new VBox(2);
-		connectionLabel = new Label("Please connect to your Proline account!");
+		connectionLabel = new Label("Off connection. Connect to your Proline account please!");
 		connectionLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
 		connectionLabel.setStyle(JavaFxUtils.RED_ITALIC);
 		warningDbPane.getChildren().addAll(connectionLabel);
@@ -212,7 +245,7 @@ public class MainPane extends StackPane {
 			});
 		});
 		VBox warning2DbPane = new VBox(2);
-		secondConnectionLabel = new Label("Please connect to your Proline account!");
+		secondConnectionLabel = new Label("Off connection. Connect to your Proline account please!");
 		secondConnectionLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
 		secondConnectionLabel.setStyle(JavaFxUtils.RED_ITALIC);
 		warning2DbPane.getChildren().addAll(secondConnectionLabel);
@@ -269,9 +302,19 @@ public class MainPane extends StackPane {
 		peaklistSplitPane.getItems().addAll(peaklist1SplitPane, peaklist2SplitPane);
 		peaklistSplitPane.setPadding(new Insets(10));
 		Button compareButton = new Button("Compare");
+		BorderPane graphicsPane = new BorderPane();
+		// Create and Set SwingContent(swingNode);
+		HBox compareButtonPane = new HBox();
+		compareButtonPane.getChildren().addAll(compareButton);
+		compareButtonPane.setPadding(new Insets(5));
+		compareButtonPane.setAlignment(Pos.BASELINE_CENTER);
+		graphicsPane.setTop(compareButtonPane);
+		graphicsPane.setCenter(swingNodeForChart);
 		compareButton.setGraphic(new ImageView(IconResource.getImage(ICON.EXECUTE)));
-		mainSplitPane.getItems().addAll(peaklistSplitPane,compareButton, ConsoleView.getInstance());
-		this.getChildren().addAll(mainSplitPane);
+		mainSplitPane.getItems().addAll(peaklistSplitPane,  graphicsPane, ConsoleView.getInstance());
+		mainView.setTop(menuBar);
+		mainView.setCenter(mainSplitPane);
+		this.getChildren().addAll(mainView);
 	}
 
 	/**

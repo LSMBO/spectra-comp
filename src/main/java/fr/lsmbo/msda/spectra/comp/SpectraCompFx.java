@@ -17,7 +17,7 @@ public class SpectraCompFx extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		
+
 		// TODO Auto-generated method stub
 		Thread.currentThread().setUncaughtExceptionHandler((thread, ex) -> {
 			logger.error("Exception was thrown : {}", ex);
@@ -27,6 +27,7 @@ public class SpectraCompFx extends Application {
 					primaryStage);
 		});
 		MainPane mainPane = new MainPane();
+		mainPane.stage = primaryStage;
 		primaryStage.getIcons().add(new ImageView(IconResource.getImage(ICON.SPECTRA_COMP)).getImage());
 		Scene scene = new Scene(mainPane, 1224, 800);
 		// Add style sheets
@@ -51,7 +52,7 @@ public class SpectraCompFx extends Application {
 		// TODO Auto-generated method stub
 		super.init();
 		Config.getInstance();
-		
+
 	}
 
 	/*
