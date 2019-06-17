@@ -1,15 +1,18 @@
 package fr.lsmbo.msda.spectra.comp.view;
 
-import javax.swing.SwingUtilities;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
+import fr.lsmbo.msda.spectra.comp.model.Project;
 import fr.lsmbo.msda.spectra.comp.model.ViewModel;
 import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
 import fr.lsmbo.msda.spectra.comp.view.dialog.LoginDialog;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
@@ -44,16 +47,19 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 public class MainPane extends StackPane {
 	private TextField userNameTF;
 	private PasswordField passwordTF;
 	private TextField hostNameTF;
-	private ComboBox<String> userProjectsCBX;
-	private ComboBox<String> secondUserProjectsCBX;
 	private Label connectionLabel;
 	private Label secondConnectionLabel;
 	private final SwingNode swingNodeForChart = new SwingNode();
+	private ComboBox<Project> userProjectsCBX = new ComboBox<Project>();
+	private ComboBox<String> secondUserProjectsCBX = new ComboBox<String>();
+	private ObservableList<Project> refUserProjects = FXCollections.observableArrayList();
+	private ObservableList<Project> testUserProjects = FXCollections.observableArrayList();
 	private SpectrumView spectrumView;
 	public static Stage stage;
 
@@ -168,7 +174,18 @@ public class MainPane extends StackPane {
 			LoginDialog loginDialog = new LoginDialog();
 			loginDialog.showAndWait().ifPresent(userProject -> {
 				connectionLabel.setVisible(false);
-				userProjectsCBX.setItems(userProject);
+				refUserProjects.setAll(userProject);
+				userProjectsCBX.setItems(refUserProjects);
+				userProjectsCBX.setConverter(new StringConverter<Project>() {
+					@Override
+					public String toString(Project object) {
+						return object.getName();
+					}
+					@Override
+					public Project fromString(String string) {
+						return null;
+					}
+				});
 			});
 		});
 		VBox warningDbPane = new VBox(2);
@@ -197,7 +214,6 @@ public class MainPane extends StackPane {
 		projectsPane.add(root, 0, 1, 1, 6);
 
 		Label userProjectLabel = new Label("User projects:");
-		userProjectsCBX = new ComboBox<String>();
 
 		GridPane refPklListDBPane = new GridPane();
 		refPklListDBPane.setAlignment(Pos.TOP_LEFT);
@@ -274,8 +290,17 @@ public class MainPane extends StackPane {
 			LoginDialog loginDialog = new LoginDialog();
 			loginDialog.showAndWait().ifPresent(userProject -> {
 				secondConnectionLabel.setVisible(false);
-				secondUserProjectsCBX.setItems(userProject);
+				testUserProjects.setAll(userProject);
+				ObservableList<String> testUserProjectNames = FXCollections.observableArrayList();
+				testUserProjects.forEach(proj -> {
+					testUserProjectNames.add(proj.getName());
+				});
+				secondUserProjectsCBX.setItems(testUserProjectNames);
 			});
+		});
+		// update the view
+		secondUserProjectsCBX.setOnAction(e -> {
+			System.out.println(secondUserProjectsCBX.getValue());
 		});
 		VBox warning2DbPane = new VBox(2);
 		secondConnectionLabel = new Label("Off connection. Connect to your Proline account please!");
@@ -302,7 +327,6 @@ public class MainPane extends StackPane {
 		projects2Pane.add(secondRoot, 0, 1, 1, 6);
 
 		Label secondUserProjectLabel = new Label("User projects:");
-		secondUserProjectsCBX = new ComboBox<String>();
 
 		GridPane secondPklListDBPane = new GridPane();
 		secondPklListDBPane.setAlignment(Pos.TOP_LEFT);
@@ -381,13 +405,6 @@ public class MainPane extends StackPane {
 	}
 
 	/**
-	 * Return the list of user projects
-	 */
-	private ObservableList<String> getUserProjects(String login) throws Exception {
-		return DBSpectraHandler.findProjects(login);
-	}
-
-	/**
 	 * Test connection to database
 	 * 
 	 * @throws Exception
@@ -406,5 +423,24 @@ public class MainPane extends StackPane {
 		FileUtils.openPeakListFile(file -> {
 			text.setText(file.getPath());
 		}, stage);
+	}
+
+	/**
+	 * Create dataset nodes
+	 *
+	 */
+	// TODO better way to show datasets
+	private ArrayList<TreeItem> createDatasets(Long projectId) {
+		ArrayList<TreeItem> datasets = new ArrayList<>();
+		try {
+			DBSpectraHandler.fillDataSetByProject(projectId).forEach(ds -> {
+				TreeItem dsName = new TreeItem(ds.getName());
+				datasets.add(dsName);
+			});
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return datasets;
 	}
 }

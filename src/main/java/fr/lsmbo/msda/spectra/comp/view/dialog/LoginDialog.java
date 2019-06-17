@@ -6,6 +6,7 @@ import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.db.DBConfig;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
+import fr.lsmbo.msda.spectra.comp.model.Project;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 import javafx.collections.ObservableList;
@@ -31,7 +32,7 @@ import javafx.stage.Stage;
  * @author Aromdhani
  *
  */
-public class LoginDialog extends Dialog<ObservableList<String>> {
+public class LoginDialog extends Dialog<ObservableList<Project>> {
 	TextField userNameTF;
 	PasswordField passwordTF;
 	TextField hostNameTF;
@@ -135,10 +136,13 @@ public class LoginDialog extends Dialog<ObservableList<String>> {
 
 	/**
 	 * Return the list of user projects
+	 * 
+	 * @param login
+	 *            the login to set
+	 * @return list of projects
 	 */
-	private ObservableList<String> getUserProjects(String login) throws Exception {
+	private ObservableList<Project> getUserProjects(String login) throws Exception {
 		return DBSpectraHandler.findProjects(login);
-
 	}
 
 	/**

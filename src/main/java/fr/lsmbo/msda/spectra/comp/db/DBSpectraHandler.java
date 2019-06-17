@@ -7,7 +7,9 @@ import java.sql.Statement;
 
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
+import fr.lsmbo.msda.spectra.comp.model.Dataset;
 import fr.lsmbo.msda.spectra.comp.model.Fragment;
+import fr.lsmbo.msda.spectra.comp.model.Project;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 import javafx.collections.FXCollections;
@@ -26,7 +28,8 @@ public class DBSpectraHandler {
 	private static final String PROJECT = "SELECT * FROM external_db WHERE name=?";
 	private static final String PEAKLIST = "SELECT * FROM peaklist";
 	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.*,pklsof.name as pkl_software FROM peaklist pkl,peaklist_software pklsof,spectrum spec WHERE spec.peaklist_id=pkl.id AND pklsof.id=pkl.peaklist_software_id AND pkl.path=?";
-	private static final String PROJECT_BY_OWNER = "SELECT project.name as name FROM user_account ,project WHERE user_account.id=project.owner_id AND user_account.login=?";
+	private static final String PROJECTS_BY_OWNER = "SELECT project.id as id ,project.name as name,project.description as description FROM user_account ,project WHERE user_account.id=project.owner_id AND user_account.login=?";
+	private static final String DATASET = "SELECT ds.* ,proj.name FROM data_set ds,project proj WHERE  proj.id=ds.project_id AND ds.type IN ('AGGREGATE','IDENTIFICATION') AND ds.result_summary_id>0 AND ds.project_id=? order by ds.result_summary_id;";
 	private static Spectra spectra = new Spectra();
 
 	/**
@@ -50,7 +53,47 @@ public class DBSpectraHandler {
 	}
 
 	/**
-	 * Find all data set by project
+	 * Find all dataset by project
+	 * 
+	 * @param path
+	 *            the peaklist path
+	 * @throws SQLException
+	 */
+	public static ObservableList<Dataset> fillDataSetByProject(Long projectId) throws SQLException {
+		PreparedStatement datasetStmt = null;
+		ResultSet rs = null;
+		ObservableList<Dataset> list = FXCollections.observableArrayList();
+		try {
+			datasetStmt = DBAccess.openUdsDBConnection().prepareStatement(DATASET);
+			System.out.println("INFO | Load datasets from project=" + projectId + ".");
+			datasetStmt.setLong(1, projectId);
+			rs = datasetStmt.executeQuery();
+			while (rs.next()) {
+				Long id = rs.getLong("id");
+				String description = rs.getString("description");
+				int childCount = rs.getInt("child_count");
+				int number = rs.getInt("number");
+				String name = rs.getString("name");
+				String type = rs.getString("type");
+				Long resultSummaryId = rs.getLong("result_summary_id");
+				Long resultSetId = rs.getLong("result_set_id");
+				Long parentDatasetId = rs.getLong("parent_dataset_id");
+				Integer projId = rs.getInt("project_id");
+				if (id > 0L) {
+					Dataset dataset = new Dataset(id, description, childCount, name, number, parentDatasetId,
+							resultSetId, resultSummaryId);
+					list.add(dataset);
+				}
+			}
+		} finally {
+			tryToCloseResultSet(rs);
+			tryToCloseStatement(datasetStmt);
+		}
+		return list;
+	}
+
+	/**
+	 * Find all spectra set by project
 	 * 
 	 * @param path
 	 *            the peaklist path
@@ -163,17 +206,24 @@ public class DBSpectraHandler {
 	 * @param login
 	 * @throws Exception
 	 */
-	public static ObservableList<String> findProjects(String login) throws Exception {
+	public static ObservableList<Project> findProjects(String login) throws Exception {
 		PreparedStatement findUserStmt = null;
 		ResultSet rs = null;
-		ObservableList<String> list = FXCollections.observableArrayList();
+		ObservableList<Project> list = FXCollections.observableArrayList();
 		try {
 			assert DBAccess.openUdsDBConnection() != null : "Can't connect to uds_db!";
-			findUserStmt = DBAccess.openUdsDBConnection().prepareStatement(PROJECT_BY_OWNER);
+			findUserStmt = DBAccess.openUdsDBConnection().prepareStatement(PROJECTS_BY_OWNER);
 			findUserStmt.setString(1, login);
 			rs = findUserStmt.executeQuery();
 			while (rs.next()) {
-				list.add(rs.getString("name"));
+				long id = rs.getLong("id");
+				String name = rs.getString("name");
+				String desc = rs.getString("description");
+				if (id > 0L && !StringsUtils.isEmpty(name)) {
+					Project proj = new Project(id, name, desc);
+					list.add(proj);
+					System.out.println(proj.toString());
+				}
 			}
 		} finally {
 			tryToCloseResultSet(rs);
