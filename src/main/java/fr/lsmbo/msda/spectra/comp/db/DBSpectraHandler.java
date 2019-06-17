@@ -61,7 +61,7 @@ public class DBSpectraHandler {
 		ResultSet rs = null;
 		try {
 			spectra.initialize();
-			peakListStmt = DBAccess.openMsiDBConnection(msiName).prepareStatement(SPECTRA_BY_PEAKLIST);
+			peakListStmt = DBAccess.openFirstMsiDBConnection(msiName).prepareStatement(SPECTRA_BY_PEAKLIST);
 			System.out.println("INFO | Load spectra from '" + msiName + "' whith the peaklist path: '" + path + "'.");
 			peakListStmt.setString(1, path);
 			rs = peakListStmt.executeQuery();

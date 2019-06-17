@@ -1,5 +1,7 @@
 package fr.lsmbo.msda.spectra.comp.view;
 
+import javax.swing.SwingUtilities;
+
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
@@ -24,6 +26,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
@@ -50,7 +54,7 @@ public class MainPane extends StackPane {
 	private Label connectionLabel;
 	private Label secondConnectionLabel;
 	private final SwingNode swingNodeForChart = new SwingNode();
-
+	private SpectrumView spectrumView;
 	public static Stage stage;
 
 	public MainPane(ViewModel model) {
@@ -68,8 +72,12 @@ public class MainPane extends StackPane {
 		glassPane.setVisible(false);
 		// Create menu and menu items
 		MenuBar menuBar = new MenuBar();
-		/* File menu items */
-		Menu fileMenu = new Menu(" settings ");
+		// Settings menu items
+		Menu fileMenu = new Menu(" File ");
+		// Settings menu items
+		Menu settingsMenu = new Menu(" Settings ");
+		MenuItem dbParameters = new MenuItem(" Database parameters ");
+		dbParameters.setGraphic(new ImageView(IconResource.getImage(ICON.DATABASE)));
 		// Exit
 		MenuItem exitFile = new MenuItem(" Exit ");
 		exitFile.setGraphic(new ImageView(IconResource.getImage(ICON.EXIT)));
@@ -77,7 +85,7 @@ public class MainPane extends StackPane {
 		exitFile.setOnAction((e) -> {
 			model.onExit();
 		});
-		/* Help menu items */
+		// Help menu items
 		// User guide menu item
 		Menu helpMenu = new Menu(" Help ");
 		MenuItem userGuide = new MenuItem(" User guide ");
@@ -95,7 +103,8 @@ public class MainPane extends StackPane {
 		});
 		helpMenu.getItems().addAll(userGuide, aboutSpectraComp);
 		fileMenu.getItems().addAll(exitFile);
-		menuBar.getMenus().addAll(fileMenu,helpMenu);
+		settingsMenu.getItems().addAll(dbParameters);
+		menuBar.getMenus().addAll(fileMenu, settingsMenu, helpMenu);
 		mainView.setTop(menuBar);
 
 		// Create main Splite pane
@@ -109,14 +118,15 @@ public class MainPane extends StackPane {
 		peaklistSplitPane.setOrientation(Orientation.HORIZONTAL);
 		peaklistSplitPane.setPrefHeight(320);
 		peaklistSplitPane.setDividerPositions(0.5f, 0.5f);
-
+		// Create radio buttons
 		ToggleGroup group = new ToggleGroup();
 		RadioButton pklListRefFileRB = new RadioButton("Select the first peaklist file to set as a reference");
 		pklListRefFileRB.setToggleGroup(group);
-		pklListRefFileRB.setSelected(true);
 		RadioButton pklListRefDBRB = new RadioButton(
 				"Select the first peaklist to set as a reference from your Proline projects");
+		pklListRefDBRB.setSelected(true);
 		pklListRefDBRB.setToggleGroup(group);
+
 		// Create the 1 peak list pane
 		SplitPane peaklist1SplitPane = new SplitPane();
 		peaklist1SplitPane.setOrientation(Orientation.VERTICAL);
@@ -125,14 +135,14 @@ public class MainPane extends StackPane {
 
 		VBox warningPane = new VBox(2);
 		Label emptyFirstPklListLabel = new Label(
-				"Choose the first peaklist file as reference. Make sure that you have selected a valid file!");
+				"Choose the first peaklist file to set as reference. Make sure that you have selected a valid file!");
 		emptyFirstPklListLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
 		emptyFirstPklListLabel.setStyle(JavaFxUtils.RED_ITALIC);
 		warningPane.getChildren().addAll(emptyFirstPklListLabel);
 		Label refPklListLabel = new Label("Reference peaklist:");
 		TextField refPklListTF = new TextField();
 		refPklListTF.setText(Session.USER_PARAMS.getFirstPklList());
-		refPklListTF.setTooltip(new Tooltip("Select a reference peaklist."));
+		refPklListTF.setTooltip(new Tooltip("Choose the first peaklist file to set as reference."));
 		Button loadRefPklListButton = new Button("Load");
 		loadRefPklListButton.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
 		loadRefPklListButton.setOnAction(e -> {
@@ -151,7 +161,7 @@ public class MainPane extends StackPane {
 		refPklListPane.add(refPklListTF, 1, 2, 1, 1);
 		refPklListPane.add(loadRefPklListButton, 2, 2, 1, 1);
 		refPklListPane.setHgrow(refPklListTF, Priority.ALWAYS);
-		// from database
+		// From Proline projects
 		Button ButtonConnection = new Button("Connect ...");
 		ButtonConnection.setGraphic(new ImageView(IconResource.getImage(ICON.ADMIN)));
 		ButtonConnection.setOnAction(e -> {
@@ -224,9 +234,9 @@ public class MainPane extends StackPane {
 		ToggleGroup group2 = new ToggleGroup();
 		RadioButton secondPklListRefFileRB = new RadioButton("Select the second peaklist file to test");
 		secondPklListRefFileRB.setToggleGroup(group2);
-		secondPklListRefFileRB.setSelected(true);
 		RadioButton secondPklListDBRB = new RadioButton(
-				"Select the second peaklist file to test from your Proline projects");
+				"Select the second peaklist to test from your Proline projects");
+		secondPklListDBRB.setSelected(true);
 		secondPklListDBRB.setToggleGroup(group2);
 
 		VBox warning2Pane = new VBox(2);
@@ -238,12 +248,12 @@ public class MainPane extends StackPane {
 		Label secondPklListLabel = new Label("Second peaklist:");
 		TextField secondPklListTF = new TextField();
 		secondPklListTF.setText(Session.USER_PARAMS.getSecondPklList());
-		secondPklListTF.setTooltip(new Tooltip("Select the second peaklist to test."));
+		secondPklListTF.setTooltip(new Tooltip("Choose the second peaklist file to test."));
 		Button loadSecondPklListButton = new Button("Load");
 		loadSecondPklListButton.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
 		loadSecondPklListButton.setOnAction(e -> {
 			load(secondPklListTF);
-			model.loadSecondPkl("test_pkl", secondPklListTF.getText());
+			model.loadSecondPkl("tested_pkl", secondPklListTF.getText());
 		});
 		// Layout
 		GridPane secondPklListPane = new GridPane();
@@ -277,7 +287,6 @@ public class MainPane extends StackPane {
 		secondConnectionLabel.setPrefWidth(580);
 		StackPane secondRoot = new StackPane();
 		secondRoot.setPadding(new Insets(5));
-		// Set components control
 		TreeItem secondRootItem = new TreeItem("Peaklists");
 		secondRootItem.setExpanded(true);
 		secondRootItem.getChildren().addAll();
@@ -321,8 +330,34 @@ public class MainPane extends StackPane {
 		secondUserProjectLabel.disableProperty().bind(secondPklListRefFileRB.selectedProperty());
 		secondButtonConnection.disableProperty().bind(secondPklListRefFileRB.selectedProperty());
 		secondUserProjectsCBX.disableProperty().bind(secondPklListRefFileRB.selectedProperty());
+
 		// Create the 2 peak list pane
-		peaklistSplitPane.getItems().addAll(peaklist1SplitPane, peaklist2SplitPane);
+		// Create first tabpane
+		TabPane referenceTabPane = new TabPane();
+		Tab referenxcePklFileTab = new Tab("Peaklist File");
+		referenxcePklFileTab.setContent(refPklListPane);
+		referenxcePklFileTab.setClosable(false);
+
+		Tab referencePklFromDBTab = new Tab("Proline projects");
+		referencePklFromDBTab.setContent(refPklListDBPane);
+		referencePklFromDBTab.setClosable(false);
+		referenceTabPane.getTabs().addAll(referencePklFromDBTab, referenxcePklFileTab);
+		referenceTabPane.getSelectionModel().select(referencePklFromDBTab);
+
+		// Create second tabpane
+		TabPane testedTabPane = new TabPane();
+		Tab testedPklFileTab = new Tab("Peaklist File");
+		testedPklFileTab.setContent(secondPklListPane);
+		testedPklFileTab.setClosable(false);
+
+		Tab testedPklFromDBTab = new Tab("Proline projects");
+		testedPklFromDBTab.setContent(secondPklListDBPane);
+		testedPklFromDBTab.setClosable(false);
+
+		testedTabPane.getTabs().addAll(testedPklFromDBTab, testedPklFileTab);
+		testedTabPane.getSelectionModel().select(testedPklFromDBTab);
+		//
+		peaklistSplitPane.getItems().addAll(referenceTabPane, testedTabPane);
 		peaklistSplitPane.setPadding(new Insets(10));
 		peaklistSplitPane.setMinHeight(350);
 		Button compareButton = new Button("Compare");
