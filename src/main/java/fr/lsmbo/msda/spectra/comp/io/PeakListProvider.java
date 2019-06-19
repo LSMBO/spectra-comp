@@ -28,9 +28,9 @@ public class PeakListProvider {
 	private static String secondPklList;
 
 	/**
-	 * @return the first peak list
+	 * @return the reference peaklist file path
 	 */
-	public static final String getFirstPklList() {
+	public static final String getRefPkl() {
 		return firstPklList;
 	}
 
@@ -42,67 +42,79 @@ public class PeakListProvider {
 	}
 
 	/**
-	 * @return the second peak list
+	 * @return the tested peaklist file path
 	 */
-	public static final String getSecondPklList() {
+	public static final String getTestedPkl() {
 		return secondPklList;
 	}
 
 	/**
-	 * Load first peak list
+	 * Load reference peak list from a Proline project.
 	 * 
-	 * @param projectName
-	 *            the project name
-	 * @param firstPklList
-	 *            the first peak list
+	 * @param dbName
+	 *            The database name to connect to. It's always in this form
+	 *            msi_db_project_ID
+	 * @param rsmIds
+	 *            the result_summary ids from where to compute the spectra.
+	 *
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("restriction")
-	public static void loadFirstSpectra(String projectName, Set<Long> rsmIds) throws SQLException {
-		logger.info("--- Start to retrieve spectra. Please wait ...");
-		System.out.println("INFO | --- Start to retrieve spectra. Please wait ...");
+	public static void loadRefSpectraFrmProline(String dbName, Set<Long> rsmIds) throws SQLException {
 		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
-			assert !StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
+			assert !StringsUtils.isEmpty(dbName) : "Project name must not be null nor empty!";
 			assert !rsmIds.isEmpty() : "Rsm Ids must not be empty!";
+			logger.info("--- Start to retrieve spectra from reference peaklist from Proline project. Please wait ...");
+			System.out.println(
+					"INFO | Start to retrieve spectra from reference peaklist from Proline project. Please wait ...");
 			// Find the msi_search_ids
-			Set<Long> msiSearchIds = DBSpectraHandler.fillMsiSerachIds(projectName, rsmIds);
-			DBSpectraHandler.fillSpecByPeakList(projectName, msiSearchIds);
+			Set<Long> msiSearchIds = DBSpectraHandler.fillMsiSerachIds(dbName, rsmIds);
+			DBSpectraHandler.fillSpecByPeakList(dbName, msiSearchIds);
 			ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 
 		}
 	}
 
+	/**
+	 * Load the reference spectra from a peaklist file.
+	 * 
+	 * @param refPklFilePath
+	 *            The path of the reference peaklist file.
+	 * @throws Exception
+	 */
 	@SuppressWarnings("restriction")
-	public static void loadFirstSpectraFromFile(String firstPklListPath) throws Exception {
-		logger.info("--- Start to retrieve spectra. Please wait ...");
-		System.out.println("INFO | --- Start to retrieve spectra. Please wait ...");
+	public static void loadRefSpectraFromFile(String refPklFilePath) throws Exception {
 		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.FILE) {
-			logger.info("Load spectra from first file: " + firstPklListPath);
-			System.out.println("INFO | Load spectra from first file to set as reference : " + firstPklListPath);
-			assert (!StringsUtils.isEmpty(firstPklListPath)
-					&& (new File(firstPklListPath).exists())) : "Invalid file path!";
-			File firstPklListFile = new File(firstPklListPath);
+			assert (!StringsUtils.isEmpty(refPklFilePath)
+					&& (new File(refPklFilePath).exists())) : "Invalid file path!";
+			logger.info("Load spectra to test from the filet : {} . Please wait ...", refPklFilePath);
+			System.out.println(
+					"INFO | --- Load spectra to test from the filet  : " + refPklFilePath + " . Please wait ...");
+			File firstPklListFile = new File(refPklFilePath);
 			PeaklistReader.load(firstPklListFile);
 		}
 	}
 
 	/**
-	 * Load the second peak list
+	 * Load tested peaklist from a Proline project.
 	 * 
-	 * @param projectName
-	 *            the project name
-	 * @param secondPklList
-	 *            the second peak list
-	 * @throws Exception
+	 * @param dbName
+	 *            The database name to connect to. It's always in this form
+	 *            msi_db_project_ID
+	 * @param rsmIds
+	 *            the result_summary ids from where to compute the spectra.
+	 *
+	 * @throws SQLException
 	 */
 	@SuppressWarnings("restriction")
-	public static void loadSecondSpectra(String projectName, Set<Long> rsmIds) throws Exception {
-		logger.info("--- Start to retrieve spectra. Please wait ...");
-		System.out.println("INFO | --- Start to retrieve spectra. Please wait ...");
+	public static void loadTestedSpectraFrmProline(String projectName, Set<Long> rsmIds) throws Exception {
 		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
 			assert !StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
-			assert !rsmIds.isEmpty() : "Rsm Ids must not be empty!";
+			assert !rsmIds.isEmpty() : "Rsm ids must not be empty!";
+			logger.info("--- Start to retrieve spectra from reference peaklist from Proline project. Please wait ...");
+			System.out.println(
+					"INFO | Start to retrieve spectra from reference peaklist from Proline project. Please wait ...");
 			// Find the msi_search_ids
 			Set<Long> msiSearchIds = DBSpectraHandler.fillMsiSerachIds(projectName, rsmIds);
 			DBSpectraHandler.fillSpecByPeakList(projectName, msiSearchIds);
@@ -112,25 +124,22 @@ public class PeakListProvider {
 	}
 
 	/**
-	 * Load the second peak list
+	 * Load the tested spectra from a peaklist file.
 	 * 
-	 * @param projectName
-	 *            the project name
-	 * @param secondPklList
-	 *            the second peak list
-	 * @throws SQLException
+	 * @param testPklFilePath
+	 *            The path of the reference peaklist file.
+	 * @throws Exception
 	 */
 	@SuppressWarnings("restriction")
-	public static void loadSecondSpectraFromFile(String secondPklListPath) throws SQLException {
-		logger.info("--- Start to retrieve spectra. Please wait ...");
-		System.out.println("INFO | --- Start to retrieve spectra. Please wait ...");
+	public static void loadTestedSpectraFromFile(String testPklFilePath) throws Exception {
 		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.FILE) {
-			logger.info("Load spectra from second file to test : {}", secondPklListPath);
-			System.out.println("INFO | Load spectra from second file to test: " + secondPklListPath);
-			assert (!StringsUtils.isEmpty(secondPklListPath)
-					&& (new File(secondPklListPath).exists())) : "Invalid file path!";
-			File secondPklListFile = new File(secondPklListPath);
-			PeaklistReader.load(secondPklListFile);
+			assert (!StringsUtils.isEmpty(testPklFilePath)
+					&& (new File(testPklFilePath).exists())) : "Invalid file path !";
+			logger.info("Load spectra to test from the filet : {} . Please wait ...", testPklFilePath);
+			System.out.println(
+					"INFO | --- Load spectra to test from the filet  : " + testPklFilePath + " . Please wait ...");
+			File testPklFile = new File(testPklFilePath);
+			PeaklistReader.load(testPklFile);
 		}
 	}
 

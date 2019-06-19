@@ -22,17 +22,17 @@ public class ViewModel {
 	}
 
 	/***
-	 * Load reference spectra from peaklist file
+	 * Load the reference spectra from a peaklist file
 	 * 
-	 * @param firstPklList
-	 *            the reference peaklist file path
+	 * @param refPklFilePath
+	 *            the peaklist file path from where the spectra will be loaded.
 	 */
-	public void loadFirstPkl(String firstPklList) {
+	public void loadRefPklFile(String refPklFilePath) {
 		try {
 			PeaklistReader.isSecondPeakList = false;
-			PeakListProvider.loadFirstSpectraFromFile(firstPklList);
+			PeakListProvider.loadRefSpectraFromFile(refPklFilePath);
 			System.out.println("INFO | " + ListOfSpectra.getFirstSpectra().getSpectraAsObservable().size()
-					+ "  spectrum was found from reference spectra.");
+					+ "  spectrum was found from the reference spectra.");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -40,33 +40,53 @@ public class ViewModel {
 	}
 
 	/***
-	 * Load tested spectra from peaklist file
+	 * Load the spectra to test from a peaklist file
 	 * 
-	 * @param firstPklList
-	 *            the tested peaklist file path
+	 * @param testPklFilePath
+	 *            the peaklist file path from where the spectra will be loaded.
 	 */
-	public void loadSecondPkl(String secondPklList) {
+	public void loadTestedPklFile(String testPklFilePath) {
 		try {
 			PeaklistReader.isSecondPeakList = true;
-			PeakListProvider.loadSecondSpectraFromFile(secondPklList);
+			PeakListProvider.loadTestedSpectraFromFile(testPklFilePath);
 			System.out.println("INFO | " + ListOfSpectra.getSecondSpectra().getSpectraAsObservable().size()
-					+ " spectrum was found from tested spectra.");
-			System.out.println();
-		} catch (SQLException e) {
+					+ " spectrum was found from the tested spectra.");
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	/***
-	 * Load tested spectra from a Proline project
+	/**
+	 * Load reference spectra from a Proline project.
 	 * 
-	 * @param firstPklList
-	 *            the reference peaklist file path
+	 * @param dbName
+	 *            The database name to connect to. Usually it's
+	 *            msi_db_project_ID
+	 * @param rsmIds
+	 *            the result_summary ids from where to compute the spectra.
 	 */
-	public void loadRefSpectraProline(String projectName, Set<Long> rsmIds) {
+	void loadRefSpectraProline(String dbName, Set<Long> rsmIds) {
 		try {
-			PeakListProvider.loadFirstSpectra(projectName, rsmIds);
+			PeakListProvider.loadRefSpectraFrmProline(dbName, rsmIds);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Load tested spectra from a Proline project.
+	 * 
+	 * @param dbName
+	 *            the database name to connect to. Usually it's
+	 *            msi_db_project_ID
+	 * @param rsmIds
+	 *            the result_summary ids from where to compute the spectra.
+	 */
+	public void loadTestedSpectraProline(String dbName, Set<Long> rsmIds) {
+		try {
+			PeakListProvider.loadTestedSpectraFrmProline(dbName, rsmIds);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -74,23 +94,7 @@ public class ViewModel {
 	}
 
 	/***
-	 * Load tested spectra from a Proline project
-	 * 
-	 * @param firstPklList
-	 *            the tested peaklist file path
-	 */
-	public void loadTestedSpectraProline(String projectName, Set<Long> rsmIds) {
-		try {
-			PeakListProvider.loadSecondSpectra(projectName, rsmIds);
-			System.out.println();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	/***
-	 * Exit software
+	 * Exit Spectra-comp software
 	 */
 	public void onExit() {
 		System.out.println("WARN | Exit spectra-comp");
@@ -110,6 +114,7 @@ public class ViewModel {
 
 	/***
 	 * Open user guide
+	 * 
 	 */
 	public void onOpenUserGuide() {
 	}

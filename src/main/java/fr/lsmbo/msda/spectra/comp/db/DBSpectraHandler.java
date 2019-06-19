@@ -118,7 +118,8 @@ public class DBSpectraHandler {
 					Long id = rs.getLong("msi_search_id");
 					msiIds.add(id);
 				}
-				System.out.println("INFO | Retrieve msi_search ids has finished. " + msiIds.size() + " msi_search were found.");
+				System.out.println(
+						"INFO | Retrieve msi_search ids has finished. " + msiIds.size() + " msi_search were found.");
 			}
 		} finally {
 			tryToCloseResultSet(rs);

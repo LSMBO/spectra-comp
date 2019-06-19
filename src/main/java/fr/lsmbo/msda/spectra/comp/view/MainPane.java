@@ -16,6 +16,7 @@ import fr.lsmbo.msda.spectra.comp.model.Project;
 import fr.lsmbo.msda.spectra.comp.model.ViewModel;
 import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
+import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 import fr.lsmbo.msda.spectra.comp.view.dialog.LoginDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -67,9 +68,13 @@ public class MainPane extends StackPane {
 	private ObservableList<Project> refUserProjects = FXCollections.observableArrayList();
 	private ObservableList<Project> testUserProjects = FXCollections.observableArrayList();
 	private SpectrumView spectrumView;
-	//
+	// Return reference Pkl in map
 	Map<DataSource, Object> refPklByDataSourceMap = new HashMap<>();
+	// Return tested Pkl in map
 	Map<DataSource, Object> testedPklByDataSourceMap = new HashMap<>();
+	// Database name
+	String refDbName = null;
+	String testDbName = null;
 	// Components
 	private StackPane firstRoot;
 	private TreeItem rootItem;
@@ -215,6 +220,7 @@ public class MainPane extends StackPane {
 		});
 		// update the view
 		userProjectsCBX.setOnAction(e -> {
+			refDbName = "msi_db_project_" + userProjectsCBX.getValue().getId();
 			rootItem.getChildren().clear();
 			rootItem.getChildren().addAll(createDatasets(userProjectsCBX.getValue().getId()));
 			treeView = new TreeView(rootItem);
@@ -348,6 +354,7 @@ public class MainPane extends StackPane {
 		});
 		// update the view
 		secondUserProjectsCBX.setOnAction(e -> {
+			testDbName = "msi_db_project_" + secondUserProjectsCBX.getValue().getId();
 			secondRootItem.getChildren().clear();
 			secondRootItem.getChildren().addAll(createDatasets(secondUserProjectsCBX.getValue().getId()));
 			secondTreeView = new TreeView(secondRootItem);
@@ -440,25 +447,30 @@ public class MainPane extends StackPane {
 		compareButton.setOnAction(e -> {
 			if (pklListRefFileRB.isSelected()) {
 				Session.USER_PARAMS.setDataSource("file");
-				model.loadFirstPkl(refPklListTF.getText());
+				model.loadRefPklFile(refPklListTF.getText());
 			} else {
+
 				Session.USER_PARAMS.setDataSource("database");
-				System.out.println("INFO | Rsm id=# "
-						+ treeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
+				System.out.println("INFO | Parameters [ DB: " + refDbName + " ; rsm_id: # "
+						+ treeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId() + " ]");
 				HashSet<Long> rsmIds = new HashSet<>();
 				rsmIds.add(treeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
-				model.loadTestedSpectraProline("msi_db_project_10", rsmIds);
+				assert !StringsUtils.isEmpty(refDbName)
+						&& !rsmIds.isEmpty() : "Inavlid parameters for reference peaklists!";
+				model.loadTestedSpectraProline(refDbName, rsmIds);
 			}
 			if (secondPklListRefFileRB.isSelected()) {
 				Session.USER_PARAMS.setDataSource("file");
-				model.loadSecondPkl(secondPklListTF.getText());
+				model.loadTestedPklFile(secondPklListTF.getText());
 			} else {
 				Session.USER_PARAMS.setDataSource("database");
-				System.out.println("INFO | Rsm id=# "
-						+ secondTreeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
+				System.out.println("INFO | Parameters [ DB: " + testDbName + " ; rsm_id: # "
+						+ secondTreeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId() + " ]");
 				HashSet<Long> rsmIds = new HashSet<>();
 				rsmIds.add(secondTreeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
-				model.loadTestedSpectraProline("msi_db_project_10", rsmIds);
+				assert !StringsUtils.isEmpty(testDbName)
+						&& !rsmIds.isEmpty() : "Inavlid parameters for tested peaklists!";
+				model.loadTestedSpectraProline(testDbName, rsmIds);
 			}
 			model.compare();
 		});
