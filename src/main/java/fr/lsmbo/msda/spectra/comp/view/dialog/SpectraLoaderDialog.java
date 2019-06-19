@@ -51,7 +51,7 @@ import javafx.util.StringConverter;
  * @author Aromdhani
  *
  */
-public class SpectraLoaderDialog extends Dialog<Object> {
+public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 	// Components
 	private Label connectionLabel;
 	private Label secondConnectionLabel;

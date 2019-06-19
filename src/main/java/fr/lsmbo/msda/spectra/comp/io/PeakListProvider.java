@@ -51,11 +51,9 @@ public class PeakListProvider {
 	/**
 	 * Load reference peak list from a Proline project.
 	 * 
-	 * @param dbName
-	 *            The database name to connect to. It's always in this form
-	 *            msi_db_project_ID
-	 * @param rsmIds
-	 *            the result_summary ids from where to compute the spectra.
+	 * @param dbName The database name to connect to. It's always in this form
+	 *               msi_db_project_ID
+	 * @param rsmIds the result_summary ids from where to compute the spectra.
 	 *
 	 * @throws SQLException
 	 */
@@ -79,8 +77,7 @@ public class PeakListProvider {
 	/**
 	 * Load the reference spectra from a peaklist file.
 	 * 
-	 * @param refPklFilePath
-	 *            The path of the reference peaklist file.
+	 * @param refPklFilePath The path of the reference peaklist file.
 	 * @throws Exception
 	 */
 	@SuppressWarnings("restriction")
@@ -88,9 +85,9 @@ public class PeakListProvider {
 		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.FILE) {
 			assert (!StringsUtils.isEmpty(refPklFilePath)
 					&& (new File(refPklFilePath).exists())) : "Invalid file path!";
-			logger.info("Load spectra to test from the filet : {} . Please wait ...", refPklFilePath);
+			logger.info("Load reference spectra from the file : {} . Please wait ...", refPklFilePath);
 			System.out.println(
-					"INFO | --- Load spectra to test from the filet  : " + refPklFilePath + " . Please wait ...");
+					"INFO | --- Load reference spectra from the file  : " + refPklFilePath + " . Please wait ...");
 			File firstPklListFile = new File(refPklFilePath);
 			PeaklistReader.load(firstPklListFile);
 		}
@@ -99,11 +96,9 @@ public class PeakListProvider {
 	/**
 	 * Load tested peaklist from a Proline project.
 	 * 
-	 * @param dbName
-	 *            The database name to connect to. It's always in this form
-	 *            msi_db_project_ID
-	 * @param rsmIds
-	 *            the result_summary ids from where to compute the spectra.
+	 * @param dbName The database name to connect to. It's always in this form
+	 *               msi_db_project_ID
+	 * @param rsmIds the result_summary ids from where to compute the spectra.
 	 *
 	 * @throws SQLException
 	 */
@@ -126,8 +121,7 @@ public class PeakListProvider {
 	/**
 	 * Load the tested spectra from a peaklist file.
 	 * 
-	 * @param testPklFilePath
-	 *            The path of the reference peaklist file.
+	 * @param testPklFilePath The path of the reference peaklist file.
 	 * @throws Exception
 	 */
 	@SuppressWarnings("restriction")
@@ -135,9 +129,9 @@ public class PeakListProvider {
 		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.FILE) {
 			assert (!StringsUtils.isEmpty(testPklFilePath)
 					&& (new File(testPklFilePath).exists())) : "Invalid file path !";
-			logger.info("Load spectra to test from the filet : {} . Please wait ...", testPklFilePath);
+			logger.info("Load spectra to test from the file : {} . Please wait ...", testPklFilePath);
 			System.out.println(
-					"INFO | --- Load spectra to test from the filet  : " + testPklFilePath + " . Please wait ...");
+					"INFO | --- Load spectra to test from the file  : " + testPklFilePath + " . Please wait ...");
 			File testPklFile = new File(testPklFilePath);
 			PeaklistReader.load(testPklFile);
 		}
@@ -161,24 +155,21 @@ public class PeakListProvider {
 	}
 
 	/**
-	 * @param firstPklList
-	 *            the first peak list to set
+	 * @param firstPklList the first peak list to set
 	 */
 	public static final void setFirstPklList(String firstPklList) {
 		PeakListProvider.firstPklList = firstPklList;
 	}
 
 	/**
-	 * @param projectName
-	 *            the project name to set
+	 * @param projectName the project name to set
 	 */
 	public static final void setProjectName(String projectName) {
 		PeakListProvider.projectName = projectName;
 	}
 
 	/**
-	 * @param secondPklList
-	 *            the second peak list to set
+	 * @param secondPklList the second peak list to set
 	 */
 	public static final void setSecondPklList(String secondPklList) {
 		PeakListProvider.secondPklList = secondPklList;
