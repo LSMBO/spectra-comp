@@ -7,14 +7,43 @@ import fr.lsmbo.msda.spectra.comp.io.PeakListProvider;
 import fr.lsmbo.msda.spectra.comp.io.PeaklistReader;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.utils.ConfirmDialog;
-import fr.lsmbo.msda.spectra.comp.view.dialog.LoginDialog;
 import fr.lsmbo.msda.spectra.comp.view.dialog.SpectraLoaderDialog;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 public class ViewModel {
 	public static Stage stage;
+	private ObservableList<Spectrum> refItems;
+	private ObservableList<Spectrum> testItems;
+	
+	/**
+	 * @return the refItems
+	 */
+	public final ObservableList<Spectrum> getRefItems() {
+		return refItems;
+	}
+
+	/**
+	 * @param refItems the refItems to set
+	 */
+	public final void setRefItems(ObservableList<Spectrum> refItems) {
+		this.refItems = refItems;
+	}
+
+	/**
+	 * @return the testItems
+	 */
+	public final ObservableList<Spectrum> getTestItems() {
+		return testItems;
+	}
+
+	/**
+	 * @param testItems the testItems to set
+	 */
+	public final void setTestItems(ObservableList<Spectrum> testItems) {
+		this.testItems = testItems;
+	}
 
 	/***
 	 * Compare spectra

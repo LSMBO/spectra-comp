@@ -37,6 +37,7 @@ public class Spectrum {
 	private String m_title = null;
 	private Integer nbMatch;
 	private Boolean identified;
+	
 	private float retentionTime;
 
 	// The index of the line start in file of the spectrum

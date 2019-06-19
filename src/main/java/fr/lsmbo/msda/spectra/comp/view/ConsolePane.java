@@ -22,7 +22,7 @@ import javafx.scene.web.WebView;
  *
  */
 
-public class ConsoleView {
+public class ConsolePane {
 
 	public static final TabPane getInstance() {
 		WebView webview = new WebView();

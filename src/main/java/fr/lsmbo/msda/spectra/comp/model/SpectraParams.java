@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fr.lsmbo.msda.spectra.comp.db.DataSource;
-import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 public class SpectraParams {
 	// Return reference Pkl in map

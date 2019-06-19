@@ -28,7 +28,7 @@ import fr.lsmbo.msda.spectra.comp.model.Spectrum;
  * @author Aromdhani
  *
  */
-public class SpectrumView {
+public class SpectrumPane {
 	/**
 	 * The spectrum to plot
 	 */
@@ -42,7 +42,7 @@ public class SpectrumView {
 	 */
 	private SpectrumPanel panel;
 
-	public SpectrumView(Spectrum spectrumToPlot) {
+	public SpectrumPane(Spectrum spectrumToPlot) {
 		this.spectrum = spectrumToPlot;
 		this.fragments = spectrumToPlot.getFragments();
 		generateSpectrumPanel(true, true); // Called in the constructor to

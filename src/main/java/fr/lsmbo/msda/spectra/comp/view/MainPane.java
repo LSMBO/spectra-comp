@@ -8,8 +8,10 @@ import java.util.Map;
 
 import org.google.jhsheets.filtered.FilteredTableView;
 import org.google.jhsheets.filtered.tablecolumn.FilterableBooleanTableColumn;
+import org.google.jhsheets.filtered.tablecolumn.FilterableDoubleTableColumn;
 import org.google.jhsheets.filtered.tablecolumn.FilterableFloatTableColumn;
 import org.google.jhsheets.filtered.tablecolumn.FilterableIntegerTableColumn;
+import org.google.jhsheets.filtered.tablecolumn.FilterableLongTableColumn;
 import org.google.jhsheets.filtered.tablecolumn.FilterableStringTableColumn;
 
 import fr.lsmbo.msda.spectra.comp.IconResource;
@@ -43,11 +45,14 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -68,9 +73,9 @@ public class MainPane extends StackPane {
 	// Filtered table
 	private FilteredTableView<Spectrum> refFilteredTable;
 	// Filtered columns
-	private FilterableIntegerTableColumn<Spectrum, Integer> refIdColumn;
+	private FilterableLongTableColumn<Spectrum, Long> refIdColumn;
 	private FilterableStringTableColumn<Spectrum, String> refTitleColumn;
-	private FilterableFloatTableColumn<Spectrum, Float> refMozColumn;
+	private FilterableDoubleTableColumn<Spectrum, Double> refMozColumn;
 	private FilterableFloatTableColumn<Spectrum, Float> refIntensityColumn;
 	private FilterableIntegerTableColumn<Spectrum, Integer> refChargeColumn;
 	private FilterableFloatTableColumn<Spectrum, Float> refRtColumn;
@@ -79,16 +84,16 @@ public class MainPane extends StackPane {
 	// Test table view
 	private FilteredTableView<Spectrum> testFilteredTable;
 	// Filtered columns
-	private FilterableIntegerTableColumn<Spectrum, Integer> tesIdColumn;
+	private FilterableLongTableColumn<Spectrum, Integer> testIdColumn;
 	private FilterableStringTableColumn<Spectrum, String> testTitleColumn;
-	private FilterableFloatTableColumn<Spectrum, Float> testMozColumn;
+	private FilterableDoubleTableColumn<Spectrum, Float> testMozColumn;
 	private FilterableFloatTableColumn<Spectrum, Float> testIntensityColumn;
 	private FilterableIntegerTableColumn<Spectrum, Integer> testChargeColumn;
 	private FilterableFloatTableColumn<Spectrum, Float> testRtColumn;
 	private FilterableIntegerTableColumn<Spectrum, Integer> testNbrFragmentsColumn;
-	private FilterableBooleanTableColumn<Spectrum, Boolean> tstIdentifiedColumn;
+	private FilterableBooleanTableColumn<Spectrum, Boolean> testIdentifiedColumn;
 	// Others
-	private SpectrumView spectrumView;
+	private SpectrumPane spectrumPane;
 	private final SwingNode swingNodeForChart = new SwingNode();
 
 	private Label connectionLabel;
@@ -177,7 +182,90 @@ public class MainPane extends StackPane {
 		helpMenu.getItems().addAll(userGuide, aboutSpectraComp);
 		menuBar.getMenus().addAll(fileMenu, settingsMenu, helpMenu);
 		mainView.setTop(menuBar);
+		// Create ref table view
+		/***********************
+		 * Filtered table view *
+		 ***********************/
+		refFilteredTable = new FilteredTableView<>(model.getRefItems());
+		refFilteredTable.setId("filtered-ref-table");
+		// Id column
+		refIdColumn = new FilterableLongTableColumn<>("Id");
+		refIdColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Long>("m_id"));
 
+		// Title Column
+		refTitleColumn = new FilterableStringTableColumn<>("Title");
+		refTitleColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, String>("m_title"));
+
+		// Mz Column
+		refMozColumn = new FilterableDoubleTableColumn<>("Mz");
+		refMozColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Double>("m_precursorMoz"));
+
+		// Intensity Column
+		refIntensityColumn = new FilterableFloatTableColumn<>("Intensity");
+		refIntensityColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Float>("m_precursorIntensity"));
+
+		// Charge Column
+		refChargeColumn = new FilterableIntegerTableColumn<>("Charge");
+		refChargeColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Integer>("m_precursorCharge"));
+
+		// RT Column
+		refRtColumn = new FilterableFloatTableColumn<>("Retention time");
+		refRtColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Float>("retentionTime"));
+
+		// Fragment number
+		refNbrFragmentsColumn = new FilterableIntegerTableColumn<>("Fragment number");
+		refNbrFragmentsColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Integer>("nbFragments"));
+
+		// Identified Column
+		refIdentifiedColumn = new FilterableBooleanTableColumn<>("Identified");
+		refFilteredTable.getColumns().setAll(refIdColumn, refTitleColumn, refMozColumn, refIntensityColumn, refChargeColumn,
+				refRtColumn, refNbrFragmentsColumn, refIdentifiedColumn );
+
+		refFilteredTable.autosize();
+		refFilteredTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		refFilteredTable.setPadding(new Insets(5, 5, 5, 5));
+		
+		/***********************
+		 * Filtered table view *
+		 ***********************/
+		testFilteredTable = new FilteredTableView<>(model.getTestItems());
+		testFilteredTable.setId("filtered-test-table");
+			// Id column
+		testIdColumn = new FilterableLongTableColumn<>("Id");
+		testIdColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Long>("m_id"));
+
+		// Title Column
+		testTitleColumn = new FilterableStringTableColumn<>("Title");
+		testTitleColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, String>("m_title"));
+
+		// Mz Column
+		testMozColumn = new FilterableDoubleTableColumn<>("Mz");
+		testMozColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Double>("m_precursorMoz"));
+
+		// Intensity Column
+		testIntensityColumn = new FilterableFloatTableColumn<>("Intensity");
+		testIntensityColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Float>("m_precursorIntensity"));
+
+		// Charge Column
+		testChargeColumn = new FilterableIntegerTableColumn<>("Charge");
+		testChargeColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Integer>("m_precursorCharge"));
+
+		// RT Column
+		testRtColumn = new FilterableFloatTableColumn<>("Retention time");
+		testRtColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Float>("retentionTime"));
+
+		// Fragment number
+		testNbrFragmentsColumn = new FilterableIntegerTableColumn<>("Fragment number");
+		testNbrFragmentsColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Integer>("nbFragments"));
+
+		// Identified Column
+		testIdentifiedColumn = new FilterableBooleanTableColumn<>("Identified");
+		testFilteredTable.getColumns().setAll(testIdColumn, testTitleColumn, testMozColumn, testIntensityColumn, testChargeColumn,
+				testRtColumn, testNbrFragmentsColumn, testIdentifiedColumn );
+
+		testFilteredTable.autosize();
+		testFilteredTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		testFilteredTable.setPadding(new Insets(5, 5, 5, 5));
 		// Create main Splite pane
 		SplitPane mainSplitPane = new SplitPane();
 		mainSplitPane.setPadding(new Insets(10));
@@ -457,28 +545,18 @@ public class MainPane extends StackPane {
 		// Create the 2 peak list pane
 		// Create first tabpane
 		TabPane referenceTabPane = new TabPane();
-		Tab referenxcePklFileTab = new Tab("Peaklist File");
-		referenxcePklFileTab.setContent(refPklListPane);
+		Tab referenxcePklFileTab = new Tab(" Reference spectra ");
+		referenxcePklFileTab.setContent(refFilteredTable);
 		referenxcePklFileTab.setClosable(false);
-
-		Tab referencePklFromDBTab = new Tab("Proline projects");
-		referencePklFromDBTab.setContent(refPklListDBPane);
-		referencePklFromDBTab.setClosable(false);
-		referenceTabPane.getTabs().addAll(referencePklFromDBTab, referenxcePklFileTab);
-		referenceTabPane.getSelectionModel().select(referencePklFromDBTab);
-
+		referenceTabPane.getTabs().addAll(referenxcePklFileTab);
+	
 		// Create second tabpane
 		TabPane testedTabPane = new TabPane();
-		Tab testedPklFileTab = new Tab("Peaklist File");
-		testedPklFileTab.setContent(secondPklListPane);
+		Tab testedPklFileTab = new Tab(" Tested spectra ");
+		testedPklFileTab.setContent(testFilteredTable);
 		testedPklFileTab.setClosable(false);
-
-		Tab testedPklFromDBTab = new Tab("Proline projects");
-		testedPklFromDBTab.setContent(secondPklListDBPane);
-		testedPklFromDBTab.setClosable(false);
-
-		testedTabPane.getTabs().addAll(testedPklFromDBTab, testedPklFileTab);
-		testedTabPane.getSelectionModel().select(testedPklFromDBTab);
+		testedTabPane.getTabs().addAll( testedPklFileTab);
+		
 		//
 		peaklistSplitPane.getItems().addAll(referenceTabPane, testedTabPane);
 		peaklistSplitPane.setPadding(new Insets(10));
@@ -523,7 +601,7 @@ public class MainPane extends StackPane {
 		graphicsPane.setTop(compareButtonPane);
 		graphicsPane.setCenter(swingNodeForChart);
 		compareButton.setGraphic(new ImageView(IconResource.getImage(ICON.EXECUTE)));
-		mainSplitPane.getItems().addAll(peaklistSplitPane, graphicsPane, ConsoleView.getInstance());
+		mainSplitPane.getItems().addAll(peaklistSplitPane, graphicsPane, ConsolePane.getInstance());
 		mainView.setTop(menuBar);
 		mainView.setCenter(mainSplitPane);
 		this.getChildren().addAll(mainView);
@@ -553,8 +631,7 @@ public class MainPane extends StackPane {
 	/**
 	 * Create dataset nodes
 	 * 
-	 * @param projectId
-	 *            the selected project id
+	 * @param projectId the selected project id
 	 * @return the dataset nodes of the chosen project.
 	 */
 	// TODO Handle by better way the datasets

@@ -385,7 +385,7 @@ public class SpectraLoaderDialog extends Dialog<Object> {
 		dialogPane.setContent(peaklistSplitPane);
 		dialogPane.setHeaderText("Spectra Loader");
 		dialogPane.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
-		dialogPane.setPrefSize(800, 600);
+		dialogPane.setPrefSize(1000, 600);
 		Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
 		stage.getIcons().add(new ImageView(IconResource.getImage(ICON.LOAD)).getImage());
 		dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
