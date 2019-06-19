@@ -63,11 +63,11 @@ public class SpectraLoaderDialog extends Dialog<Object> {
 
 	private StackPane firstRoot;
 	private TreeItem rootItem;
-	private TreeView<Dataset> treeView = new TreeView();
+	private TreeView<Dataset> treeView ;
 
 	private StackPane secondRoot;
 	private TreeItem secondRootItem;
-	private TreeView<Dataset> secondTreeView = new TreeView();
+	private TreeView<Dataset> secondTreeView ;
 	public static Stage stage;
 	//
 	private String refDbName;
@@ -164,10 +164,6 @@ public class SpectraLoaderDialog extends Dialog<Object> {
 			rootItem.getChildren().addAll(createDatasets(userProjectsCBX.getValue().getId()));
 			treeView = new TreeView(rootItem);
 			firstRoot.getChildren().add(treeView);
-		});
-		treeView.selectionModelProperty().addListener((o, v, n) -> {
-			System.out.println(n.getSelectedItem().getValue().getResultSummaryId());
-			refRsmIds.add(n.getSelectedItem().getValue().getResultSummaryId());
 		});
 		VBox warningDbPane = new VBox(2);
 		connectionLabel = new Label("Off connection. Connect to your Proline account please!");
@@ -302,9 +298,6 @@ public class SpectraLoaderDialog extends Dialog<Object> {
 			secondTreeView = new TreeView(secondRootItem);
 			secondRoot.getChildren().add(secondTreeView);
 		});
-		secondTreeView.selectionModelProperty().addListener((o, v, n) -> {
-			testRsmIds.add(n.getSelectedItem().getValue().getResultSummaryId());
-		});
 		VBox warning2DbPane = new VBox(2);
 		secondConnectionLabel = new Label("Off connection. Connect to your Proline account please!");
 		secondConnectionLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
@@ -411,6 +404,7 @@ public class SpectraLoaderDialog extends Dialog<Object> {
 					refPklByDataSourceMap.put(DataSource.FILE, refPklListTF.getText());
 				} else {
 					Session.USER_PARAMS.setDataSource("database");
+					refRsmIds.add(treeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
 					refPklByDataSourceMap.put(DataSource.DATABASE, refRsmIds);
 				}
 				if (secondPklListRefFileRB.isSelected()) {
@@ -419,6 +413,7 @@ public class SpectraLoaderDialog extends Dialog<Object> {
 
 				} else {
 					Session.USER_PARAMS.setDataSource("database");
+					testRsmIds.add(secondTreeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
 					testPklByDataSourceMap.put(DataSource.DATABASE, testRsmIds);
 				}
 				this.params = new SpectraParams(refPklByDataSourceMap, testPklByDataSourceMap, refDbName, testDbName);

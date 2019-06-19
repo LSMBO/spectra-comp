@@ -30,7 +30,7 @@ public class ViewModel {
 	public void onLoadSpectra() {
 		SpectraLoaderDialog spectraLoaderDialog = new SpectraLoaderDialog();
 		spectraLoaderDialog.showAndWait().ifPresent(params -> {
-			System.out.println(params.toString());
+			System.out.println("INFO | "+params.toString());
 		});
 	}
 
