@@ -15,7 +15,7 @@ public class IconResource {
 	 * Enum type that indicates the name of the icon.
 	 */
 	public enum ICON {
-		ADMIN, SPECTRA_COMP, TICK, CONSOLE, HELP, INFORMATION, WARNING, RESET, EXIT, LOAD, EXECUTE, CROSS, DATABASE, DATASET_RSM, DATASET_RSM_MERGED_A;
+		ADMIN, SPECTRA_COMP, TICK, CONSOLE, HELP, INFORMATION, WARNING, RESET, EXIT, LOAD, EXECUTE, CROSS, DATABASE, DATASET_RSM, DATASET_RSM_MERGED_A, SETTINGS;
 	}
 
 	private static HashMap<ICON, Image> images = new HashMap<ICON, Image>();
@@ -30,6 +30,9 @@ public class IconResource {
 	public static Image getImage(ICON icon) {
 		if (!images.containsKey(icon)) {
 			switch (icon) {
+			case SETTINGS:
+				images.put(icon, new Image(IconResource.class.getResourceAsStream("/images/settings.png")));
+				break;
 			case ADMIN:
 				images.put(icon, new Image(IconResource.class.getResourceAsStream("/images/admin.png")));
 				break;

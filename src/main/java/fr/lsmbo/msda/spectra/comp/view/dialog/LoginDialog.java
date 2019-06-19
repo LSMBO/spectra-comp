@@ -111,7 +111,7 @@ public class LoginDialog extends Dialog<ObservableList<Project>> {
 		buttonCancel.setGraphic(new ImageView(IconResource.getImage(ICON.CROSS)));
 		Button buttonOk = (Button) dialogPane.lookupButton(ButtonType.OK);
 		buttonOk.setGraphic(new ImageView(IconResource.getImage(ICON.TICK)));
-
+      
 		this.setTitle("Server connection");
 		this.setDialogPane(dialogPane);
 		// Control

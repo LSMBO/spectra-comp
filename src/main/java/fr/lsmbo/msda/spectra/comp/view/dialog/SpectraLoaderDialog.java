@@ -1,16 +1,10 @@
-package fr.lsmbo.msda.spectra.comp.view;
+package fr.lsmbo.msda.spectra.comp.view.dialog;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-
-import org.google.jhsheets.filtered.FilteredTableView;
-import org.google.jhsheets.filtered.tablecolumn.FilterableBooleanTableColumn;
-import org.google.jhsheets.filtered.tablecolumn.FilterableFloatTableColumn;
-import org.google.jhsheets.filtered.tablecolumn.FilterableIntegerTableColumn;
-import org.google.jhsheets.filtered.tablecolumn.FilterableStringTableColumn;
 
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
@@ -19,26 +13,21 @@ import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.db.DataSource;
 import fr.lsmbo.msda.spectra.comp.model.Dataset;
 import fr.lsmbo.msda.spectra.comp.model.Project;
-import fr.lsmbo.msda.spectra.comp.model.Spectrum;
-import fr.lsmbo.msda.spectra.comp.model.ViewModel;
+import fr.lsmbo.msda.spectra.comp.model.SpectraParams;
 import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
-import fr.lsmbo.msda.spectra.comp.view.dialog.LoginDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingNode;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -49,142 +38,52 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
-public class MainPane extends StackPane {
-
-	// Main view components
-	// Reference table view
-	// Filtered table
-	private FilteredTableView<Spectrum> refFilteredTable;
-	// Filtered columns
-	private FilterableIntegerTableColumn<Spectrum, Integer> refIdColumn;
-	private FilterableStringTableColumn<Spectrum, String> refTitleColumn;
-	private FilterableFloatTableColumn<Spectrum, Float> refMozColumn;
-	private FilterableFloatTableColumn<Spectrum, Float> refIntensityColumn;
-	private FilterableIntegerTableColumn<Spectrum, Integer> refChargeColumn;
-	private FilterableFloatTableColumn<Spectrum, Float> refRtColumn;
-	private FilterableIntegerTableColumn<Spectrum, Integer> refNbrFragmentsColumn;
-	private FilterableBooleanTableColumn<Spectrum, Boolean> refIdentifiedColumn;
-	// Test table view
-	private FilteredTableView<Spectrum> testFilteredTable;
-	// Filtered columns
-	private FilterableIntegerTableColumn<Spectrum, Integer> tesIdColumn;
-	private FilterableStringTableColumn<Spectrum, String> testTitleColumn;
-	private FilterableFloatTableColumn<Spectrum, Float> testMozColumn;
-	private FilterableFloatTableColumn<Spectrum, Float> testIntensityColumn;
-	private FilterableIntegerTableColumn<Spectrum, Integer> testChargeColumn;
-	private FilterableFloatTableColumn<Spectrum, Float> testRtColumn;
-	private FilterableIntegerTableColumn<Spectrum, Integer> testNbrFragmentsColumn;
-	private FilterableBooleanTableColumn<Spectrum, Boolean> tstIdentifiedColumn;
-	// Others
-	private SpectrumView spectrumView;
-	private final SwingNode swingNodeForChart = new SwingNode();
-
+/**
+ * Creates and displays spectra loader dialog.
+ * 
+ * @author Aromdhani
+ *
+ */
+public class SpectraLoaderDialog extends Dialog<Object> {
+	// Components
 	private Label connectionLabel;
 	private Label secondConnectionLabel;
 	private ComboBox<Project> userProjectsCBX = new ComboBox<Project>();
 	private ComboBox<Project> secondUserProjectsCBX = new ComboBox<Project>();
 	private ObservableList<Project> refUserProjects = FXCollections.observableArrayList();
 	private ObservableList<Project> testUserProjects = FXCollections.observableArrayList();
-	// Return reference Pkl in map
-	Map<DataSource, Object> refPklByDataSourceMap = new HashMap<>();
-	// Return tested Pkl in map
-	Map<DataSource, Object> testedPklByDataSourceMap = new HashMap<>();
-	// Database name
-	String refDbName = null;
-	String testDbName = null;
-	// Components
+	private SpectraParams params;
+
 	private StackPane firstRoot;
 	private TreeItem rootItem;
-	private TreeView<Dataset> treeView;
+	private TreeView<Dataset> treeView = new TreeView();
 
 	private StackPane secondRoot;
 	private TreeItem secondRootItem;
-	private TreeView<Dataset> secondTreeView;
-
+	private TreeView<Dataset> secondTreeView = new TreeView();
 	public static Stage stage;
+	//
+	private String refDbName;
+	private String testDbName;
+	private Map<DataSource, Object> refPklByDataSourceMap = new HashMap<>();
+	private Map<DataSource, Object> testPklByDataSourceMap = new HashMap<>();
+	private HashSet<Long> refRsmIds = new HashSet<>();
+	private HashSet<Long> testRsmIds = new HashSet<>();
 
-	public MainPane(ViewModel model) {
-		// Create the main view
-		BorderPane mainView = new BorderPane();
-		mainView.setPrefSize(1400, 800);
-		// Create the glassePane
-		VBox glassPane = new VBox();
-		ProgressIndicator progressIndicator = new ProgressIndicator();
-		progressIndicator.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
-		progressIndicator.setVisible(true);
-		glassPane.getChildren().add(progressIndicator);
-		glassPane.setAlignment(Pos.CENTER);
-		glassPane.setVisible(false);
-		// Create menu and menu items
-		MenuBar menuBar = new MenuBar();
-		// File menu items
-		// Load spectra
-		Menu fileMenu = new Menu(" File ");
-		MenuItem loadSpectra = new MenuItem(" Load spectra ");
-		loadSpectra.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
-		loadSpectra.setOnAction(e -> {
-			model.onLoadSpectra();
-		});
-		// Settings menu items
-		Menu settingsMenu = new Menu(" Settings ");
-		MenuItem dbParameters = new MenuItem(" Database parameters ");
-		dbParameters.setGraphic(new ImageView(IconResource.getImage(ICON.DATABASE)));
-		dbParameters.setOnAction(e -> {
-			model.onEditDbParameters();
-		});
-		MenuItem compParameters = new MenuItem(" Comparaison parameters ");
-		compParameters.setGraphic(new ImageView(IconResource.getImage(ICON.SETTINGS)));
-		compParameters.setOnAction(e -> {
-			model.onEditCompParameters();
-		});
-		// Exit
-		MenuItem exitFile = new MenuItem(" Exit ");
-		exitFile.setGraphic(new ImageView(IconResource.getImage(ICON.EXIT)));
-		exitFile.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN));
-		exitFile.setOnAction((e) -> {
-			model.onExit();
-		});
-		// Help menu items
-		// User guide menu item
-		Menu helpMenu = new Menu(" Help ");
-		MenuItem userGuide = new MenuItem(" User guide ");
-		userGuide.setAccelerator(new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN));
-		userGuide.setGraphic(new ImageView(IconResource.getImage(ICON.HELP)));
-		userGuide.setOnAction((ActionEvent t) -> {
-			model.onOpenUserGuide();
-		});
-		// About Recover menu item
-		MenuItem aboutSpectraComp = new MenuItem(" About ");
-		aboutSpectraComp.setAccelerator(new KeyCodeCombination(KeyCode.I, KeyCombination.CONTROL_DOWN));
-		aboutSpectraComp.setGraphic(new ImageView(IconResource.getImage(ICON.INFORMATION)));
-		aboutSpectraComp.setOnAction((ActionEvent t) -> {
-			model.onAboutSpectraComp();
-		});
-		fileMenu.getItems().addAll(loadSpectra, exitFile);
-		settingsMenu.getItems().addAll(dbParameters, compParameters);
-		helpMenu.getItems().addAll(userGuide, aboutSpectraComp);
-		menuBar.getMenus().addAll(fileMenu, settingsMenu, helpMenu);
-		mainView.setTop(menuBar);
+	/**
+	 * Default constructor
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public SpectraLoaderDialog() {
 
-		// Create main Splite pane
-		SplitPane mainSplitPane = new SplitPane();
-		mainSplitPane.setPadding(new Insets(10));
-		mainSplitPane.setOrientation(Orientation.VERTICAL);
-		mainSplitPane.setPrefHeight(320);
-		mainSplitPane.setDividerPositions(0.6f, 0.2f, 0.1f);
-		// Create the peaklists pane
 		SplitPane peaklistSplitPane = new SplitPane();
 		peaklistSplitPane.setOrientation(Orientation.HORIZONTAL);
 		peaklistSplitPane.setPrefHeight(320);
@@ -266,6 +165,10 @@ public class MainPane extends StackPane {
 			treeView = new TreeView(rootItem);
 			firstRoot.getChildren().add(treeView);
 		});
+		treeView.selectionModelProperty().addListener((o, v, n) -> {
+			System.out.println(n.getSelectedItem().getValue().getResultSummaryId());
+			refRsmIds.add(n.getSelectedItem().getValue().getResultSummaryId());
+		});
 		VBox warningDbPane = new VBox(2);
 		connectionLabel = new Label("Off connection. Connect to your Proline account please!");
 		connectionLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
@@ -321,8 +224,7 @@ public class MainPane extends StackPane {
 		userProjectLabel.disableProperty().bind(pklListRefFileRB.selectedProperty());
 		ButtonConnection.disableProperty().bind(pklListRefFileRB.selectedProperty());
 		userProjectsCBX.disableProperty().bind(pklListRefFileRB.selectedProperty());
-
-		// Second peak list pane
+		// Create the second pane
 		SplitPane peaklist2SplitPane = new SplitPane();
 		peaklist2SplitPane.setOrientation(Orientation.VERTICAL);
 		peaklist2SplitPane.setPrefHeight(320);
@@ -392,7 +294,7 @@ public class MainPane extends StackPane {
 			});
 
 		});
-		// update the view
+		// Update the view
 		secondUserProjectsCBX.setOnAction(e -> {
 			testDbName = "msi_db_project_" + secondUserProjectsCBX.getValue().getId();
 			secondRootItem.getChildren().clear();
@@ -400,7 +302,9 @@ public class MainPane extends StackPane {
 			secondTreeView = new TreeView(secondRootItem);
 			secondRoot.getChildren().add(secondTreeView);
 		});
-
+		secondTreeView.selectionModelProperty().addListener((o, v, n) -> {
+			testRsmIds.add(n.getSelectedItem().getValue().getResultSummaryId());
+		});
 		VBox warning2DbPane = new VBox(2);
 		secondConnectionLabel = new Label("Off connection. Connect to your Proline account please!");
 		secondConnectionLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
@@ -483,59 +387,46 @@ public class MainPane extends StackPane {
 		peaklistSplitPane.getItems().addAll(referenceTabPane, testedTabPane);
 		peaklistSplitPane.setPadding(new Insets(10));
 		peaklistSplitPane.setMinHeight(350);
-		Button compareButton = new Button("Compare");
-		compareButton.setOnAction(e -> {
-			if (pklListRefFileRB.isSelected()) {
-				Session.USER_PARAMS.setDataSource("file");
-				model.loadRefPklFile(refPklListTF.getText());
-			} else {
-				Session.USER_PARAMS.setDataSource("database");
-				System.out.println("INFO | Parameters [ DB: " + refDbName + " ; rsm_id: # "
-						+ treeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId() + " ]");
-				HashSet<Long> rsmIds = new HashSet<>();
-				rsmIds.add(treeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
-				assert !StringsUtils.isEmpty(refDbName)
-						&& !rsmIds.isEmpty() : "Inavlid parameters for reference peaklists!";
-				model.loadTestedSpectraProline(refDbName, rsmIds);
-			}
-			if (secondPklListRefFileRB.isSelected()) {
-				Session.USER_PARAMS.setDataSource("file");
-				model.loadTestedPklFile(secondPklListTF.getText());
-			} else {
-				Session.USER_PARAMS.setDataSource("database");
-				System.out.println("INFO | Parameters [ DB: " + testDbName + " ; rsm_id: # "
-						+ secondTreeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId() + " ]");
-				HashSet<Long> rsmIds = new HashSet<>();
-				rsmIds.add(secondTreeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
-				assert !StringsUtils.isEmpty(testDbName)
-						&& !rsmIds.isEmpty() : "Inavlid parameters for tested peaklists!";
-				model.loadTestedSpectraProline(testDbName, rsmIds);
-			}
-			model.compare();
-		});
-		BorderPane graphicsPane = new BorderPane();
-		graphicsPane.setMinHeight(150);
-		// Create and Set SwingContent(swingNode);
-		HBox compareButtonPane = new HBox();
-		compareButtonPane.getChildren().addAll(compareButton);
-		compareButtonPane.setPadding(new Insets(5));
-		compareButtonPane.setAlignment(Pos.BASELINE_CENTER);
-		graphicsPane.setTop(compareButtonPane);
-		graphicsPane.setCenter(swingNodeForChart);
-		compareButton.setGraphic(new ImageView(IconResource.getImage(ICON.EXECUTE)));
-		mainSplitPane.getItems().addAll(peaklistSplitPane, graphicsPane, ConsoleView.getInstance());
-		mainView.setTop(menuBar);
-		mainView.setCenter(mainSplitPane);
-		this.getChildren().addAll(mainView);
-	}
 
-	/**
-	 * Test connection to database
-	 * 
-	 * @throws Exception
-	 */
-	private void login(String login) throws Exception {
-		DBSpectraHandler.findUser(login);
+		DialogPane dialogPane = new DialogPane();
+		dialogPane.setContent(peaklistSplitPane);
+		dialogPane.setHeaderText("Spectra Loader");
+		dialogPane.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
+		dialogPane.setPrefSize(800, 600);
+		Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new ImageView(IconResource.getImage(ICON.LOAD)).getImage());
+		dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+		Button buttonCancel = (Button) dialogPane.lookupButton(ButtonType.CANCEL);
+		buttonCancel.setGraphic(new ImageView(IconResource.getImage(ICON.CROSS)));
+		Button buttonOk = (Button) dialogPane.lookupButton(ButtonType.OK);
+		buttonOk.setGraphic(new ImageView(IconResource.getImage(ICON.TICK)));
+
+		this.setTitle("Spectra Loader");
+		this.setDialogPane(dialogPane);
+		// On apply button
+		this.setResultConverter(buttonType -> {
+			if (buttonType == ButtonType.OK) {
+				if (pklListRefFileRB.isSelected()) {
+					Session.USER_PARAMS.setDataSource("file");
+					refPklByDataSourceMap.put(DataSource.FILE, refPklListTF.getText());
+				} else {
+					Session.USER_PARAMS.setDataSource("database");
+					refPklByDataSourceMap.put(DataSource.DATABASE, refRsmIds);
+				}
+				if (secondPklListRefFileRB.isSelected()) {
+					Session.USER_PARAMS.setDataSource("file");
+					refPklByDataSourceMap.put(DataSource.FILE, secondPklListTF.getText());
+
+				} else {
+					Session.USER_PARAMS.setDataSource("database");
+					testPklByDataSourceMap.put(DataSource.DATABASE, testRsmIds);
+				}
+				this.params = new SpectraParams(refPklByDataSourceMap, testPklByDataSourceMap, refDbName, testDbName);
+				return params;
+			} else {
+				return null;
+			}
+		});
 	}
 
 	/**
@@ -572,4 +463,5 @@ public class MainPane extends StackPane {
 		}
 		return datasets;
 	}
+
 }

@@ -1,6 +1,5 @@
 package fr.lsmbo.msda.spectra.comp.model;
 
-import java.sql.SQLException;
 import java.util.Set;
 
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
@@ -8,8 +7,11 @@ import fr.lsmbo.msda.spectra.comp.io.PeakListProvider;
 import fr.lsmbo.msda.spectra.comp.io.PeaklistReader;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.utils.ConfirmDialog;
+import fr.lsmbo.msda.spectra.comp.view.dialog.LoginDialog;
+import fr.lsmbo.msda.spectra.comp.view.dialog.SpectraLoaderDialog;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 public class ViewModel {
 	public static Stage stage;
@@ -19,6 +21,33 @@ public class ViewModel {
 	 */
 	public void compare() {
 		PeakListProvider.compareSpectra();
+	}
+
+	/**
+	 * Create and displays spectra loader dialog
+	 * 
+	 */
+	public void onLoadSpectra() {
+		SpectraLoaderDialog spectraLoaderDialog = new SpectraLoaderDialog();
+		spectraLoaderDialog.showAndWait().ifPresent(params -> {
+			System.out.println(params.toString());
+		});
+	}
+
+	/**
+	 * Create and displays database parameters editor dialog
+	 * 
+	 */
+	public void onEditDbParameters() {
+
+	}
+
+	/**
+	 * Create and displays comparison spectra editor dialog
+	 * 
+	 */
+	public void onEditCompParameters() {
+
 	}
 
 	/***

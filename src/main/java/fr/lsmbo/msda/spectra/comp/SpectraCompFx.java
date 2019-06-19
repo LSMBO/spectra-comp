@@ -27,6 +27,7 @@ public class SpectraCompFx extends Application {
 			new ShowPopupDialog("Exception", "Exception was thrown on Java-FX thread: " + ex.getMessage(),
 					primaryStage);
 		});
+		ViewModel.stage = primaryStage;
 		ViewModel model = new ViewModel();
 		MainPane mainPane = new MainPane(model);
 		mainPane.stage = primaryStage;
