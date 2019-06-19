@@ -1,10 +1,12 @@
 package fr.lsmbo.msda.spectra.comp.model;
 
 import java.sql.SQLException;
+import java.util.Set;
 
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
-import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.io.PeakListProvider;
+import fr.lsmbo.msda.spectra.comp.io.PeaklistReader;
+import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.utils.ConfirmDialog;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -20,15 +22,36 @@ public class ViewModel {
 	}
 
 	/***
-	 * Load first spectra
+	 * Load reference spectra from peaklist file
 	 * 
-	 * @param projectName   the project name
-	 * @param secondPklList the second peakist
+	 * @param firstPklList
+	 *            the reference peaklist file path
 	 */
-	public void loadFirstPkl(String projectName, String firstPklList) {
+	public void loadFirstPkl(String firstPklList) {
 		try {
-			Session.USER_PARAMS.setDataSource("file");
-			PeakListProvider.loadFirstSpectra(projectName, firstPklList);
+			PeaklistReader.isSecondPeakList = false;
+			PeakListProvider.loadFirstSpectraFromFile(firstPklList);
+			System.out.println("INFO | " + ListOfSpectra.getFirstSpectra().getSpectraAsObservable().size()
+					+ "  spectrum was found from reference spectra.");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/***
+	 * Load tested spectra from peaklist file
+	 * 
+	 * @param firstPklList
+	 *            the tested peaklist file path
+	 */
+	public void loadSecondPkl(String secondPklList) {
+		try {
+			PeaklistReader.isSecondPeakList = true;
+			PeakListProvider.loadSecondSpectraFromFile(secondPklList);
+			System.out.println("INFO | " + ListOfSpectra.getSecondSpectra().getSpectraAsObservable().size()
+					+ " spectrum was found from tested spectra.");
+			System.out.println();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -36,16 +59,31 @@ public class ViewModel {
 	}
 
 	/***
-	 * Load second spectra
+	 * Load tested spectra from a Proline project
 	 * 
-	 * @param projectName   the project name
-	 * @param secondPklList the second peakist
+	 * @param firstPklList
+	 *            the reference peaklist file path
 	 */
-	public void loadSecondPkl(String projectName, String secondPklList) {
+	public void loadRefSpectraProline(String projectName, Set<Long> rsmIds) {
 		try {
-			Session.USER_PARAMS.setDataSource("file");
-			PeakListProvider.loadSecondSpectra(projectName, secondPklList);
-		} catch (SQLException e) {
+			PeakListProvider.loadFirstSpectra(projectName, rsmIds);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/***
+	 * Load tested spectra from a Proline project
+	 * 
+	 * @param firstPklList
+	 *            the tested peaklist file path
+	 */
+	public void loadTestedSpectraProline(String projectName, Set<Long> rsmIds) {
+		try {
+			PeakListProvider.loadSecondSpectra(projectName, rsmIds);
+			System.out.println();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

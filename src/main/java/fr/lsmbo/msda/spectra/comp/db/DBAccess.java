@@ -150,8 +150,8 @@ public class DBAccess {
 	public static Connection openFirstMsiDBConnection(final String msiDbName) {
 		if (firstMsiDbConnection == null) {
 			DBConfig dbConfig = DBConfig.getInstance();
-			System.out.println("--- Connection config: " + dbConfig.toString() + "");
-			System.out.println("--- Open connection to " + msiDbName + "");
+			System.out.println("INFO | --- Connection config: " + dbConfig.toString() + "");
+			System.out.println("INFO | Open connection to " + msiDbName + "");
 			StringBuilder str = new StringBuilder();
 			Properties connProperties = new Properties();
 			assert !StringsUtils.isEmpty(dbConfig.getUser()) : "User name must not be null nor empty!";
@@ -169,7 +169,7 @@ public class DBAccess {
 				firstMsiDbConnection = DriverManager.getConnection(str.toString(), connProperties);
 				return firstMsiDbConnection;
 			} catch (Exception e) {
-				System.out.println("--- Can't connect to " + msiDbName + " !" + e);
+				System.out.println("ERROR | Can't connect to " + msiDbName + " !" + e);
 				return firstMsiDbConnection;
 			}
 		} else {
@@ -186,8 +186,8 @@ public class DBAccess {
 	public static Connection openSecondMsiDBConnection(final String msiDbName) {
 		if (secondMsiDbConnection == null) {
 			DBConfig dbConfig = DBConfig.getInstance();
-			System.out.println("--- Connection config: " + dbConfig.toString() + "");
-			System.out.println("--- Open connection to " + msiDbName + "");
+			System.out.println("INFO | --- Connection config: " + dbConfig.toString() + "");
+			System.out.println("INFO | Open connection to " + msiDbName + "");
 			StringBuilder str = new StringBuilder();
 			Properties connProperties = new Properties();
 			assert !StringsUtils.isEmpty(dbConfig.getUser()) : "User name must not be null nor empty!";
@@ -205,7 +205,7 @@ public class DBAccess {
 				secondMsiDbConnection = DriverManager.getConnection(str.toString(), connProperties);
 				return secondMsiDbConnection;
 			} catch (Exception e) {
-				System.out.println("--- Can't connect to " + msiDbName + " !" + e);
+				System.out.println("ERROR |Can't connect to " + msiDbName + " !" + e);
 				return secondMsiDbConnection;
 			}
 		} else {
@@ -222,8 +222,8 @@ public class DBAccess {
 	public static Connection openUdsDBConnection() {
 		if (udsDbConnection == null) {
 			DBConfig dbConfig = DBConfig.getInstance();
-			System.out.println("--- Connection config: " + dbConfig.toString() + "");
-			System.out.println("--- Open connection to uds_db");
+			System.out.println("INFO | --- Connection config: " + dbConfig.toString() + "");
+			System.out.println("INFO | Open connection to uds_db");
 			StringBuilder str = new StringBuilder();
 			Properties connProperties = new Properties();
 			assert !StringsUtils.isEmpty(dbConfig.getUser()) : "User name must not be null nor empty!";
@@ -241,7 +241,7 @@ public class DBAccess {
 				udsDbConnection = DriverManager.getConnection(str.toString(), connProperties);
 				return udsDbConnection;
 			} catch (Exception e) {
-				System.out.println("--- Can't connect to UDS DB!" + e);
+				System.out.println("ERROR | Can't connect to UDS DB!" + e);
 				return udsDbConnection;
 			}
 		} else {

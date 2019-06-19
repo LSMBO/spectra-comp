@@ -2,11 +2,16 @@ package fr.lsmbo.msda.spectra.comp.view;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
+import fr.lsmbo.msda.spectra.comp.model.Dataset;
+import fr.lsmbo.msda.spectra.comp.model.Dataset.DatasetType;
 import fr.lsmbo.msda.spectra.comp.model.Project;
 import fr.lsmbo.msda.spectra.comp.model.ViewModel;
 import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
@@ -48,6 +53,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import fr.lsmbo.msda.spectra.comp.db.DataSource;
 
 public class MainPane extends StackPane {
 	private TextField userNameTF;
@@ -57,10 +63,22 @@ public class MainPane extends StackPane {
 	private Label secondConnectionLabel;
 	private final SwingNode swingNodeForChart = new SwingNode();
 	private ComboBox<Project> userProjectsCBX = new ComboBox<Project>();
-	private ComboBox<String> secondUserProjectsCBX = new ComboBox<String>();
+	private ComboBox<Project> secondUserProjectsCBX = new ComboBox<Project>();
 	private ObservableList<Project> refUserProjects = FXCollections.observableArrayList();
 	private ObservableList<Project> testUserProjects = FXCollections.observableArrayList();
 	private SpectrumView spectrumView;
+	//
+	Map<DataSource, Object> refPklByDataSourceMap = new HashMap<>();
+	Map<DataSource, Object> testedPklByDataSourceMap = new HashMap<>();
+	// Components
+	private StackPane firstRoot;
+	private TreeItem rootItem;
+	private TreeView<Dataset> treeView;
+
+	private StackPane secondRoot;
+	private TreeItem secondRootItem;
+	private TreeView<Dataset> secondTreeView;
+
 	public static Stage stage;
 
 	public MainPane(ViewModel model) {
@@ -84,6 +102,8 @@ public class MainPane extends StackPane {
 		Menu settingsMenu = new Menu(" Settings ");
 		MenuItem dbParameters = new MenuItem(" Database parameters ");
 		dbParameters.setGraphic(new ImageView(IconResource.getImage(ICON.DATABASE)));
+		MenuItem compParameters = new MenuItem(" Comparaison parameters ");
+		dbParameters.setGraphic(new ImageView(IconResource.getImage(ICON.RESET)));
 		// Exit
 		MenuItem exitFile = new MenuItem(" Exit ");
 		exitFile.setGraphic(new ImageView(IconResource.getImage(ICON.EXIT)));
@@ -109,7 +129,7 @@ public class MainPane extends StackPane {
 		});
 		helpMenu.getItems().addAll(userGuide, aboutSpectraComp);
 		fileMenu.getItems().addAll(exitFile);
-		settingsMenu.getItems().addAll(dbParameters);
+		settingsMenu.getItems().addAll(dbParameters, compParameters);
 		menuBar.getMenus().addAll(fileMenu, settingsMenu, helpMenu);
 		mainView.setTop(menuBar);
 
@@ -132,7 +152,12 @@ public class MainPane extends StackPane {
 				"Select the first peaklist to set as a reference from your Proline projects");
 		pklListRefDBRB.setSelected(true);
 		pklListRefDBRB.setToggleGroup(group);
-
+		pklListRefFileRB.setOnAction(e -> {
+			Session.USER_PARAMS.setDataSource("file");
+		});
+		pklListRefDBRB.setOnAction(e -> {
+			Session.USER_PARAMS.setDataSource("database");
+		});
 		// Create the 1 peak list pane
 		SplitPane peaklist1SplitPane = new SplitPane();
 		peaklist1SplitPane.setOrientation(Orientation.VERTICAL);
@@ -153,7 +178,6 @@ public class MainPane extends StackPane {
 		loadRefPklListButton.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
 		loadRefPklListButton.setOnAction(e -> {
 			load(refPklListTF);
-			model.loadFirstPkl("reference_pkl", refPklListTF.getText());
 		});
 		// Layout
 		GridPane refPklListPane = new GridPane();
@@ -181,6 +205,7 @@ public class MainPane extends StackPane {
 					public String toString(Project object) {
 						return object.getName();
 					}
+
 					@Override
 					public Project fromString(String string) {
 						return null;
@@ -188,22 +213,32 @@ public class MainPane extends StackPane {
 				});
 			});
 		});
+		// update the view
+		userProjectsCBX.setOnAction(e -> {
+			rootItem.getChildren().clear();
+			rootItem.getChildren().addAll(createDatasets(userProjectsCBX.getValue().getId()));
+			treeView = new TreeView(rootItem);
+			firstRoot.getChildren().add(treeView);
+		});
 		VBox warningDbPane = new VBox(2);
 		connectionLabel = new Label("Off connection. Connect to your Proline account please!");
 		connectionLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
 		connectionLabel.setStyle(JavaFxUtils.RED_ITALIC);
 		warningDbPane.getChildren().addAll(connectionLabel);
+
 		// Create dialog components
 		Label fileLocationLabel = new Label("User peaklists:");
 		connectionLabel.setPrefWidth(580);
-		StackPane root = new StackPane();
-		root.setPadding(new Insets(5));
+		firstRoot = new StackPane();
+		firstRoot.setPadding(new Insets(5));
+
 		// Set components control
-		TreeItem rootItem = new TreeItem("Peaklists");
+		rootItem = new TreeItem("Peaklists");
 		rootItem.setExpanded(true);
 		rootItem.getChildren().addAll();
-		TreeView treeView = new TreeView(rootItem);
-		root.getChildren().add(treeView);
+		treeView = new TreeView(rootItem);
+		firstRoot.getChildren().add(treeView);
+
 		// Layout
 		GridPane projectsPane = new GridPane();
 		projectsPane.setAlignment(Pos.TOP_LEFT);
@@ -211,7 +246,7 @@ public class MainPane extends StackPane {
 		projectsPane.setHgap(15);
 		projectsPane.setVgap(15);
 		projectsPane.addRow(0, fileLocationLabel);
-		projectsPane.add(root, 0, 1, 1, 6);
+		projectsPane.add(firstRoot, 0, 1, 1, 6);
 
 		Label userProjectLabel = new Label("User projects:");
 
@@ -226,8 +261,8 @@ public class MainPane extends StackPane {
 		refPklListDBPane.add(ButtonConnection, 3, 1, 1, 1);
 		refPklListDBPane.add(userProjectLabel, 0, 2, 2, 1);
 		refPklListDBPane.add(userProjectsCBX, 3, 2, 1, 1);
-		refPklListDBPane.add(root, 0, 3, 4, 1);
-		refPklListDBPane.setHgrow(root, Priority.ALWAYS);
+		refPklListDBPane.add(firstRoot, 0, 3, 4, 1);
+		refPklListDBPane.setHgrow(firstRoot, Priority.ALWAYS);
 		peaklist1SplitPane.getItems().addAll(refPklListPane, refPklListDBPane);
 		// Control
 		warningPane.visibleProperty().bind(refPklListTF.textProperty().isEmpty());
@@ -249,11 +284,17 @@ public class MainPane extends StackPane {
 
 		ToggleGroup group2 = new ToggleGroup();
 		RadioButton secondPklListRefFileRB = new RadioButton("Select the second peaklist file to test");
+		secondPklListRefFileRB.setOnAction(e -> {
+			Session.USER_PARAMS.setDataSource("file");
+		});
 		secondPklListRefFileRB.setToggleGroup(group2);
 		RadioButton secondPklListDBRB = new RadioButton(
 				"Select the second peaklist to test from your Proline projects");
 		secondPklListDBRB.setSelected(true);
 		secondPklListDBRB.setToggleGroup(group2);
+		secondPklListDBRB.setOnAction(e -> {
+			Session.USER_PARAMS.setDataSource("database");
+		});
 
 		VBox warning2Pane = new VBox(2);
 		Label emptySecondPklListLabel = new Label(
@@ -269,7 +310,6 @@ public class MainPane extends StackPane {
 		loadSecondPklListButton.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
 		loadSecondPklListButton.setOnAction(e -> {
 			load(secondPklListTF);
-			model.loadSecondPkl("tested_pkl", secondPklListTF.getText());
 		});
 		// Layout
 		GridPane secondPklListPane = new GridPane();
@@ -291,17 +331,29 @@ public class MainPane extends StackPane {
 			loginDialog.showAndWait().ifPresent(userProject -> {
 				secondConnectionLabel.setVisible(false);
 				testUserProjects.setAll(userProject);
-				ObservableList<String> testUserProjectNames = FXCollections.observableArrayList();
-				testUserProjects.forEach(proj -> {
-					testUserProjectNames.add(proj.getName());
+				secondUserProjectsCBX.setItems(testUserProjects);
+				secondUserProjectsCBX.setConverter(new StringConverter<Project>() {
+					@Override
+					public String toString(Project object) {
+						return object.getName();
+					}
+
+					@Override
+					public Project fromString(String string) {
+						return null;
+					}
 				});
-				secondUserProjectsCBX.setItems(testUserProjectNames);
 			});
+
 		});
 		// update the view
 		secondUserProjectsCBX.setOnAction(e -> {
-			System.out.println(secondUserProjectsCBX.getValue());
+			secondRootItem.getChildren().clear();
+			secondRootItem.getChildren().addAll(createDatasets(secondUserProjectsCBX.getValue().getId()));
+			secondTreeView = new TreeView(secondRootItem);
+			secondRoot.getChildren().add(secondTreeView);
 		});
+
 		VBox warning2DbPane = new VBox(2);
 		secondConnectionLabel = new Label("Off connection. Connect to your Proline account please!");
 		secondConnectionLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
@@ -310,12 +362,12 @@ public class MainPane extends StackPane {
 		// Create dialog components
 		Label secondFileLocationLabel = new Label("User peaklists:");
 		secondConnectionLabel.setPrefWidth(580);
-		StackPane secondRoot = new StackPane();
+		secondRoot = new StackPane();
 		secondRoot.setPadding(new Insets(5));
-		TreeItem secondRootItem = new TreeItem("Peaklists");
+		secondRootItem = new TreeItem("Peaklists");
 		secondRootItem.setExpanded(true);
 		secondRootItem.getChildren().addAll();
-		TreeView secondTreeView = new TreeView(secondRootItem);
+		secondTreeView = new TreeView(secondRootItem);
 		secondRoot.getChildren().add(secondTreeView);
 		// Layout
 		GridPane projects2Pane = new GridPane();
@@ -386,6 +438,28 @@ public class MainPane extends StackPane {
 		peaklistSplitPane.setMinHeight(350);
 		Button compareButton = new Button("Compare");
 		compareButton.setOnAction(e -> {
+			if (pklListRefFileRB.isSelected()) {
+				Session.USER_PARAMS.setDataSource("file");
+				model.loadFirstPkl(refPklListTF.getText());
+			} else {
+				Session.USER_PARAMS.setDataSource("database");
+				System.out.println("INFO | Rsm id=# "
+						+ treeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
+				HashSet<Long> rsmIds = new HashSet<>();
+				rsmIds.add(treeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
+				model.loadTestedSpectraProline("msi_db_project_10", rsmIds);
+			}
+			if (secondPklListRefFileRB.isSelected()) {
+				Session.USER_PARAMS.setDataSource("file");
+				model.loadSecondPkl(secondPklListTF.getText());
+			} else {
+				Session.USER_PARAMS.setDataSource("database");
+				System.out.println("INFO | Rsm id=# "
+						+ secondTreeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
+				HashSet<Long> rsmIds = new HashSet<>();
+				rsmIds.add(secondTreeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
+				model.loadTestedSpectraProline("msi_db_project_10", rsmIds);
+			}
 			model.compare();
 		});
 		BorderPane graphicsPane = new BorderPane();
@@ -427,14 +501,18 @@ public class MainPane extends StackPane {
 
 	/**
 	 * Create dataset nodes
-	 *
+	 * 
+	 * @param projectId
+	 *            the selected project id
+	 * @return the dataset nodes of the chosen project.
 	 */
-	// TODO better way to show datasets
+	// TODO Handle by better way the datasets
 	private ArrayList<TreeItem> createDatasets(Long projectId) {
 		ArrayList<TreeItem> datasets = new ArrayList<>();
 		try {
 			DBSpectraHandler.fillDataSetByProject(projectId).forEach(ds -> {
-				TreeItem dsName = new TreeItem(ds.getName());
+				TreeItem dsName = new TreeItem(ds);
+				dsName.setGraphic(new ImageView(IconResource.getImage(ICON.DATASET_RSM)));
 				datasets.add(dsName);
 			});
 		} catch (SQLException e) {

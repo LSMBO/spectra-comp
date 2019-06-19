@@ -2,6 +2,7 @@ package fr.lsmbo.msda.spectra.comp.io;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,22 +58,56 @@ public class PeakListProvider {
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("restriction")
-	public static void loadFirstSpectra(String projectName,String firstPklList) throws SQLException {
+	public static void loadFirstSpectra(String projectName, Set<Long> rsmIds) throws SQLException {
 		logger.info("--- Start to retrieve spectra. Please wait ...");
 		System.out.println("INFO | --- Start to retrieve spectra. Please wait ...");
 		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
-			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
-			assert StringsUtils.isEmpty(firstPklList) : "First peak list name must not be null nor empty!";
-			DBSpectraHandler.fillSpecByPeakList(projectName, firstPklList);
+			assert !StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
+			assert !rsmIds.isEmpty() : "Rsm Ids must not be empty!";
+			// Find the msi_search_ids
+			Set<Long> msiSearchIds = DBSpectraHandler.fillMsiSerachIds(projectName, rsmIds);
+			DBSpectraHandler.fillSpecByPeakList(projectName, msiSearchIds);
 			ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 
-		} else {
-			logger.info("Load spectra from first file: " + firstPklList);
-			System.out.println("INFO | Load spectra from first file to set as reference : " + firstPklList);
-			assert (!StringsUtils.isEmpty(firstPklList) && (new File(firstPklList).exists())) : "Invalid file path!";
-			File firstPklListFile = new File(firstPklList);
+		}
+	}
+
+	@SuppressWarnings("restriction")
+	public static void loadFirstSpectraFromFile(String firstPklListPath) throws Exception {
+		logger.info("--- Start to retrieve spectra. Please wait ...");
+		System.out.println("INFO | --- Start to retrieve spectra. Please wait ...");
+		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.FILE) {
+			logger.info("Load spectra from first file: " + firstPklListPath);
+			System.out.println("INFO | Load spectra from first file to set as reference : " + firstPklListPath);
+			assert (!StringsUtils.isEmpty(firstPklListPath)
+					&& (new File(firstPklListPath).exists())) : "Invalid file path!";
+			File firstPklListFile = new File(firstPklListPath);
 			PeaklistReader.load(firstPklListFile);
+		}
+	}
+
+	/**
+	 * Load the second peak list
+	 * 
+	 * @param projectName
+	 *            the project name
+	 * @param secondPklList
+	 *            the second peak list
+	 * @throws Exception
+	 */
+	@SuppressWarnings("restriction")
+	public static void loadSecondSpectra(String projectName, Set<Long> rsmIds) throws Exception {
+		logger.info("--- Start to retrieve spectra. Please wait ...");
+		System.out.println("INFO | --- Start to retrieve spectra. Please wait ...");
+		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
+			assert !StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
+			assert !rsmIds.isEmpty() : "Rsm Ids must not be empty!";
+			// Find the msi_search_ids
+			Set<Long> msiSearchIds = DBSpectraHandler.fillMsiSerachIds(projectName, rsmIds);
+			DBSpectraHandler.fillSpecByPeakList(projectName, msiSearchIds);
+			ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
+					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 		}
 	}
 
@@ -86,21 +121,15 @@ public class PeakListProvider {
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("restriction")
-	public static void loadSecondSpectra(String projectName, String secondPklList) throws SQLException {
+	public static void loadSecondSpectraFromFile(String secondPklListPath) throws SQLException {
 		logger.info("--- Start to retrieve spectra. Please wait ...");
 		System.out.println("INFO | --- Start to retrieve spectra. Please wait ...");
-		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
-			assert StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
-			assert StringsUtils.isEmpty(secondPklList) : "Second peak list name must not be null nor empty!";
-			DBSpectraHandler.fillSpecByPeakList(projectName, secondPklList);
-			ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
-					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
-		} else {
-			logger.info("Load spectra from second file to test : {}", secondPklList);
-			System.out.println("INFO | Load spectra from second file to test: "+ secondPklList);
-			PeaklistReader.isSecondPeakList = true;
-			assert (!StringsUtils.isEmpty(secondPklList) && (new File(secondPklList).exists())) : "Invalid file path!";
-			File secondPklListFile = new File(secondPklList);
+		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.FILE) {
+			logger.info("Load spectra from second file to test : {}", secondPklListPath);
+			System.out.println("INFO | Load spectra from second file to test: " + secondPklListPath);
+			assert (!StringsUtils.isEmpty(secondPklListPath)
+					&& (new File(secondPklListPath).exists())) : "Invalid file path!";
+			File secondPklListFile = new File(secondPklListPath);
 			PeaklistReader.load(secondPklListFile);
 		}
 	}

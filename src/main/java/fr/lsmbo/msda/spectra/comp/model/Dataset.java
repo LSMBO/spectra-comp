@@ -224,7 +224,16 @@ public class Dataset {
 			idfDS.addAll(ds.getIdentificationDatasets());
 		}
 		return idfDS;
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return name;
 	}
 
 }

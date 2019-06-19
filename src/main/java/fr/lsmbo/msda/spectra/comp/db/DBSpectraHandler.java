@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
 
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
@@ -18,8 +20,6 @@ import javafx.collections.ObservableList;
 /**
  * Handle spectra from database
  * 
- * @author Aromdhani
- *
  */
 
 public class DBSpectraHandler {
@@ -29,7 +29,10 @@ public class DBSpectraHandler {
 	private static final String PEAKLIST = "SELECT * FROM peaklist";
 	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.*,pklsof.name as pkl_software FROM peaklist pkl,peaklist_software pklsof,spectrum spec WHERE spec.peaklist_id=pkl.id AND pklsof.id=pkl.peaklist_software_id AND pkl.path=?";
 	private static final String PROJECTS_BY_OWNER = "SELECT project.id as id ,project.name as name,project.description as description FROM user_account ,project WHERE user_account.id=project.owner_id AND user_account.login=?";
-	private static final String DATASET = "SELECT ds.* ,proj.name FROM data_set ds,project proj WHERE  proj.id=ds.project_id AND ds.type IN ('AGGREGATE','IDENTIFICATION') AND ds.result_summary_id>0 AND ds.project_id=? order by ds.result_summary_id;";
+	private static final String UDS_DATASET = "SELECT DISTINCT(ds.result_summary_id) AS rsm_id,ds.* ,proj.name proj_name FROM data_set ds,project proj WHERE  proj.id=ds.project_id AND ds.type IN ('AGGREGATE','IDENTIFICATION') AND ds.result_summary_id>0 AND ds.project_id=? order by ds.result_summary_id";
+	private static final String PKL_BY_RSM = "SELECT distinct(pkl.*) FROM result_summary rsm, result_set rs,msi_search msi,peaklist pkl WHERE rsm.result_set_id=rs.id AND rs.msi_search_id=msi.id AND msi.peaklist_id= pkl.id AND rsm.id=? ";
+	private static final String VALIDATED_MSI_SEARCH_IDS = "SELECT distinct(msi.id) as msi_search_id FROM result_summary rsm, result_set rs, msi_search msi, peaklist pkl, protein_set ps WHERE rsm.result_set_id=rs.id AND rs.msi_search_id=msi.id AND msi.peaklist_id= pkl.id AND ps.result_summary_id=rsm.id AND ps.is_validated=true AND rs.type IN('SEARCH','USER') AND rsm.id=?";
+	private static final String SPECTRA_BY_MSI_SEARCH = "SELECT spec.*,pklsof.name as pkl_software FROM msi_search msi,peaklist pkl,peaklist_software pklsof,spectrum spec WHERE spec.peaklist_id=pkl.id AND  pkl.id=msi.peaklist_id AND pkl.peaklist_software_id=pklsof.id AND msi.id=?";
 	private static Spectra spectra = new Spectra();
 
 	/**
@@ -40,7 +43,6 @@ public class DBSpectraHandler {
 	public static void allPeakList() throws SQLException {
 		PreparedStatement allPklistStmt = null;
 		ResultSet rs = null;
-
 		try {
 			allPklistStmt = DBAccess.openUdsDBConnection().prepareStatement(PEAKLIST);
 			rs = allPklistStmt.executeQuery();
@@ -64,7 +66,7 @@ public class DBSpectraHandler {
 		ResultSet rs = null;
 		ObservableList<Dataset> list = FXCollections.observableArrayList();
 		try {
-			datasetStmt = DBAccess.openUdsDBConnection().prepareStatement(DATASET);
+			datasetStmt = DBAccess.openUdsDBConnection().prepareStatement(UDS_DATASET);
 			System.out.println("INFO | Load datasets from project=" + projectId + ".");
 			datasetStmt.setLong(1, projectId);
 			rs = datasetStmt.executeQuery();
@@ -93,58 +95,94 @@ public class DBSpectraHandler {
 	}
 
 	/**
+	 * Find all msi_search _ids by set of rsm ids.
+	 * 
+	 * @param msiName
+	 *            the database name
+	 * @param rsmIds
+	 *            the rsm ids
+	 * @throws SQLException
+	 */
+	public static Set<Long> fillMsiSerachIds(String msiName, Set<Long> rsmIds) throws SQLException {
+		PreparedStatement peakListStmt = null;
+		ResultSet rs = null;
+		Set<Long> msiIds = new HashSet<Long>();
+		spectra.initialize();
+		try {
+			for (Long rsmId : rsmIds) {
+				peakListStmt = DBAccess.openFirstMsiDBConnection(msiName).prepareStatement(VALIDATED_MSI_SEARCH_IDS);
+				System.out.println("INFO | Retrieve msi_search ids from rsmId= #'" + rsmId + "'.");
+				peakListStmt.setLong(1, rsmId);
+				rs = peakListStmt.executeQuery();
+				while (rs.next()) {
+					Long id = rs.getLong("msi_search_id");
+					msiIds.add(id);
+				}
+				System.out.println("INFO | Retrieve msi_search ids has finished. " + msiIds.size() + " msi_search were found.");
+			}
+		} finally {
+			tryToCloseResultSet(rs);
+			tryToCloseStatement(peakListStmt);
+		}
+		return msiIds;
+	}
+
+	/**
 	 * Find all spectra set by project
 	 * 
 	 * @param path
 	 *            the peaklist path
 	 * @throws SQLException
 	 */
-	public static void fillSpecByPeakList(String msiName, String path) throws SQLException {
+	public static void fillSpecByPeakList(String msiName, Set<Long> msiIds) throws SQLException {
 		PreparedStatement peakListStmt = null;
 		ResultSet rs = null;
 		try {
-			spectra.initialize();
-			peakListStmt = DBAccess.openFirstMsiDBConnection(msiName).prepareStatement(SPECTRA_BY_PEAKLIST);
-			System.out.println("INFO | Load spectra from '" + msiName + "' whith the peaklist path: '" + path + "'.");
-			peakListStmt.setString(1, path);
-			rs = peakListStmt.executeQuery();
-			while (rs.next()) {
-				Long id = rs.getLong("id");
-				Integer firstScan = rs.getInt("first_scan");
-				Float firstTime = rs.getFloat("first_time");
-				Float lastTime = rs.getFloat("last_time");
-				byte[] intensityList = rs.getBytes("intensity_list");
-				byte[] mozeList = rs.getBytes("moz_list");
-				Integer precursorCharge = rs.getInt("precursor_charge");
-				Float precursorIntensity = rs.getFloat("precursor_intensity");
-				Double precursorMoz = rs.getDouble("precursor_moz");
-				String title = rs.getString("title");
-				// Retrieve the used peak list software to determine the parsing
-				// rule
-				String pklSoftwareName = rs.getString("pkl_software");
-				if (id > 0L && (!StringsUtils.isEmpty(title))) {
-					Spectrum spectrum = new Spectrum(id, firstScan, firstTime, lastTime, intensityList, mozeList,
-							precursorCharge, precursorIntensity, precursorMoz, title);
-					// Create fragment
-					for (int i = 0; i < spectrum.getMasses().length; i++) {
-						double mz = spectrum.getMasses()[i];
-						float intensity = (float) spectrum.getIntensities()[i];
-						if (mz > 0) {
-							Fragment fragment = new Fragment(i, mz, intensity);
-							spectrum.addFragment(fragment);
-						} else {
-							System.out.println("Invalid fragment! moz must be greater than 0!");
+			for (Long msiSearchId : msiIds) {
+				peakListStmt = DBAccess.openFirstMsiDBConnection(msiName).prepareStatement(SPECTRA_BY_MSI_SEARCH);
+				System.out.println("INFO | Load spectra from msi_search= #'" + msiSearchId + "'.");
+				peakListStmt.setLong(1, msiSearchId);
+				rs = peakListStmt.executeQuery();
+				while (rs.next()) {
+					Long id = rs.getLong("id");
+					Integer firstScan = rs.getInt("first_scan");
+					Float firstTime = rs.getFloat("first_time");
+					Float lastTime = rs.getFloat("last_time");
+					byte[] intensityList = rs.getBytes("intensity_list");
+					byte[] mozeList = rs.getBytes("moz_list");
+					Integer precursorCharge = rs.getInt("precursor_charge");
+					Float precursorIntensity = rs.getFloat("precursor_intensity");
+					Double precursorMoz = rs.getDouble("precursor_moz");
+					String title = rs.getString("title");
+					// Retrieve the used peak list software to determine the
+					// parsing
+					// rule
+					String pklSoftwareName = rs.getString("pkl_software");
+					if (id > 0L && (!StringsUtils.isEmpty(title))) {
+						Spectrum spectrum = new Spectrum(id, firstScan, firstTime, lastTime, intensityList, mozeList,
+								precursorCharge, precursorIntensity, precursorMoz, title);
+						// Create fragment
+						for (int i = 0; i < spectrum.getMasses().length; i++) {
+							double mz = spectrum.getMasses()[i];
+							float intensity = (float) spectrum.getIntensities()[i];
+							if (mz > 0) {
+								Fragment fragment = new Fragment(i, mz, intensity);
+								spectrum.addFragment(fragment);
+							} else {
+								System.err.println("INFO | Invalid fragment! moz must be greater than 0!");
+							}
 						}
+						// Update the current regex
+						Session.CURRENT_REGEX_RT = pklSoftwareName;
+						spectrum.setRetentionTimeFromTitle();
+						spectra.addSpectrum(spectrum);
 					}
-					// Update the current regex
-					Session.CURRENT_REGEX_RT = pklSoftwareName;
-					spectrum.setRetentionTimeFromTitle();
-					spectra.addSpectrum(spectrum);
-				}
 
+				}
+				System.out.println("INFO | Retrieve spectra has finished. " + spectra.getSpectraAsObservable().size()
+						+ " spectra were found.");
 			}
-			System.out.println("--- Retrieve spectra has finished. " + spectra.getSpectraAsObservable().size()
-					+ " spectra found.");
+
 		} finally
 
 		{
@@ -193,7 +231,7 @@ public class DBSpectraHandler {
 				userLogin = rs.getString("login");
 			}
 			if (userLogin == null)
-				throw new Exception("The user does not exist! Make sure that you have a Proline account.");
+				throw new Exception("ERROR | The user does not exist! Make sure that you have a Proline account.");
 		} finally {
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(findUserStmt);
@@ -222,7 +260,6 @@ public class DBSpectraHandler {
 				if (id > 0L && !StringsUtils.isEmpty(name)) {
 					Project proj = new Project(id, name, desc);
 					list.add(proj);
-					System.out.println(proj.toString());
 				}
 			}
 		} finally {
@@ -258,7 +295,7 @@ public class DBSpectraHandler {
 			if (rs != null && !rs.isClosed())
 				rs.close();
 		} catch (Exception e) {
-			System.out.println("Error while trying to close rs: " + e);
+			System.out.println("ERROR | Error while trying to close rs " + e);
 			// logger.error("Error while trying to close Statement", e)
 		}
 	}
@@ -274,7 +311,7 @@ public class DBSpectraHandler {
 			if (stmt != null && !stmt.isClosed())
 				stmt.close();
 		} catch (Exception e) {
-			System.out.println("Error while trying to close Statement" + e);
+			System.err.println("ERROR | Error while trying to close Statement " + e);
 			// logger.error("Error while trying to close Statement", e)
 		}
 	}
