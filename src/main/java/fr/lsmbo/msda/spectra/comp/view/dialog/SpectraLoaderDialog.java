@@ -63,11 +63,11 @@ public class SpectraLoaderDialog extends Dialog<Object> {
 
 	private StackPane firstRoot;
 	private TreeItem rootItem;
-	private TreeView<Dataset> treeView ;
+	private TreeView<Dataset> treeView;
 
 	private StackPane secondRoot;
 	private TreeItem secondRootItem;
-	private TreeView<Dataset> secondTreeView ;
+	private TreeView<Dataset> secondTreeView;
 	public static Stage stage;
 	//
 	private String refDbName;
@@ -403,17 +403,19 @@ public class SpectraLoaderDialog extends Dialog<Object> {
 					Session.USER_PARAMS.setDataSource("file");
 					refPklByDataSourceMap.put(DataSource.FILE, refPklListTF.getText());
 				} else {
+					assert !StringsUtils.isEmpty(refDbName) : "reference database name must not be null nor empty";
 					Session.USER_PARAMS.setDataSource("database");
 					refRsmIds.add(treeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
 					refPklByDataSourceMap.put(DataSource.DATABASE, refRsmIds);
 				}
 				if (secondPklListRefFileRB.isSelected()) {
 					Session.USER_PARAMS.setDataSource("file");
-					refPklByDataSourceMap.put(DataSource.FILE, secondPklListTF.getText());
-
+					testPklByDataSourceMap.put(DataSource.FILE, secondPklListTF.getText());
 				} else {
+					assert !StringsUtils.isEmpty(testDbName) : "test database name must not be null nor empty";
 					Session.USER_PARAMS.setDataSource("database");
-					testRsmIds.add(secondTreeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
+					testRsmIds
+							.add(secondTreeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
 					testPklByDataSourceMap.put(DataSource.DATABASE, testRsmIds);
 				}
 				this.params = new SpectraParams(refPklByDataSourceMap, testPklByDataSourceMap, refDbName, testDbName);

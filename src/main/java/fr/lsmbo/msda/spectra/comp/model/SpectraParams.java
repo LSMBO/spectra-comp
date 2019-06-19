@@ -30,8 +30,6 @@ public class SpectraParams {
 	public SpectraParams(Map<DataSource, Object> refPklByDataSourceMap,
 			Map<DataSource, Object> testedPklByDataSourceMap, String refDbName, String testDbName) {
 		super();
-		assert !StringsUtils.isEmpty(refDbName) : "reference database name must not be null nor empty";
-		assert !StringsUtils.isEmpty(testDbName) : "test database name must not be null nor empty";
 		this.refPklByDataSourceMap = refPklByDataSourceMap;
 		this.testedPklByDataSourceMap = testedPklByDataSourceMap;
 		this.refDbName = refDbName;
@@ -80,8 +78,6 @@ public class SpectraParams {
 	 *            the refDbName to set
 	 */
 	public final void setRefDbName(String refDbName) {
-		assert !StringsUtils.isEmpty(refDbName) : "reference database name must not be null nor empty";
-
 		this.refDbName = refDbName;
 	}
 
@@ -97,7 +93,6 @@ public class SpectraParams {
 	 *            the testDbName to set
 	 */
 	public final void setTestDbName(String testDbName) {
-		assert !StringsUtils.isEmpty(testDbName) : "test database name must not be null nor empty";
 		this.testDbName = testDbName;
 	}
 
@@ -108,8 +103,8 @@ public class SpectraParams {
 	 */
 	@Override
 	public String toString() {
-		return "Spectra Params [reference pkl by data source Map=" + refPklByDataSourceMap
-				+ ", tested Pkl by data source map=" + testedPklByDataSourceMap + ", reference db name=" + refDbName
+		return "Spectra Params [reference pkl by data source=" + refPklByDataSourceMap
+				+ ", tested Pkl by data source =" + testedPklByDataSourceMap + ", reference db name=" + refDbName
 				+ ", test db name=" + testDbName + "]";
 	}
 
