@@ -17,68 +17,157 @@ import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 import javafx.beans.property.BooleanProperty;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Spectrum.
+ */
 public class Spectrum {
+	
+	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(Spectrum.class);
 
+	/** The Constant MASSES_INDEX. */
 	public static final int MASSES_INDEX = 0;
+	
+	/** The Constant INTENSITIES_INDEX. */
 	public static final int INTENSITIES_INDEX = 1;
 
+	/** The m id. */
 	private long m_id;
+	
+	/** The ref id. */
 	private long ref_id = -1;
+	
+	/** The m first scan. */
 	private Integer m_firstScan;
+	
+	/** The m last scan. */
 	private Integer m_lastScan;
 
+	/** The m first time. */
 	private Float m_firstTime;
+	
+	/** The m last time. */
 	private Float m_lastTime;
 
+	/** The m intensity list. */
 	private byte[] m_intensityList = null;
+	
+	/** The m moz list. */
 	private byte[] m_mozList = null;
+	
+	/** The m mass intensities values. */
 	private double[][] m_massIntensitiesValues = null;
 
+	/** The m precursor charge. */
 	private Integer m_precursorCharge;
+	
+	/** The m precursor intensity. */
 	private Float m_precursorIntensity;
+	
+	/** The m precursor moz. */
 	private Double m_precursorMoz;
 
+	/** The m title. */
 	private String m_title = null;
+	
+	/** The nb match. */
 	private Integer nbMatch;
+	
+	/** The matched. */
 	private BooleanProperty matched;
 
+	/** The retention time. */
 	private float retentionTime;
 
+	/** The line start. */
 	// The index of the line start in file of the spectrum
 	private Integer lineStart = 0;
+	
+	/** The line stop. */
 	// The index of the line stop in file of the spectrum
 	private Integer lineStop = 0;
+	
+	/** The fragments. */
 	// May be empty if file is too big
 	private ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+	
+	/** The sorted fragments. */
 	// May be empty if file is too big
 	private ArrayList<Fragment> sortedFragments = new ArrayList<Fragment>();
+	
+	/** The fragment equals to chart. */
 	private ArrayList<Fragment> fragmentEqualsToChart = new ArrayList<Fragment>();
+	
+	/** The nb intense peaks. */
 	private Fragment[] nbIntensePeaks;
+	
+	/** The square rootnb intense peaks. */
 	private Double[] squareRootnbIntensePeaks;
+	
+	/** The nb fragments. */
 	private Integer nbFragments = 0;
+	
+	/** The index of most intense fragment. */
 	// The index of the most intense fragment.
 	private Integer indexOfMostIntenseFragment = 0;
+	
+	/** The fragment max moz. */
 	// The maximum of Moz
 	private double fragmentMaxMoz = 0;
+	
+	/** The fragment max intensity. */
 	// The fragment maximum intensity
 	private float fragmentMaxIntensity = 0;
+	
+	/** The median fragments intensities. */
 	// Median of fragment intensity
 	private float medianFragmentsIntensities = 0;
+	
+	/** The average fragments intensities. */
 	// The average of fragment intensity
 	private float averageFragmentsIntensities = 0;
+	
+	/** The nb peaks. */
 	// The number of peaks
 	private int nbPeaks;
+	
+	/** The cos theta. */
 	// TODO More about the reference spectrum
 	private double cosTheta = 0D;
+	
+	/** The delta moz with reference spectrum. */
 	private double deltaMozWithReferenceSpectrum = 0F;
+	
+	/** The delta retention time with reference spectrum. */
 	private int deltaRetentionTimeWithReferenceSpectrum = 0;
+	
+	/** The nb peaks identical with reference spectrum. */
 	private int nbPeaksIdenticalWithReferenceSpectrum = 0;
+	
+	/** The title reference spectrum. */
 	private String titleReferenceSpectrum;
 
+	/**
+	 * Instantiates a new spectrum.
+	 */
 	public Spectrum() {
 	}
 
+	/**
+	 * Instantiates a new spectrum.
+	 *
+	 * @param id the id
+	 * @param firstScan the first scan
+	 * @param firstTime the first time
+	 * @param lastTime the last time
+	 * @param intensityList the intensity list
+	 * @param mozeList the moze list
+	 * @param precursorCharge the precursor charge
+	 * @param precursorIntensity the precursor intensity
+	 * @param precursorMoz the precursor moz
+	 * @param title the title
+	 */
 	public Spectrum(long id, Integer firstScan, Float firstTime, Float lastTime, byte[] intensityList, byte[] mozeList,
 			Integer precursorCharge, Float precursorIntensity, Double precursorMoz, String title) {
 		m_id = id;
@@ -96,16 +185,18 @@ public class Spectrum {
 	}
 
 	/**
-	 * @param fragment
-	 *            the fragment to set
+	 * Adds the fragment.
+	 *
+	 * @param fragment            the fragment to set
 	 */
 	public void addFragment(Fragment fragment) {
 		this.fragments.add(fragment);
 	}
 
 	/**
-	 * @param fragments
-	 *            the list of fragment to set
+	 * Adds the fragments.
+	 *
+	 * @param fragments            the list of fragment to set
 	 */
 	public void addFragments(ArrayList<Fragment> fragments) {
 		this.fragments.addAll(fragments);
@@ -152,7 +243,7 @@ public class Spectrum {
 
 	/**
 	 * Compute the square root for the nbIntensePeaks compute in
-	 * computeNbIntensePeaks()
+	 * computeNbIntensePeaks().
 	 */
 	private void computeListSquareRootNbIntensePeaks() {
 		nbPeaks = Session.USER_PARAMS.getComparison().getNbPeaks();
@@ -200,11 +291,18 @@ public class Spectrum {
 		return super.equals(obj);
 	}
 
+	/**
+	 * Gets the cos theta.
+	 *
+	 * @return the cos theta
+	 */
 	public double getCosTheta() {
 		return cosTheta;
 	}
 
 	/**
+	 * Gets the delta moz with reference spectrum.
+	 *
 	 * @return the deltaMozWithReferenceSpectrum
 	 */
 	public final double getDeltaMozWithReferenceSpectrum() {
@@ -212,6 +310,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the delta retention time with reference spectrum.
+	 *
 	 * @return the deltaRetentionTimeWithReferenceSpectrum
 	 */
 	public final int getDeltaRetentionTimeWithReferenceSpectrum() {
@@ -219,7 +319,8 @@ public class Spectrum {
 	}
 
 	/**
-	 * 
+	 * Gets the fragment equals to chart.
+	 *
 	 * @return the list of fragment that equals to chart
 	 */
 	public ArrayList<Fragment> getFragmentEqualsToChart() {
@@ -227,21 +328,35 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the fragments.
+	 *
 	 * @return the fragments
 	 */
 	public final ArrayList<Fragment> getFragments() {
 		return fragments;
 	}
 
+	/**
+	 * Gets the matched.
+	 *
+	 * @return the matched
+	 */
 	public BooleanProperty getMatched() {
 		return matched;
 	}
 
+	/**
+	 * Gets the intensities.
+	 *
+	 * @return the intensities
+	 */
 	public double[] getIntensities() {
 		return getMassIntensityValues()[INTENSITIES_INDEX];
 	}
 
 	/**
+	 * Gets the line start.
+	 *
 	 * @return the lineStart
 	 */
 	public final Integer getLineStart() {
@@ -249,6 +364,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the line stop.
+	 *
 	 * @return the lineStop
 	 */
 	public final Integer getLineStop() {
@@ -256,6 +373,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the list square root nb intense peaks.
+	 *
 	 * @return the list of the square root of the intense peaks.
 	 */
 	public Double[] getListSquareRootNbIntensePeaks() {
@@ -264,6 +383,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the m first scan.
+	 *
 	 * @return the m_firstScan
 	 */
 	public final Integer getM_firstScan() {
@@ -271,6 +392,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the m first time.
+	 *
 	 * @return the m_firstTime
 	 */
 	public final Float getM_firstTime() {
@@ -278,6 +401,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the m id.
+	 *
 	 * @return the m_id
 	 */
 	public final long getM_id() {
@@ -285,6 +410,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the m intensity list.
+	 *
 	 * @return the m_intensityList
 	 */
 	public final byte[] getM_intensityList() {
@@ -292,6 +419,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the m last scan.
+	 *
 	 * @return the m_lastScan
 	 */
 	public final Integer getM_lastScan() {
@@ -299,6 +428,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the m last time.
+	 *
 	 * @return the m_lastTime
 	 */
 	public final Float getM_lastTime() {
@@ -306,6 +437,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the m mass intensities values.
+	 *
 	 * @return the m_massIntensitiesValues
 	 */
 	public final double[][] getM_massIntensitiesValues() {
@@ -313,6 +446,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the m moz list.
+	 *
 	 * @return the m_mozList
 	 */
 	public final byte[] getM_mozList() {
@@ -320,6 +455,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the m precursor charge.
+	 *
 	 * @return the m_precursorCharge
 	 */
 	public final Integer getM_precursorCharge() {
@@ -327,6 +464,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the m precursor intensity.
+	 *
 	 * @return the m_precursorIntensity
 	 */
 	public final Float getM_precursorIntensity() {
@@ -334,6 +473,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the m precursor moz.
+	 *
 	 * @return the m_precursorMoz
 	 */
 	public final Double getM_precursorMoz() {
@@ -341,16 +482,28 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the m title.
+	 *
 	 * @return the m_title
 	 */
 	public final String getM_title() {
 		return m_title;
 	}
 
+	/**
+	 * Gets the masses.
+	 *
+	 * @return the masses
+	 */
 	public double[] getMasses() {
 		return getMassIntensityValues()[MASSES_INDEX];
 	}
 
+	/**
+	 * Gets the mass intensity values.
+	 *
+	 * @return the mass intensity values
+	 */
 	public double[][] getMassIntensityValues() {
 		if (m_massIntensitiesValues == null) {
 			if ((m_intensityList == null) || (m_mozList == null)) {
@@ -381,7 +534,8 @@ public class Spectrum {
 	}
 
 	/**
-	 * 
+	 * Gets the nb fragments.
+	 *
 	 * @return the fragment number
 	 */
 	public Integer getNbFragments() {
@@ -390,6 +544,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the nb intense peaks.
+	 *
 	 * @return the number of the intense peaks
 	 */
 	public Fragment[] getNbIntensePeaks() {
@@ -401,6 +557,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the nb match.
+	 *
 	 * @return the nbMatch
 	 */
 	public final Integer getNbMatch() {
@@ -408,17 +566,26 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the nb peaks identical with reference spectrum.
+	 *
 	 * @return the nbPeaksIdenticalWithReferenceSpectrum
 	 */
 	public final int getNbPeaksIdenticalWithReferenceSpectrum() {
 		return nbPeaksIdenticalWithReferenceSpectrum;
 	}
 
+	/**
+	 * Gets the retention time.
+	 *
+	 * @return the retention time
+	 */
 	public Float getRetentionTime() {
 		return retentionTime;
 	}
 
 	/**
+	 * Gets the sorted fragments.
+	 *
 	 * @return A sorted list of fragment. The sort is based on fragment
 	 *         intensities.
 	 */
@@ -441,190 +608,223 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the title reference spectrum.
+	 *
 	 * @return the titleReferenceSpectrum
 	 */
 	public final String getTitleReferenceSpectrum() {
 		return titleReferenceSpectrum;
 	}
 
+	/**
+	 * Sets the cos theta.
+	 *
+	 * @param cosTheta the new cos theta
+	 */
 	public void setCosTheta(double cosTheta) {
 		this.cosTheta = cosTheta;
 	}
 
 	/**
-	 * @param deltaMozWithReferenceSpectrum
-	 *            the deltaMozWithReferenceSpectrum to set
+	 * Sets the delta moz with reference spectrum.
+	 *
+	 * @param deltaMozWithReferenceSpectrum            the deltaMozWithReferenceSpectrum to set
 	 */
 	public final void setDeltaMozWithReferenceSpectrum(double deltaMozWithReferenceSpectrum) {
 		this.deltaMozWithReferenceSpectrum = deltaMozWithReferenceSpectrum;
 	}
 
 	/**
-	 * @param deltaRetentionTimeWithReferenceSpectrum
-	 *            the deltaRetentionTimeWithReferenceSpectrum to set
+	 * Sets the delta retention time with reference spectrum.
+	 *
+	 * @param deltaRetentionTimeWithReferenceSpectrum            the deltaRetentionTimeWithReferenceSpectrum to set
 	 */
 	public final void setDeltaRetentionTimeWithReferenceSpectrum(int deltaRetentionTimeWithReferenceSpectrum) {
 		this.deltaRetentionTimeWithReferenceSpectrum = deltaRetentionTimeWithReferenceSpectrum;
 	}
 
 	/**
-	 * @param fragments
-	 *            the fragments to set
+	 * Sets the fragments.
+	 *
+	 * @param fragments            the fragments to set
 	 */
 	public final void setFragments(ArrayList<Fragment> fragments) {
 		this.fragments = fragments;
 	}
 
 	/**
-	 * @param matched
-	 *            the matched to set
+	 * Sets the matched.
+	 *
+	 * @param matched            the matched to set
 	 */
 	public final void setMatched(BooleanProperty matched) {
 		this.matched = matched;
 	}
 
 	/**
-	 * @param lineStart
-	 *            the lineStart to set
+	 * Sets the line start.
+	 *
+	 * @param lineStart            the lineStart to set
 	 */
 	public final void setLineStart(Integer lineStart) {
 		this.lineStart = lineStart;
 	}
 
 	/**
-	 * @param lineStop
-	 *            the lineStop to set
+	 * Sets the line stop.
+	 *
+	 * @param lineStop            the lineStop to set
 	 */
 	public final void setLineStop(Integer lineStop) {
 		this.lineStop = lineStop;
 	}
 
 	/**
-	 * @param m_firstScan
-	 *            the m_firstScan to set
+	 * Sets the m first scan.
+	 *
+	 * @param m_firstScan            the m_firstScan to set
 	 */
 	public final void setM_firstScan(Integer m_firstScan) {
 		this.m_firstScan = m_firstScan;
 	}
 
 	/**
-	 * @param m_firstTime
-	 *            the m_firstTime to set
+	 * Sets the m first time.
+	 *
+	 * @param m_firstTime            the m_firstTime to set
 	 */
 	public final void setM_firstTime(Float m_firstTime) {
 		this.m_firstTime = m_firstTime;
 	}
 
 	/**
-	 * @param m_id
-	 *            the m_id to set
+	 * Sets the m id.
+	 *
+	 * @param m_id            the m_id to set
 	 */
 	public final void setM_id(long m_id) {
 		this.m_id = m_id;
 	}
 
 	/**
-	 * @param m_intensityList
-	 *            the m_intensityList to set
+	 * Sets the m intensity list.
+	 *
+	 * @param m_intensityList            the m_intensityList to set
 	 */
 	public final void setM_intensityList(byte[] m_intensityList) {
 		this.m_intensityList = m_intensityList;
 	}
 
 	/**
-	 * @param m_lastScan
-	 *            the m_lastScan to set
+	 * Sets the m last scan.
+	 *
+	 * @param m_lastScan            the m_lastScan to set
 	 */
 	public final void setM_lastScan(Integer m_lastScan) {
 		this.m_lastScan = m_lastScan;
 	}
 
 	/**
-	 * @param m_lastTime
-	 *            the m_lastTime to set
+	 * Sets the m last time.
+	 *
+	 * @param m_lastTime            the m_lastTime to set
 	 */
 	public final void setM_lastTime(Float m_lastTime) {
 		this.m_lastTime = m_lastTime;
 	}
 
 	/**
-	 * @param m_massIntensitiesValues
-	 *            the m_massIntensitiesValues to set
+	 * Sets the m mass intensities values.
+	 *
+	 * @param m_massIntensitiesValues            the m_massIntensitiesValues to set
 	 */
 	public final void setM_massIntensitiesValues(double[][] m_massIntensitiesValues) {
 		this.m_massIntensitiesValues = m_massIntensitiesValues;
 	}
 
 	/**
-	 * @param m_mozList
-	 *            the m_mozList to set
+	 * Sets the m moz list.
+	 *
+	 * @param m_mozList            the m_mozList to set
 	 */
 	public final void setM_mozList(byte[] m_mozList) {
 		this.m_mozList = m_mozList;
 	}
 
 	/**
-	 * @param m_precursorCharge
-	 *            the m_precursorCharge to set
+	 * Sets the m precursor charge.
+	 *
+	 * @param m_precursorCharge            the m_precursorCharge to set
 	 */
 	public final void setM_precursorCharge(Integer m_precursorCharge) {
 		this.m_precursorCharge = m_precursorCharge;
 	}
 
 	/**
-	 * @param m_precursorIntensity
-	 *            the m_precursorIntensity to set
+	 * Sets the m precursor intensity.
+	 *
+	 * @param m_precursorIntensity            the m_precursorIntensity to set
 	 */
 	public final void setM_precursorIntensity(Float m_precursorIntensity) {
 		this.m_precursorIntensity = m_precursorIntensity;
 	}
 
 	/**
-	 * @param m_precursorMoz
-	 *            the m_precursorMoz to set
+	 * Sets the m precursor moz.
+	 *
+	 * @param m_precursorMoz            the m_precursorMoz to set
 	 */
 	public final void setM_precursorMoz(Double m_precursorMoz) {
 		this.m_precursorMoz = m_precursorMoz;
 	}
 
 	/**
-	 * @param m_title
-	 *            the m_title to set
+	 * Sets the m title.
+	 *
+	 * @param m_title            the m_title to set
 	 */
 	public final void setM_title(String m_title) {
 		this.m_title = m_title;
 	}
 
 	/**
-	 * @param nbMatch
-	 *            the nbMatch to set
+	 * Sets the nb match.
+	 *
+	 * @param nbMatch            the nbMatch to set
 	 */
 	public final void setNbMatch(Integer nbMatch) {
 		this.nbMatch = nbMatch;
 	}
 
 	/**
-	 * @param nbPeaksIdenticalWithReferenceSpectrum
-	 *            the nbPeaksIdenticalWithReferenceSpectrum to set
+	 * Sets the nb peaks identical with reference spectrum.
+	 *
+	 * @param nbPeaksIdenticalWithReferenceSpectrum            the nbPeaksIdenticalWithReferenceSpectrum to set
 	 */
 	public final void setNbPeaksIdenticalWithReferenceSpectrum(int nbPeaksIdenticalWithReferenceSpectrum) {
 		this.nbPeaksIdenticalWithReferenceSpectrum = nbPeaksIdenticalWithReferenceSpectrum;
 	}
 
 	/**
-	 * @param retentionTime
-	 *            the retentionTime to set
+	 * Sets the retention time.
+	 *
+	 * @param retentionTime            the retentionTime to set
 	 */
 	public final void setRetentionTime(float retentionTime) {
 		this.retentionTime = retentionTime;
 	}
 
+	/**
+	 * Sets the retention time.
+	 *
+	 * @param retentionTime the new retention time
+	 */
 	public void setRetentionTime(Float retentionTime) {
 		this.retentionTime = retentionTime;
 	}
 
 	/**
-	 * Set the retention time from title
+	 * Set the retention time from title.
 	 */
 	public void setRetentionTimeFromTitle() {
 		if ((!StringsUtils.isEmpty(m_title)) && (!StringsUtils.isEmpty(Session.CURRENT_REGEX_RT))) {
@@ -633,10 +833,9 @@ public class Spectrum {
 	}
 
 	/**
-	 * Set the retention from title
-	 * 
-	 * @param regex
-	 *            the used regex to retrieve the retention time from title
+	 * Set the retention from title.
+	 *
+	 * @param regex            the used regex to retrieve the retention time from title
 	 */
 	public void setRetentionTimeFromTitle(String regex) {
 		try {
@@ -652,14 +851,17 @@ public class Spectrum {
 	}
 
 	/**
-	 * @param titleReferenceSpectrum
-	 *            the titleReferenceSpectrum to set
+	 * Sets the title reference spectrum.
+	 *
+	 * @param titleReferenceSpectrum            the titleReferenceSpectrum to set
 	 */
 	public final void setTitleReferenceSpectrum(String titleReferenceSpectrum) {
 		this.titleReferenceSpectrum = titleReferenceSpectrum;
 	}
 
 	/**
+	 * Gets the ref id.
+	 *
 	 * @return the ref_id
 	 */
 	public final long getRef_id() {
@@ -667,8 +869,9 @@ public class Spectrum {
 	}
 
 	/**
-	 * @param ref_id
-	 *            the ref_id to set
+	 * Sets the ref id.
+	 *
+	 * @param ref_id            the ref_id to set
 	 */
 	public final void setRef_id(long ref_id) {
 		this.ref_id = ref_id;

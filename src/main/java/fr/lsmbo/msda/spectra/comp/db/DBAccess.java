@@ -7,19 +7,25 @@ import java.util.Properties;
 
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
+// TODO: Auto-generated Javadoc
 /**
- * Handle databases connection for spectra-comp
- * 
- * @author Aromdhani
+ * Handle databases connection for spectra-comp.
  *
+ * @author Aromdhani
  */
 public class DBAccess {
+	
+	/** The uds db connection. */
 	static Connection udsDbConnection = null;
+	
+	/** The first msi db connection. */
 	static Connection firstMsiDbConnection = null;
+	
+	/** The second msi db connection. */
 	static Connection secondMsiDbConnection = null;
 
 	/**
-	 * Close all active connection
+	 * Close all active connection.
 	 */
 	public static void closeAll() {
 		closeFirstMsiDb();
@@ -28,8 +34,7 @@ public class DBAccess {
 	}
 
 	/**
-	 * Close first msi_db connection
-	 * 
+	 * Close first msi_db connection.
 	 */
 	public static void closeFirstMsiDb() {
 		try {
@@ -44,8 +49,7 @@ public class DBAccess {
 	}
 
 	/**
-	 * Close second msi_db connection
-	 * 
+	 * Close second msi_db connection.
 	 */
 	public static void closeSecondMsiDb() {
 		try {
@@ -60,8 +64,7 @@ public class DBAccess {
 	}
 
 	/**
-	 * Close uds_db connection
-	 * 
+	 * Close uds_db connection.
 	 */
 	public static void closeUdsDb() {
 		try {
@@ -76,8 +79,7 @@ public class DBAccess {
 	}
 
 	/**
-	 * initialize msi_db and uds_db connection
-	 * 
+	 * initialize msi_db and uds_db connection.
 	 */
 	public static void initialize() {
 		try {
@@ -94,8 +96,7 @@ public class DBAccess {
 	}
 
 	/**
-	 * initialize first msi_db
-	 * 
+	 * initialize first msi_db.
 	 */
 	public static void initializeFirstMsiDb() {
 		try {
@@ -110,8 +111,7 @@ public class DBAccess {
 	}
 
 	/**
-	 * initialize second msi_db
-	 * 
+	 * initialize second msi_db.
 	 */
 	public static void initializeSecondMsiDb() {
 		try {
@@ -126,8 +126,7 @@ public class DBAccess {
 	}
 
 	/**
-	 * initialize uds_db
-	 * 
+	 * initialize uds_db.
 	 */
 	public static void initializeUdsDb() {
 		try {
@@ -142,8 +141,9 @@ public class DBAccess {
 	}
 
 	/**
-	 * Create connection to uds_db database
-	 * 
+	 * Create connection to uds_db database.
+	 *
+	 * @param msiDbName the msi db name
 	 * @return the connection to the first database connection
 	 */
 
@@ -178,8 +178,9 @@ public class DBAccess {
 	}
 
 	/**
-	 * Create connection to uds_db database
-	 * 
+	 * Create connection to uds_db database.
+	 *
+	 * @param msiDbName the msi db name
 	 * @return the connection to the first database connection
 	 */
 
@@ -214,8 +215,8 @@ public class DBAccess {
 	}
 
 	/**
-	 * Create connection to uds_db database
-	 * 
+	 * Create connection to uds_db database.
+	 *
 	 * @return the connection to uds_db
 	 */
 

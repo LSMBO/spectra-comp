@@ -12,21 +12,26 @@ import fr.lsmbo.msda.spectra.comp.db.DBConfig;
 import fr.lsmbo.msda.spectra.comp.settings.UserParams;
 import fr.lsmbo.msda.spectra.comp.settings.Version;
 
+// TODO: Auto-generated Javadoc
 /**
- * Initialize spectra-comp configurations values
- * 
- * @author Aromdhani
+ * Initialize spectra-comp configurations values.
  *
+ * @author Aromdhani
  */
 
 public class Config {
 
+	/** The spectra comp file name. */
 	private static String spectraCompFileName = "spectra-comp.json";
+	
+	/** The default params file name. */
 	private static String defaultParamsFileName = "default-params.json";
+	
+	/** The instance. */
 	private static Config instance = null;
 
 	/**
-	 * Force to load configuration properties
+	 * Force to load configuration properties.
 	 */
 	public static void forceToLoadProperties() {
 		instance = null;
@@ -34,8 +39,8 @@ public class Config {
 	}
 
 	/**
-	 * Return an instance of Config
-	 * 
+	 * Return an instance of Config.
+	 *
 	 * @return the instance of Config
 	 */
 	public static Config getInstance() {
@@ -46,17 +51,16 @@ public class Config {
 	}
 
 	/**
-	 * Private constructor
+	 * Private constructor.
 	 */
 	private Config() {
 		loadProperties();
 	}
 
 	/**
-	 * Return the file path
-	 * 
-	 * @param fileName
-	 *            the file name to get its path
+	 * Return the file path.
+	 *
+	 * @param fileName            the file name to get its path
 	 * @return the file path
 	 */
 	public String getConfigFilePath(String fileName) {
@@ -75,8 +79,7 @@ public class Config {
 	}
 
 	/**
-	 * Reload configuration files and initialize the values
-	 * 
+	 * Reload configuration files and initialize the values.
 	 */
 
 	private void loadProperties() {
@@ -92,8 +95,7 @@ public class Config {
 	}
 
 	/**
-	 * Load spectra-comp version properties
-	 * 
+	 * Load spectra-comp version properties.
 	 */
 	private synchronized void loadSpectraCompProps() {
 		try {

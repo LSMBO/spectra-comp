@@ -10,19 +10,19 @@ import java.util.function.Consumer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+// TODO: Auto-generated Javadoc
 /**
- * 
- * @author Aromdhani
+ * The Class FileUtils.
  *
+ * @author Aromdhani
  */
 public class FileUtils {
+	
 	/**
-	 * Read file bytes via input stream and close correctly the input stream
-	 * 
-	 * @param path
-	 *            the file path to load
-	 * @param fileConsumer
-	 *            the action
+	 * Read file bytes via input stream and close correctly the input stream.
+	 *
+	 * @param path            the file path to load
+	 * @param fileConsumer            the action
 	 */
 	public static void readBytesFrmFile(String path, Consumer<Properties> fileConsumer) {
 		InputStream fileInputStream = null;
@@ -48,11 +48,9 @@ public class FileUtils {
 	
 	/**
 	 * Open peak list file.
-	 * 
-	 * @param peakListConsumer
-	 *            a Consumer of peak list file when the file is loaded.
-	 * @param fileChooserTitle
-	 *            the parent stage of this file chooser.
+	 *
+	 * @param peakListConsumer            a Consumer of peak list file when the file is loaded.
+	 * @param stage the stage
 	 */
 	public static void openPeakListFile(Consumer<File> peakListConsumer, Stage stage) {
 		// Default folder is 'Documents'

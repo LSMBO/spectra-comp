@@ -31,6 +31,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+// TODO: Auto-generated Javadoc
 /**
  * Creates and displays parsing rules dialog to edit parsing rules.
  * 
@@ -38,10 +39,19 @@ import javafx.stage.Stage;
  *
  */
 public class ParsingRulesDialog extends Dialog<Object> {
+	
+	/** The titles. */
 	private ObservableList<Spectrum> titles = FXCollections.observableArrayList();
+	
+	/** The selected parsing rule. */
 	private ParsingRule selectedParsingRule = null;
+	
+	/** The table. */
 	private TableView<Spectrum> table;
 
+	/**
+	 * Instantiates a new parsing rules dialog.
+	 */
 	public ParsingRulesDialog() {
 
 		// Create notifications pane

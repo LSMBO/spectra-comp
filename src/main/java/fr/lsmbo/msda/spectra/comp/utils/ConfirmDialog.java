@@ -17,19 +17,36 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+// TODO: Auto-generated Javadoc
 /**
- * Creates and displays pop up dialog
- * 
- * @author Aromdhani
- * @param <T>
+ * Creates and displays pop up dialog.
  *
+ * @author Aromdhani
+ * @param <T> the generic type
  */
 public class ConfirmDialog<T> extends Stage {
+	
+	/** The popup title. */
 	private String popupTitle;
+	
+	/** The message. */
 	private String message;
+	
+	/** The action. */
 	private Supplier<T> action;
+	
+	/** The parent stage. */
 	private Stage parentStage;
 
+	/**
+	 * Instantiates a new confirm dialog.
+	 *
+	 * @param icon the icon
+	 * @param popupTitle the popup title
+	 * @param message the message
+	 * @param action the action
+	 * @param parentStage the parent stage
+	 */
 	public ConfirmDialog(ICON icon, String popupTitle, String message, Supplier<T> action, Stage parentStage) {
 		Stage popup = this;
 		popup.initOwner(parentStage);
@@ -67,34 +84,74 @@ public class ConfirmDialog<T> extends Stage {
 		popup.show();
 	}
 
+	/**
+	 * Gets the action.
+	 *
+	 * @return the action
+	 */
 	public Supplier<T> getAction() {
 		return action;
 	}
 
+	/**
+	 * Gets the message.
+	 *
+	 * @return the message
+	 */
 	public String getMessage() {
 		return message;
 	}
 
+	/**
+	 * Gets the parent stage.
+	 *
+	 * @return the parent stage
+	 */
 	public Stage getParentStage() {
 		return parentStage;
 	}
 
+	/**
+	 * Gets the popup title.
+	 *
+	 * @return the popup title
+	 */
 	public String getPopupTitle() {
 		return popupTitle;
 	}
 
+	/**
+	 * Sets the action.
+	 *
+	 * @param action the new action
+	 */
 	public void setAction(Supplier<T> action) {
 		this.action = action;
 	}
 
+	/**
+	 * Sets the message.
+	 *
+	 * @param message the new message
+	 */
 	public void setMessage(String message) {
 		this.message = message;
 	}
 
+	/**
+	 * Sets the parent stage.
+	 *
+	 * @param parentStage the new parent stage
+	 */
 	public void setParentStage(Stage parentStage) {
 		this.parentStage = parentStage;
 	}
 
+	/**
+	 * Sets the popup title.
+	 *
+	 * @param popupTitle the new popup title
+	 */
 	public void setPopupTitle(String popupTitle) {
 		this.popupTitle = popupTitle;
 	}

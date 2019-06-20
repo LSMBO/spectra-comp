@@ -21,6 +21,7 @@ import com.compomics.util.interfaces.SpectrumFile;
 import fr.lsmbo.msda.spectra.comp.model.Fragment;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 
+// TODO: Auto-generated Javadoc
 /**
  * Create and displays a spectrum view that enables the plotting of a spectrum
  * with specific annotations .
@@ -29,19 +30,21 @@ import fr.lsmbo.msda.spectra.comp.model.Spectrum;
  *
  */
 public class SpectrumPane {
-	/**
-	 * The spectrum to plot
-	 */
+	
+	/** The spectrum to plot. */
 	private Spectrum spectrum;
-	/**
-	 * A list of the peaks to plot
-	 */
+	
+	/** A list of the peaks to plot. */
 	private ArrayList<Fragment> fragments;
-	/**
-	 * The panel that can be embedded in the interface
-	 */
+	
+	/** The panel that can be embedded in the interface. */
 	private SpectrumPanel panel;
 
+	/**
+	 * Instantiates a new spectrum pane.
+	 *
+	 * @param spectrumToPlot the spectrum to plot
+	 */
 	public SpectrumPane(Spectrum spectrumToPlot) {
 		this.spectrum = spectrumToPlot;
 		this.fragments = spectrumToPlot.getFragments();
@@ -50,14 +53,10 @@ public class SpectrumPane {
 	}
 
 	/**
-	 * Creates the panel that can be embedded in the interface
-	 * 
-	 * @param pt
-	 *            The type of polymer that generated this spectrum
-	 * @param withAnnotations
-	 *            Choose to include annotation on the spectrum or not.
-	 * @param beautify
-	 *            Choose to center the spectrum in the spectrum view.
+	 * Creates the panel that can be embedded in the interface.
+	 *
+	 * @param withAnnotations            Choose to include annotation on the spectrum or not.
+	 * @param beautify            Choose to center the spectrum in the spectrum view.
 	 */
 	private void generateSpectrumPanel(boolean withAnnotations, boolean beautify) {
 		// Gather values to plot the spectrum
@@ -115,6 +114,11 @@ public class SpectrumPane {
 		}
 	}
 
+	/**
+	 * Gets the spectrum panel.
+	 *
+	 * @return the spectrum panel
+	 */
 	public SpectrumPanel getSpectrumPanel() {
 		return panel;
 	}

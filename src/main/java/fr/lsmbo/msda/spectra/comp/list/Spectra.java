@@ -5,6 +5,7 @@ import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+// TODO: Auto-generated Javadoc
 /**
  * Regroup all spectrum as an ObservableList and make specific treatment: Add
  * spectrum in the observable list, update retention time for all spectrum,
@@ -14,24 +15,32 @@ import javafx.collections.ObservableList;
  */
 public class Spectra {
 
+	/** The spectra. */
 	private ObservableList<Spectrum> spectra = initialiseList();
+	
+	/** The nb spectra. */
 	private Integer nbSpectra = 0;
+	
+	/** The nb identified. */
 	private Integer nbIdentified = 0;
+	
+	/** The nb matched. */
 	private Integer nbMatched = 0;
+	
+	/** The percentage identified. */
 	private Float percentageIdentified = 0F;
 
 	/**
-	 * Default constructor
+	 * Default constructor.
 	 */
 	public Spectra() {
 		super();
 	}
 
 	/**
-	 * Add a spectrum
-	 * 
-	 * @param spectrum
-	 *            the spectrum to add
+	 * Add a spectrum.
+	 *
+	 * @param spectrum            the spectrum to add
 	 */
 	public void addSpectrum(Spectrum spectrum) {
 
@@ -40,7 +49,7 @@ public class Spectra {
 	}
 
 	/**
-	 * Compute the percentage of identified spectrum
+	 * Compute the percentage of identified spectrum.
 	 */
 	private void computePercentageIdentified() {
 		if (nbSpectra != 0) {
@@ -50,7 +59,7 @@ public class Spectra {
 	}
 
 	/**
-	 * Count the number of matched spectrum
+	 * Count the number of matched spectrum.
 	 */
 	private void countNbMatched() {
 		nbMatched = 0;
@@ -63,7 +72,7 @@ public class Spectra {
 
 	/**
 	 * Scan all the spectrum and increment the number of recover every time the
-	 * value of recover for this spectrum will be true
+	 * value of recover for this spectrum will be true.
 	 */
 	public void countRecoveredAndIdentifiedSpectra() {
 
@@ -87,7 +96,9 @@ public class Spectra {
 	}
 
 	/**
-	 * Return the number of matched spectrum
+	 * Return the number of matched spectrum.
+	 *
+	 * @return the nb matched
 	 */
 	public Integer getNbMatched() {
 		countNbMatched();
@@ -104,7 +115,9 @@ public class Spectra {
 	}
 
 	/**
-	 * Return the percentage of identified spectrum
+	 * Return the percentage of identified spectrum.
+	 *
+	 * @return the percentage identified
 	 */
 	public Float getPercentageIdentified() {
 		computePercentageIdentified();
@@ -121,9 +134,9 @@ public class Spectra {
 	}
 
 	/**
-	 * 
-	 * @param title
-	 *            title of spectrum that we need to find
+	 * Gets the spectrum with title.
+	 *
+	 * @param title            title of spectrum that we need to find
 	 * @return specificSpectrum
 	 */
 	public Spectrum getSpectrumWithTitle(String title) {
@@ -169,7 +182,7 @@ public class Spectra {
 	}
 
 	/**
-	 * Reset the Cos theta
+	 * Reset the Cos theta.
 	 */
 	public synchronized void resetCosTheta() {
 		for (Spectrum sp : getSpectraAsObservable()) {

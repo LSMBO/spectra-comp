@@ -7,17 +7,26 @@ import java.util.Properties;
 
 import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 
+// TODO: Auto-generated Javadoc
 /**
- * Handle database connection for spectra-comp
- * 
- * @author Aromdhani
+ * Handle database connection for spectra-comp.
  *
+ * @author Aromdhani
  */
 public class DBConfig {
+	
+	/** The Constant CONFIGURATION_LOCK. */
 	private static final Object CONFIGURATION_LOCK = new Object();
+	
+	/** The application. */
 	private static String application = "application.conf";
+	
+	/** The instance. */
 	private static DBConfig instance;
 
+	/**
+	 * Force properties file reload.
+	 */
 	public static void forcePropertiesFileReload() {
 		synchronized (CONFIGURATION_LOCK) {
 			if (instance != null) {
@@ -27,8 +36,8 @@ public class DBConfig {
 	}
 
 	/**
-	 * Return an instance of DBConfig
-	 * 
+	 * Return an instance of DBConfig.
+	 *
 	 * @return an instance of DBConfig
 	 */
 	public static DBConfig getInstance() {
@@ -38,21 +47,40 @@ public class DBConfig {
 		return instance;
 	}
 
+	/** The max pool connection. */
 	private Integer maxPoolConnection = null;
+	
+	/** The user. */
 	private String user = null;
+	
+	/** The password. */
 	private String password = null;
+	
+	/** The port. */
 	private Integer port = null;
+	
+	/** The host. */
 	private String host = null;
+	
+	/** The db name. */
 	private String dbName = null;
+	
+	/** The driver type. */
 	DriverType driverType = null;
 
+	/** The connection properties. */
 	private Properties connectionProperties = null;
 
+	/**
+	 * Instantiates a new DB config.
+	 */
 	private DBConfig() {
 		loadProperties();
 	}
 
 	/**
+	 * Gets the db name.
+	 *
 	 * @return the dbName
 	 */
 	public String getDbName() {
@@ -60,6 +88,8 @@ public class DBConfig {
 	}
 
 	/**
+	 * Gets the driver type.
+	 *
 	 * @return the driverType
 	 */
 	public final DriverType getDriverType() {
@@ -67,6 +97,8 @@ public class DBConfig {
 	}
 
 	/**
+	 * Gets the host.
+	 *
 	 * @return the host
 	 */
 	public String getHost() {
@@ -74,6 +106,8 @@ public class DBConfig {
 	}
 
 	/**
+	 * Gets the max pool connection.
+	 *
 	 * @return the maxPoolConnection
 	 */
 	public Integer getMaxPoolConnection() {
@@ -81,6 +115,8 @@ public class DBConfig {
 	}
 
 	/**
+	 * Gets the password.
+	 *
 	 * @return the password
 	 */
 	public String getPassword() {
@@ -89,8 +125,8 @@ public class DBConfig {
 
 	/**
 	 * Load application.conf properties
-	 * 
-	 * @throws URISyntaxException
+	 *
+	 * @return the path
 	 */
 	private String getPath() {
 		URI srcPath;
@@ -108,6 +144,8 @@ public class DBConfig {
 	}
 
 	/**
+	 * Gets the port.
+	 *
 	 * @return the port
 	 */
 	public Integer getPort() {
@@ -115,12 +153,17 @@ public class DBConfig {
 	}
 
 	/**
+	 * Gets the user.
+	 *
 	 * @return the user
 	 */
 	public String getUser() {
 		return user;
 	}
 
+	/**
+	 * Load properties.
+	 */
 	private void loadProperties() {
 		FileUtils.readBytesFrmFile(getPath(), properties -> {
 			maxPoolConnection = Integer.valueOf(properties.getProperty("db-config.max-pool-connection"));
@@ -141,56 +184,63 @@ public class DBConfig {
 	}
 
 	/**
-	 * @param dbName
-	 *            the dbName to set
+	 * Sets the db name.
+	 *
+	 * @param dbName            the dbName to set
 	 */
 	public void setDbName(String dbName) {
 		this.dbName = dbName;
 	}
 
 	/**
-	 * @param driverType
-	 *            the driverType to set
+	 * Sets the driver type.
+	 *
+	 * @param driverType            the driverType to set
 	 */
 	public final void setDriverType(DriverType driverType) {
 		this.driverType = driverType;
 	}
 
 	/**
-	 * @param host
-	 *            the host to set
+	 * Sets the host.
+	 *
+	 * @param host            the host to set
 	 */
 	public void setHost(String host) {
 		this.host = host;
 	}
 
 	/**
-	 * @param maxPoolConnection
-	 *            the maxPoolConnection to set
+	 * Sets the max pool connection.
+	 *
+	 * @param maxPoolConnection            the maxPoolConnection to set
 	 */
 	public void setMaxPoolConnection(Integer maxPoolConnection) {
 		this.maxPoolConnection = maxPoolConnection;
 	}
 
 	/**
-	 * @param password
-	 *            the password to set
+	 * Sets the password.
+	 *
+	 * @param password            the password to set
 	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
 	/**
-	 * @param port
-	 *            the port to set
+	 * Sets the port.
+	 *
+	 * @param port            the port to set
 	 */
 	public void setPort(Integer port) {
 		this.port = port;
 	}
 
 	/**
-	 * @param user
-	 *            the user to set
+	 * Sets the user.
+	 *
+	 * @param user            the user to set
 	 */
 	public void setUser(String user) {
 		this.user = user;

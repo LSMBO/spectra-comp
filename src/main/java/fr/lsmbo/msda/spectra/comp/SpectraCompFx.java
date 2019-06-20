@@ -13,9 +13,18 @@ import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SpectraCompFx.
+ */
 public class SpectraCompFx extends Application {
+	
+	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(SpectraCompFx.class);
 
+	/* (non-Javadoc)
+	 * @see javafx.application.Application#start(javafx.stage.Stage)
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
@@ -41,6 +50,9 @@ public class SpectraCompFx extends Application {
 		primaryStage.show();
 	}
 
+	/**
+	 * Run.
+	 */
 	public static void run() {
 		launch();
 	}

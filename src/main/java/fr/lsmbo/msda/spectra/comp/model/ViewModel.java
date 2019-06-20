@@ -14,12 +14,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ViewModel.
+ */
 public class ViewModel {
+	
+	/** The stage. */
 	public static Stage stage;
+	
+	/** The ref items. */
 	private ObservableList<Spectrum> refItems = FXCollections.observableArrayList();
+	
+	/** The test items. */
 	private ObservableList<Spectrum> testItems = FXCollections.observableArrayList();
 
 	/**
+	 * Gets the ref items.
+	 *
 	 * @return the refItems
 	 */
 	public final ObservableList<Spectrum> getRefItems() {
@@ -27,14 +39,17 @@ public class ViewModel {
 	}
 
 	/**
-	 * @param refItems
-	 *            the refItems to set
+	 * Sets the ref items.
+	 *
+	 * @param refItems            the refItems to set
 	 */
 	public final void setRefItems(ObservableList<Spectrum> refItems) {
 		this.refItems = refItems;
 	}
 
 	/**
+	 * Gets the test items.
+	 *
 	 * @return the testItems
 	 */
 	public final ObservableList<Spectrum> getTestItems() {
@@ -42,23 +57,24 @@ public class ViewModel {
 	}
 
 	/**
-	 * @param testItems
-	 *            the testItems to set
+	 * Sets the test items.
+	 *
+	 * @param testItems            the testItems to set
 	 */
 	public final void setTestItems(ObservableList<Spectrum> testItems) {
 		this.testItems = testItems;
 	}
 
-	/***
-	 * Compare spectra
+	/**
+	 * *
+	 * Compare spectra.
 	 */
 	public void compare() {
 		PeakListProvider.compareSpectra();
 	}
 
 	/**
-	 * Create and displays spectra loader dialog
-	 * 
+	 * Create and displays spectra loader dialog.
 	 */
 	public void onLoadSpectra() {
 		SpectraLoaderDialog spectraLoaderDialog = new SpectraLoaderDialog();
@@ -100,26 +116,24 @@ public class ViewModel {
 	}
 
 	/**
-	 * Create and displays database parameters editor dialog
-	 * 
+	 * Create and displays database parameters editor dialog.
 	 */
 	public void onEditDbParameters() {
 
 	}
 
 	/**
-	 * Create and displays comparison spectra editor dialog
-	 * 
+	 * Create and displays comparison spectra editor dialog.
 	 */
 	public void onEditCompParameters() {
 
 	}
 
-	/***
-	 * Load the reference spectra from a peaklist file
-	 * 
-	 * @param refPklFilePath
-	 *            the peaklist file path from where the spectra will be loaded.
+	/**
+	 * *
+	 * Load the reference spectra from a peaklist file.
+	 *
+	 * @param refPklFilePath            the peaklist file path from where the spectra will be loaded.
 	 */
 	public void loadRefPklFile(String refPklFilePath) {
 		try {
@@ -133,11 +147,11 @@ public class ViewModel {
 		}
 	}
 
-	/***
-	 * Load the spectra to test from a peaklist file
-	 * 
-	 * @param testPklFilePath
-	 *            the peaklist file path from where the spectra will be loaded.
+	/**
+	 * *
+	 * Load the spectra to test from a peaklist file.
+	 *
+	 * @param testPklFilePath            the peaklist file path from where the spectra will be loaded.
 	 */
 	public void loadTestedPklFile(String testPklFilePath) {
 		try {
@@ -187,8 +201,9 @@ public class ViewModel {
 		}
 	}
 
-	/***
-	 * Exit Spectra-comp software
+	/**
+	 * *
+	 * Exit Spectra-comp software.
 	 */
 	public void onExit() {
 		System.out.println("WARN | Exit spectra-comp");
@@ -200,15 +215,16 @@ public class ViewModel {
 				}, stage);
 	}
 
-	/***
-	 * About spectra
+	/**
+	 * *
+	 * About spectra.
 	 */
 	public void onAboutSpectraComp() {
 	}
 
-	/***
-	 * Open user guide
-	 * 
+	/**
+	 * *
+	 * Open user guide.
 	 */
 	public void onOpenUserGuide() {
 	}

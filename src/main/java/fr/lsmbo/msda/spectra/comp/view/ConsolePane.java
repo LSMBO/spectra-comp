@@ -14,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebView;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
  * Creates and displays console view . Set the PrintStream to the console .
@@ -24,6 +25,11 @@ import javafx.scene.web.WebView;
 
 public class ConsolePane {
 
+	/**
+	 * Gets the single instance of ConsolePane.
+	 *
+	 * @return single instance of ConsolePane
+	 */
 	public static final TabPane getInstance() {
 		WebView webview = new WebView();
 		PrintStream psOut = new PrintStream(new ConsoleStream(webview));

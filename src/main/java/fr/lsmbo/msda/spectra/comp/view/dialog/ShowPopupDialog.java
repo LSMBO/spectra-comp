@@ -14,17 +14,30 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+// TODO: Auto-generated Javadoc
 /**
- * Creates and displays dialog window
- * 
- * @author Aromdhani
+ * Creates and displays dialog window.
  *
+ * @author Aromdhani
  */
 public class ShowPopupDialog extends Stage {
+	
+	/** The popup title. */
 	private String popupTitle;
+	
+	/** The message. */
 	private String message;
+	
+	/** The parent stage. */
 	private Stage parentStage;
 
+	/**
+	 * Instantiates a new show popup dialog.
+	 *
+	 * @param popupTitle the popup title
+	 * @param message the message
+	 * @param parentStage the parent stage
+	 */
 	public ShowPopupDialog(String popupTitle, String message, Stage parentStage) {
 		Stage popup = this;
 		popup.initOwner(parentStage);
@@ -49,26 +62,56 @@ public class ShowPopupDialog extends Stage {
 		popup.show();
 	}
 
+	/**
+	 * Gets the message.
+	 *
+	 * @return the message
+	 */
 	public String getMessage() {
 		return message;
 	}
 
+	/**
+	 * Gets the parent stage.
+	 *
+	 * @return the parent stage
+	 */
 	public Stage getParentStage() {
 		return parentStage;
 	}
 
+	/**
+	 * Gets the popup title.
+	 *
+	 * @return the popup title
+	 */
 	public String getPopupTitle() {
 		return popupTitle;
 	}
 
+	/**
+	 * Sets the message.
+	 *
+	 * @param message the new message
+	 */
 	public void setMessage(String message) {
 		this.message = message;
 	}
 
+	/**
+	 * Sets the parent stage.
+	 *
+	 * @param parentStage the new parent stage
+	 */
 	public void setParentStage(Stage parentStage) {
 		this.parentStage = parentStage;
 	}
 
+	/**
+	 * Sets the popup title.
+	 *
+	 * @param popupTitle the new popup title
+	 */
 	public void setPopupTitle(String popupTitle) {
 		this.popupTitle = popupTitle;
 	}

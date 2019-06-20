@@ -4,27 +4,63 @@ import java.util.HashMap;
 
 import javafx.scene.image.Image;
 
+// TODO: Auto-generated Javadoc
 /**
- * Add an icon resource
- * 
- * @author Aromdhani
+ * Add an icon resource.
  *
+ * @author Aromdhani
  */
 public class IconResource {
 	/**
 	 * Enum type that indicates the name of the icon.
 	 */
 	public enum ICON {
-		ADMIN, SPECTRA_COMP, TICK, CONSOLE, HELP, INFORMATION, WARNING, RESET, EXIT, LOAD, EXECUTE, CROSS, DATABASE, EDIT, DATASET_RSM, DATASET_RSM_MERGED_A, SETTINGS, PROGRESS;
+		
+		/** The admin. */
+		ADMIN, 
+ /** The spectra comp. */
+ SPECTRA_COMP, 
+ /** The tick. */
+ TICK, 
+ /** The console. */
+ CONSOLE, 
+ /** The help. */
+ HELP, 
+ /** The information. */
+ INFORMATION, 
+ /** The warning. */
+ WARNING, 
+ /** The reset. */
+ RESET, 
+ /** The exit. */
+ EXIT, 
+ /** The load. */
+ LOAD, 
+ /** The execute. */
+ EXECUTE, 
+ /** The cross. */
+ CROSS, 
+ /** The database. */
+ DATABASE, 
+ /** The edit. */
+ EDIT, 
+ /** The dataset rsm. */
+ DATASET_RSM, 
+ /** The dataset rsm merged a. */
+ DATASET_RSM_MERGED_A, 
+ /** The settings. */
+ SETTINGS, 
+ /** The progress. */
+ PROGRESS;
 	}
 
+	/** The images. */
 	private static HashMap<ICON, Image> images = new HashMap<ICON, Image>();
 
 	/**
-	 * Return an image
-	 * 
-	 * @param icon
-	 *            the icon to load.
+	 * Return an image.
+	 *
+	 * @param icon            the icon to load.
 	 * @return Image
 	 */
 	public static Image getImage(ICON icon) {

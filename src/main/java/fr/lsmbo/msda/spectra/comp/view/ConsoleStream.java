@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.scene.web.WebView;
 
+// TODO: Auto-generated Javadoc
 /**
  * Wraps, set the style of the output text to the console.
  * 
@@ -20,18 +21,22 @@ import javafx.scene.web.WebView;
  */
 public class ConsoleStream extends OutputStream {
 
+	/** The web view. */
 	private WebView webView;
+	
+	/** The html header. */
 	private String htmlHeader = "<html> <head>" + "<script language=\"javascript\" type=\"text/javascript\">"
 			+ "function toBottom(){" + "window.print(\" in toBottom()\")"
 			+ "window.scroll(0,document.body.scrollHeight);} </script> </head>"
 			+ "<body style =\"font-size:12px;\" onload='toBottom()'><kbd>" + "</body>" + "</html> ";
+	
+	/** The str builder. */
 	private StringBuilder strBuilder = new StringBuilder(htmlHeader);
 
 	/**
-	 * Set the web view as pane of output
-	 * 
-	 * @param webView
-	 *            the web view to set
+	 * Set the web view as pane of output.
+	 *
+	 * @param webView            the web view to set
 	 */
 	public ConsoleStream(WebView webView) {
 		this.webView = webView;
@@ -69,10 +74,9 @@ public class ConsoleStream extends OutputStream {
 	}
 
 	/**
-	 * Add the style to the text of output
-	 * 
-	 * @param text
-	 *            the text to add style
+	 * Add the style to the text of output.
+	 *
+	 * @param text            the text to add style
 	 * @return the colored text
 	 */
 	public String textMatch(String text) {
@@ -89,6 +93,9 @@ public class ConsoleStream extends OutputStream {
 		return "<kbd style =\'color:" + color + "\'>" + text + "</kbd>";
 	}
 
+	/* (non-Javadoc)
+	 * @see java.io.OutputStream#write(byte[])
+	 */
 	@Override
 	public void write(byte b[]) throws IOException {
 		// TODO Auto-generated method stub
@@ -96,12 +103,18 @@ public class ConsoleStream extends OutputStream {
 		addText(str);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.io.OutputStream#write(byte[], int, int)
+	 */
 	@Override
 	public void write(byte b[], int off, int len) throws IOException {
 		String str = new String(b, off, len);
 		addText(str);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.io.OutputStream#write(int)
+	 */
 	@Override
 	public void write(int b) throws IOException {
 		// TODO Auto-generated method stub

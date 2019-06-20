@@ -2,20 +2,34 @@ package fr.lsmbo.msda.spectra.comp.model;
 
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
+// TODO: Auto-generated Javadoc
 /**
- * 
- * @author Aromdhani
+ * The Enum SoftwareType.
  *
+ * @author Aromdhani
  */
 
 public enum SoftwareType {
 
+	/** The ms convert. */
 	MS_CONVERT("MSConvert", "RTmin:\"(\\d+\\.\\d+)\""),
+	
+	/** The proline. */
 	PROLINE("Proline", "first_time:(\\d+);"),
+	
+	/** The mascot dll. */
 	MASCOT_DLL("mascot.dll", "Elution: (.+?) to .+? min|Elution: (.+?) min"),
+	
+	/** The analysis 4 0. */
 	ANALYSIS_4_0("Data Analysis 4.0","Cmpd.+MSn.+, (\\d+\\.\\d+) min"),
+	
+	/** The analysis 4 1. */
 	ANALYSIS_4_1("Data Analysis 4.1","Cmpd.+MS\\d.+, (\\d+\\.\\d+) min"),
+	
+	/** The mascot distiller. */
 	MASCOT_DISTILLER("Mascot Distiller","in range \\d+ \\(rt=(\\d+.\\d+)\\)||\\(rt=(\\d+.\\d+)\\)"),
+	
+	/** The spectrum mill rule. */
 	SPECTRUM_MILL_RULE("Spectrum Mill", "Cmpd.+MSn.+, (\\d+\\.\\d+) min");
 
 	/**
@@ -56,10 +70,18 @@ public enum SoftwareType {
 		return parsingRuleType;
 	}
 
+	/** The m regex name. */
 	private final String m_regexName;
 
+	/** The m regex value. */
 	private final String m_regexValue;
 
+	/**
+	 * Instantiates a new software type.
+	 *
+	 * @param regexName the regex name
+	 * @param regexValue the regex value
+	 */
 	private SoftwareType(final String regexName, final String regexValue) {
 		assert (StringsUtils.isEmpty(regexName)) : "invalid regex name";
 		assert (StringsUtils.isEmpty(regexValue)) : "invalid regex value";
@@ -68,10 +90,20 @@ public enum SoftwareType {
 		m_regexName = regexName;
 	}
 
+	/**
+	 * Gets the regex name.
+	 *
+	 * @return the regex name
+	 */
 	public String getRegexName() {
 		return m_regexName;
 	}
 
+	/**
+	 * Gets the regex value.
+	 *
+	 * @return the regex value
+	 */
 	public String getRegexValue() {
 		return m_regexValue;
 	}

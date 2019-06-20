@@ -26,6 +26,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+// TODO: Auto-generated Javadoc
 /**
  * Creates and displays login dialog.
  * 
@@ -33,13 +34,18 @@ import javafx.stage.Stage;
  *
  */
 public class LoginDialog extends Dialog<ObservableList<Project>> {
+	
+	/** The user name TF. */
 	TextField userNameTF;
+	
+	/** The password TF. */
 	PasswordField passwordTF;
+	
+	/** The host name TF. */
 	TextField hostNameTF;
 
 	/**
-	 * Default constructor
-	 * 
+	 * Default constructor.
 	 */
 	@SuppressWarnings("unchecked")
 	public LoginDialog() {
@@ -135,20 +141,21 @@ public class LoginDialog extends Dialog<ObservableList<Project>> {
 	}
 
 	/**
-	 * Return the list of user projects
-	 * 
-	 * @param login
-	 *            the login to set
+	 * Return the list of user projects.
+	 *
+	 * @param login            the login to set
 	 * @return list of projects
+	 * @throws Exception the exception
 	 */
 	private ObservableList<Project> getUserProjects(String login) throws Exception {
 		return DBSpectraHandler.findProjects(login);
 	}
 
 	/**
-	 * Test connection to database
-	 * 
-	 * @throws SQLException
+	 * Test connection to database.
+	 *
+	 * @param login the login
+	 * @return true, if successful
 	 */
 	private boolean login(String login) {
 		try {

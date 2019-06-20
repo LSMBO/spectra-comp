@@ -45,6 +45,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
+// TODO: Auto-generated Javadoc
 /**
  * Creates and displays spectra loader dialog.
  * 
@@ -52,34 +53,71 @@ import javafx.util.StringConverter;
  *
  */
 public class SpectraLoaderDialog extends Dialog<SpectraParams> {
+	
+	/** The connection label. */
 	// Components
 	private Label connectionLabel;
+	
+	/** The second connection label. */
 	private Label secondConnectionLabel;
+	
+	/** The user projects CBX. */
 	private ComboBox<Project> userProjectsCBX = new ComboBox<Project>();
+	
+	/** The second user projects CBX. */
 	private ComboBox<Project> secondUserProjectsCBX = new ComboBox<Project>();
+	
+	/** The ref user projects. */
 	private ObservableList<Project> refUserProjects = FXCollections.observableArrayList();
+	
+	/** The test user projects. */
 	private ObservableList<Project> testUserProjects = FXCollections.observableArrayList();
+	
+	/** The params. */
 	private SpectraParams params;
 
+	/** The first root. */
 	private StackPane firstRoot;
+	
+	/** The root item. */
 	private TreeItem rootItem;
+	
+	/** The tree view. */
 	private TreeView<Dataset> treeView;
 
+	/** The second root. */
 	private StackPane secondRoot;
+	
+	/** The second root item. */
 	private TreeItem secondRootItem;
+	
+	/** The second tree view. */
 	private TreeView<Dataset> secondTreeView;
+	
+	/** The stage. */
 	public static Stage stage;
+	
+	/** The ref db name. */
 	//
 	private String refDbName;
+	
+	/** The test db name. */
 	private String testDbName;
+	
+	/** The ref pkl by data source map. */
 	private Map<DataSource, Object> refPklByDataSourceMap = new HashMap<>();
+	
+	/** The test pkl by data source map. */
 	private Map<DataSource, Object> testPklByDataSourceMap = new HashMap<>();
+	
+	/** The ref rsm ids. */
 	private HashSet<Long> refRsmIds = new HashSet<>();
+	
+	/** The test rsm ids. */
 	private HashSet<Long> testRsmIds = new HashSet<>();
 
 	/**
-	 * Default constructor
-	 * 
+	 * Default constructor.
 	 */
 	@SuppressWarnings("unchecked")
 	public SpectraLoaderDialog() {
@@ -426,9 +464,9 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 	}
 
 	/**
-	 * Load file
-	 * 
-	 * @param text
+	 * Load file.
+	 *
+	 * @param text the text
 	 */
 
 	private void load(TextField text) {
@@ -438,10 +476,9 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 	}
 
 	/**
-	 * Create dataset nodes
-	 * 
-	 * @param projectId
-	 *            the selected project id
+	 * Create dataset nodes.
+	 *
+	 * @param projectId            the selected project id
 	 * @return the dataset nodes of the chosen project.
 	 */
 	// TODO Handle by better way the datasets

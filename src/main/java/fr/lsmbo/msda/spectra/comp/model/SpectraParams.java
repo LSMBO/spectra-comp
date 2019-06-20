@@ -5,26 +5,40 @@ import java.util.Map;
 
 import fr.lsmbo.msda.spectra.comp.db.DataSource;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SpectraParams.
+ */
 public class SpectraParams {
+	
+	/** The ref pkl by data source map. */
 	// Return reference Pkl in map
 	private Map<DataSource, Object> refPklByDataSourceMap = new HashMap<>();
+	
+	/** The tested pkl by data source map. */
 	// Return tested Pkl in map
 	private Map<DataSource, Object> testedPklByDataSourceMap = new HashMap<>();
+	
+	/** The ref db name. */
 	// Database name
 	private String refDbName = null;
+	
+	/** The test db name. */
 	private String testDbName = null;
 
 	/**
-	 * Default constructor
+	 * Default constructor.
 	 */
 	public SpectraParams() {
 	}
 
 	/**
-	 * @param refPklByDataSourceMap
-	 * @param testedPklByDataSourceMap
-	 * @param refDbName
-	 * @param testDbName
+	 * Instantiates a new spectra params.
+	 *
+	 * @param refPklByDataSourceMap the ref pkl by data source map
+	 * @param testedPklByDataSourceMap the tested pkl by data source map
+	 * @param refDbName the ref db name
+	 * @param testDbName the test db name
 	 */
 	public SpectraParams(Map<DataSource, Object> refPklByDataSourceMap,
 			Map<DataSource, Object> testedPklByDataSourceMap, String refDbName, String testDbName) {
@@ -36,6 +50,8 @@ public class SpectraParams {
 	}
 
 	/**
+	 * Gets the ref pkl by data source map.
+	 *
 	 * @return the refPklByDataSourceMap
 	 */
 	public final Map<DataSource, Object> getRefPklByDataSourceMap() {
@@ -43,14 +59,17 @@ public class SpectraParams {
 	}
 
 	/**
-	 * @param refPklByDataSourceMap
-	 *            the refPklByDataSourceMap to set
+	 * Sets the ref pkl by data source map.
+	 *
+	 * @param refPklByDataSourceMap            the refPklByDataSourceMap to set
 	 */
 	public final void setRefPklByDataSourceMap(Map<DataSource, Object> refPklByDataSourceMap) {
 		this.refPklByDataSourceMap = refPklByDataSourceMap;
 	}
 
 	/**
+	 * Gets the tested pkl by data source map.
+	 *
 	 * @return the testedPklByDataSourceMap
 	 */
 	public final Map<DataSource, Object> getTestedPklByDataSourceMap() {
@@ -58,14 +77,17 @@ public class SpectraParams {
 	}
 
 	/**
-	 * @param testedPklByDataSourceMap
-	 *            the testedPklByDataSourceMap to set
+	 * Sets the tested pkl by data source map.
+	 *
+	 * @param testedPklByDataSourceMap            the testedPklByDataSourceMap to set
 	 */
 	public final void setTestedPklByDataSourceMap(Map<DataSource, Object> testedPklByDataSourceMap) {
 		this.testedPklByDataSourceMap = testedPklByDataSourceMap;
 	}
 
 	/**
+	 * Gets the ref db name.
+	 *
 	 * @return the refDbName
 	 */
 	public final String getRefDbName() {
@@ -73,14 +95,17 @@ public class SpectraParams {
 	}
 
 	/**
-	 * @param refDbName
-	 *            the refDbName to set
+	 * Sets the ref db name.
+	 *
+	 * @param refDbName            the refDbName to set
 	 */
 	public final void setRefDbName(String refDbName) {
 		this.refDbName = refDbName;
 	}
 
 	/**
+	 * Gets the test db name.
+	 *
 	 * @return the testDbName
 	 */
 	public final String getTestDbName() {
@@ -88,8 +113,9 @@ public class SpectraParams {
 	}
 
 	/**
-	 * @param testDbName
-	 *            the testDbName to set
+	 * Sets the test db name.
+	 *
+	 * @param testDbName            the testDbName to set
 	 */
 	public final void setTestDbName(String testDbName) {
 		this.testDbName = testDbName;

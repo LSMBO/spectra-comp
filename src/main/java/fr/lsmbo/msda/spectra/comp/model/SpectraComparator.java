@@ -9,6 +9,7 @@ import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
 
+// TODO: Auto-generated Javadoc
 /**
  * Provides a comparison of spectra.
  * 
@@ -18,41 +19,71 @@ import fr.lsmbo.msda.spectra.comp.list.Spectra;
  * 
  */
 public class SpectraComparator {
+	
+	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(SpectraComparator.class);
+	
+	/** The second spectra. */
 	// Spectra to make comparison
 	private static Spectra secondSpectra;
+	
+	/** The sub list second spectra. */
 	// A sub list of spectra
 	private static Spectra subListSecondSpectra = new Spectra();
+	
+	/** The valid spectra. */
 	// Spectra which succeed all the step
 	private static Spectra validSpectra = new Spectra();
+	
+	/** The reference spectrum. */
 	// Spectrum reference
 	private static Spectrum referenceSpectrum;
 	// Number of peaks equals between reference spectrum (RS) and tested
+	/** The nb peaks equals. */
 	// spectrum(TS) (same MOZ and same RT)
 	private static int nbPeaksEquals;
+	
+	/** The nb peaks. */
 	private static Integer nbPeaks;
+	
+	/** The cos theta. */
 	private static Double cosTheta;
 
 	// Arrays which contain at the same index the same peaks (same moz +/-
+	/** The list peaks reference spectrum. */
 	// deltaRT)
 	private static float[] listPeaksReferenceSpectrum;
+	
+	/** The list peaks tested spectrum. */
 	private static float[] listPeaksTestedSpectrum;
 
+	/** The list square rootpeaks tested spectrum. */
 	private static Double[] listSquareRootpeaksTestedSpectrum;
+	
+	/** The list square rootpeaks reference spectrum. */
 	private static Double[] listSquareRootpeaksReferenceSpectrum;
 
+	/** The delta moz. */
 	// Constant
 	private static Double deltaMoz;
+	
+	/** The delta RT. */
 	private static Integer deltaRT;
+	
+	/** The nb peaks min. */
 	private static Integer nbPeaksMin;
+	
+	/** The theta min. */
 	private static Integer thetaMin;
+	
+	/** The cos theta min. */
 	private static double cosThetaMin;
 
 	/**
-	 * Add a new value in the array
-	 * 
-	 * @param intensityFragmentReferenceSpectrum
-	 * @param index
+	 * Add a new value in the array.
+	 *
+	 * @param intensityFragmentReferenceSpectrum the intensity fragment reference spectrum
+	 * @param index the index
 	 */
 	private static void addPeakReferenceSpectrum(float intensityFragmentReferenceSpectrum, int index) {
 		listPeaksReferenceSpectrum[index] = intensityFragmentReferenceSpectrum;
@@ -60,9 +91,11 @@ public class SpectraComparator {
 
 	/**
 	 * Add a new value in the array of TS, if a value is present for the same
-	 * peak of RS, keep the most intense value of intensity
-	 * 
-	 **/
+	 * peak of RS, keep the most intense value of intensity.
+	 *
+	 * @param intensityFragmentSubListSpectrum the intensity fragment sub list spectrum
+	 * @param index the index
+	 */
 	private static void addPeakTestedSpectrum(float intensityFragmentSubListSpectrum, int index) {
 		if (listPeaksTestedSpectrum[index] == 0) {
 			listPeaksTestedSpectrum[index] = intensityFragmentSubListSpectrum;
@@ -123,7 +156,7 @@ public class SpectraComparator {
 	/**
 	 * Find the non 0 values in the array of reference spectrum, get back the
 	 * square root of this value and return a new array (size equals to number
-	 * of peaks identical between TS and RS)
+	 * of peaks identical between TS and RS).
 	 */
 	private static void computeListSquareRootpeaksReferenceSpectrum() {
 		listSquareRootpeaksReferenceSpectrum = new Double[nbPeaksEquals];
@@ -140,7 +173,7 @@ public class SpectraComparator {
 	/**
 	 * Find the non 0 values in the array of tested spectrum, compute the square
 	 * root of this value and return a new array (size equals to number of peaks
-	 * identical between TS and RS)
+	 * identical between TS and RS).
 	 */
 	private static void computeListSquareRootpeaksTestedSpectrum() {
 		listSquareRootpeaksTestedSpectrum = new Double[nbPeaksEquals];
@@ -155,7 +188,7 @@ public class SpectraComparator {
 
 	/**
 	 * Compute subList of spectra with spectra near to reference spectrum (same
-	 * moz +/- deltamoz and same RT +/- deltaRT)
+	 * moz +/- deltamoz and same RT +/- deltaRT).
 	 */
 	private static void computeSubListSecondSpectra() {
 		logger.info("Start to compute a sublist of the second spectra ...");
@@ -184,7 +217,7 @@ public class SpectraComparator {
 	}
 
 	/**
-	 * Count the number of peak which matched between RS and TS
+	 * Count the number of peak which matched between RS and TS.
 	 */
 	private static void countNbPeak() {
 		nbPeaksEquals = 0;
@@ -197,7 +230,9 @@ public class SpectraComparator {
 
 	/**
 	 * Determines whether the number of peaks of the reference spectrum can have
-	 * their equivalent in a spectrum of sublist (same moz +/- deltaMoz)
+	 * their equivalent in a spectrum of sublist (same moz +/- deltaMoz).
+	 *
+	 * @param spectrumOfSecSpectraSubList the spectrum of sec spectra sub list
 	 */
 	private static void findFragment(Spectrum spectrumOfSecSpectraSubList) {
 		// Recover the nbpeaks most intense of the reference spectrum
@@ -249,7 +284,8 @@ public class SpectraComparator {
 	}
 
 	/**
-	 * 
+	 * Gets the list square rootpeaks reference spectrum.
+	 *
 	 * @return the list of square root peaks of the reference spectrum
 	 */
 	private static Double[] getListSquareRootpeaksReferenceSpectrum() {
@@ -258,7 +294,8 @@ public class SpectraComparator {
 	}
 
 	/**
-	 * 
+	 * Gets the list square rootpeaks tested spectrum.
+	 *
 	 * @return the list of square root peaks of the tested spectrum
 	 */
 	private static Double[] getListSquareRootpeaksTestedSpectrum() {
@@ -267,7 +304,8 @@ public class SpectraComparator {
 	}
 
 	/**
-	 * 
+	 * Gets the reference spectrum.
+	 *
 	 * @return the reference spectrum
 	 */
 	public static Spectrum getReferenceSpectrum() {
@@ -275,7 +313,8 @@ public class SpectraComparator {
 	}
 
 	/**
-	 * 
+	 * Gets the valid spectra.
+	 *
 	 * @return spectra within the validated spectrum
 	 */
 	public static Spectra getValidSpectra() {
@@ -285,7 +324,7 @@ public class SpectraComparator {
 	/**
 	 * Reset the value of sublist and the valid spectra every time the algorithm
 	 * was used (for different reference spectrum) and initialize second peak
-	 * list
+	 * list.
 	 */
 	private static void initialize() {
 		secondSpectra = ListOfSpectra.getSecondSpectra();
@@ -300,9 +339,9 @@ public class SpectraComparator {
 	}
 
 	/**
-	 * 
-	 * @param spectrumRef
-	 *            the spectrum to set as reference.
+	 * Run.
+	 *
+	 * @param spectrumRef            the spectrum to set as reference.
 	 */
 	public static void run(Spectrum spectrumRef) {
 		referenceSpectrum = spectrumRef;
@@ -337,7 +376,7 @@ public class SpectraComparator {
 	}
 
 	/**
-	 * Reset the arrays
+	 * Reset the arrays.
 	 */
 	private static void resetPeaks() {
 		listPeaksReferenceSpectrum = new float[nbPeaks];
@@ -345,10 +384,9 @@ public class SpectraComparator {
 	}
 
 	/**
-	 * Set as reference spectrum
-	 * 
-	 * @param _referenceSpectrum
-	 *            the reference spectrum to set.
+	 * Set as reference spectrum.
+	 *
+	 * @param _referenceSpectrum            the reference spectrum to set.
 	 */
 	public static void setReferenceSpectrum(Spectrum _referenceSpectrum) {
 		referenceSpectrum = _referenceSpectrum;

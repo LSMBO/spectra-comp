@@ -19,17 +19,23 @@ import fr.lsmbo.msda.spectra.comp.list.Spectra;
 import fr.lsmbo.msda.spectra.comp.model.Fragment;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 
+// TODO: Auto-generated Javadoc
 /**
  * Read a file(mgf or pkl) and stock the information concerning spectrum and
  * spectra.
- * 
- * @see Spectrum, Spectra, ListOfSpectra
- * @author Aromdhani
  *
+ * @author Aromdhani
+ * @see Spectrum, Spectra, ListOfSpectra
  */
 public class PeaklistReader {
+	
+	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(PeaklistReader.class);
+	
+	/** The is retention time missing. */
 	private static boolean isRetentionTimeMissing = true;
+	
+	/** The is second peak list. */
 	public static boolean isSecondPeakList = false;
 
 	/**
@@ -42,10 +48,9 @@ public class PeaklistReader {
 	}
 
 	/**
-	 * Load peakList file
-	 * 
-	 * @param file
-	 *            the file to load.
+	 * Load peakList file.
+	 *
+	 * @param file            the file to load.
 	 */
 	public static void load(File file) {
 
@@ -67,10 +72,10 @@ public class PeaklistReader {
 	}
 
 	/**
-	 * Read mgf file
-	 * 
-	 * @param reader
-	 *            the bufferedReader
+	 * Read mgf file.
+	 *
+	 * @param reader            the bufferedReader
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private static void readMgfFile(BufferedReader reader) throws IOException {
 		String line;
@@ -156,11 +161,10 @@ public class PeaklistReader {
 	}
 
 	/**
-	 * Read peak list file
-	 * 
-	 * @param reader
-	 *            the buffered reader
-	 * @throws IOException
+	 * Read peak list file.
+	 *
+	 * @param reader            the buffered reader
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private static void readPklFile(BufferedReader reader) throws IOException {
 		String line;
