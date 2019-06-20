@@ -1,12 +1,12 @@
 # Spectra-comp
 Spectra-comp is an Ms/Ms spectra comparison tool. The reference spectra could be loaded from:
 * a Proline databases (<code>msi_db_project_x</code>). 
-* a peaklist file.</br>
+* a peaklist file(.mgf or .pkl).
 
 The tested spectra could be loaded from :
 
 * a Proline databases (<code>msi_db_project_x</code>). 
-* a peaklist file.
+* a peaklist file(.mgf or .pkl).
 
 The spectra are compared using a dot product. The user could set up the comaprison spectra parameters from a JSON file (<code>default-params.json</code>).
 The parameters of comparison are :
