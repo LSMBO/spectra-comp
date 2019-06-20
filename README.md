@@ -7,8 +7,8 @@ The tested spectra could be loaded from :
 * a peaklist file.<br/>
 The spectra are compared using a dot product. The user could set up the comaprison spectra parameters from a JSON file (<code>default-params.json</code>).</br>
 The parameters of comparison :
-* </code>delta Moz</code>
-* </code>delta RT</code>   
-* </code>number of min Peaks</code>    
-* </code>theta Min</code>    
-* </code>number Peaks</code>    
+* <code>Delta Moz</code>
+* <code>Delta RT</code>   
+* <code>Number of min peaks</code>    
+* <code>Theta min</code>    
+* <code>Numberof peaks</code>    
