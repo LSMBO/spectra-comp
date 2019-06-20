@@ -1,7 +1,5 @@
 package fr.lsmbo.msda.spectra.comp.view.dialog;
 
-import java.sql.SQLException;
-
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.db.DBConfig;

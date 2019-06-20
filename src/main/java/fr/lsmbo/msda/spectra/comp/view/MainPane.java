@@ -12,12 +12,14 @@ import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import fr.lsmbo.msda.spectra.comp.model.ViewModel;
+import fr.lsmbo.msda.spectra.comp.utils.TaskRunner;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -49,65 +51,65 @@ public class MainPane extends StackPane {
 	/** The ref filtered table. */
 	// Filtered table
 	private FilteredTableView<Spectrum> refFilteredTable;
-	
+
 	/** The ref id column. */
 	// Filtered columns
 	private FilterableLongTableColumn<Spectrum, Long> refIdColumn;
-	
+
 	/** The ref title column. */
 	private FilterableStringTableColumn<Spectrum, String> refTitleColumn;
-	
+
 	/** The ref moz column. */
 	private FilterableDoubleTableColumn<Spectrum, Double> refMozColumn;
-	
+
 	/** The ref intensity column. */
 	private FilterableFloatTableColumn<Spectrum, Float> refIntensityColumn;
-	
+
 	/** The ref charge column. */
 	private FilterableIntegerTableColumn<Spectrum, Integer> refChargeColumn;
-	
+
 	/** The ref rt column. */
 	private FilterableFloatTableColumn<Spectrum, Float> refRtColumn;
-	
+
 	/** The ref nbr fragments column. */
 	private FilterableIntegerTableColumn<Spectrum, Integer> refNbrFragmentsColumn;
-	
+
 	/** The ref matched column. */
 	private FilterableBooleanTableColumn<Spectrum, Boolean> refMatchedColumn;
-	
+
 	/** The test filtered table. */
 	// Test table view
 	private FilteredTableView<Spectrum> testFilteredTable;
-	
+
 	/** The test id column. */
 	// Filtered columns
 	private FilterableLongTableColumn<Spectrum, Long> testIdColumn;
-	
+
 	/** The test title column. */
 	private FilterableStringTableColumn<Spectrum, String> testTitleColumn;
-	
+
 	/** The test moz column. */
 	private FilterableDoubleTableColumn<Spectrum, Float> testMozColumn;
-	
+
 	/** The test intensity column. */
 	private FilterableFloatTableColumn<Spectrum, Float> testIntensityColumn;
-	
+
 	/** The test charge column. */
 	private FilterableIntegerTableColumn<Spectrum, Integer> testChargeColumn;
-	
+
 	/** The test rt column. */
 	private FilterableFloatTableColumn<Spectrum, Float> testRtColumn;
-	
+
 	/** The test nbr fragments column. */
 	private FilterableIntegerTableColumn<Spectrum, Integer> testNbrFragmentsColumn;
-	
+
 	/** The test ref id column. */
 	private FilterableLongTableColumn<Spectrum, Long> testRefIdColumn;
-	
+
 	/** The spectrum pane. */
 	// Spectrum pane
 	private SpectrumPane spectrumPane;
-	
+
 	/** The swing node for chart. */
 	private final SwingNode swingNodeForChart = new SwingNode();
 
@@ -117,7 +119,8 @@ public class MainPane extends StackPane {
 	/**
 	 * Instantiates a new main pane.
 	 *
-	 * @param model the model
+	 * @param model
+	 *            the model
 	 */
 	public MainPane(ViewModel model) {
 		// Create the main view
@@ -315,6 +318,11 @@ public class MainPane extends StackPane {
 		mainSplitPane.getItems().addAll(peaklistSplitPane, graphicsPane, ConsolePane.getInstance());
 		mainView.setTop(menuBar);
 		mainView.setCenter(mainSplitPane);
-		this.getChildren().addAll(mainView);
+
+		TaskRunner.mainView = mainSplitPane;
+		TaskRunner.glassPane = glassPane;
+		TaskRunner.statusLabel = new Label("");
+
+		this.getChildren().addAll(mainView, glassPane);
 	}
 }

@@ -8,6 +8,7 @@ import fr.lsmbo.msda.spectra.comp.io.PeakListProvider;
 import fr.lsmbo.msda.spectra.comp.io.PeaklistReader;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.utils.ConfirmDialog;
+import fr.lsmbo.msda.spectra.comp.utils.TaskRunner;
 import fr.lsmbo.msda.spectra.comp.view.dialog.SpectraLoaderDialog;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -19,15 +20,18 @@ import javafx.stage.Stage;
  * The Class ViewModel.
  */
 public class ViewModel {
-	
+
 	/** The stage. */
 	public static Stage stage;
-	
+
 	/** The ref items. */
 	private ObservableList<Spectrum> refItems = FXCollections.observableArrayList();
-	
+
 	/** The test items. */
 	private ObservableList<Spectrum> testItems = FXCollections.observableArrayList();
+
+	/** The task runner */
+	private TaskRunner task = new TaskRunner();
 
 	/**
 	 * Gets the ref items.
@@ -41,7 +45,8 @@ public class ViewModel {
 	/**
 	 * Sets the ref items.
 	 *
-	 * @param refItems            the refItems to set
+	 * @param refItems
+	 *            the refItems to set
 	 */
 	public final void setRefItems(ObservableList<Spectrum> refItems) {
 		this.refItems = refItems;
@@ -59,15 +64,15 @@ public class ViewModel {
 	/**
 	 * Sets the test items.
 	 *
-	 * @param testItems            the testItems to set
+	 * @param testItems
+	 *            the testItems to set
 	 */
 	public final void setTestItems(ObservableList<Spectrum> testItems) {
 		this.testItems = testItems;
 	}
 
 	/**
-	 * *
-	 * Compare spectra.
+	 * * Compare spectra.
 	 */
 	public void compare() {
 		PeakListProvider.compareSpectra();
@@ -80,38 +85,47 @@ public class ViewModel {
 		SpectraLoaderDialog spectraLoaderDialog = new SpectraLoaderDialog();
 		spectraLoaderDialog.showAndWait().ifPresent(params -> {
 			System.out.println("INFO | " + params.toString());
-			if (!params.getRefPklByDataSourceMap().isEmpty()) {
-				params.getRefPklByDataSourceMap().forEach((k, v) -> {
-					// Reference spectra loaded from a file
-					if (k.equals(DataSource.FILE)) {
-						String refFilePath = (String) v;
-						loadRefPklFile(refFilePath);
-						refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
-					} else {
-						// Reference spectra loaded from a Proline project
-						String msiDbname = params.getRefDbName();
-						Set rsmIds = (Set) v;
-						loadRefSpectraProline(msiDbname, rsmIds);
-						refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
-					}
-				});
-			}
-			if (!params.getTestedPklByDataSourceMap().isEmpty()) {
-				params.getTestedPklByDataSourceMap().forEach((k, v) -> {
-					// Test spectra loaded from a file
-					if (k.equals(DataSource.FILE)) {
-						String testFilePath = (String) v;
-						loadTestedPklFile(testFilePath);
-						testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
-					} else {
-						// Test spectra loaded from a Proline project
-						String msiDbname = params.getRefDbName();
-						Set rsmIds = (Set) v;
-						loadTestedSpectraProline(msiDbname, rsmIds);
-						testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
-					}
-				});
-			}
+			TaskRunner.doAsyncWork("Loading Spectra", () -> {
+				// Step 1
+				if (!params.getRefPklByDataSourceMap().isEmpty()) {
+					params.getRefPklByDataSourceMap().forEach((k, v) -> {
+						// Reference spectra loaded from a file
+						if (k.equals(DataSource.FILE)) {
+							String refFilePath = (String) v;
+							loadRefPklFile(refFilePath);
+							refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
+						} else {
+							// Reference spectra loaded from a Proline project
+							String msiDbname = params.getRefDbName();
+							Set rsmIds = (Set) v;
+							loadRefSpectraProline(msiDbname, rsmIds);
+							refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
+						}
+					});
+				}
+				// Step 2
+				if (!params.getTestedPklByDataSourceMap().isEmpty()) {
+					params.getTestedPklByDataSourceMap().forEach((k, v) -> {
+						// Test spectra loaded from a file
+						if (k.equals(DataSource.FILE)) {
+							String testFilePath = (String) v;
+							loadTestedPklFile(testFilePath);
+							testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
+						} else {
+							// Test spectra loaded from a Proline project
+							String msiDbname = params.getRefDbName();
+							Set rsmIds = (Set) v;
+							loadTestedSpectraProline(msiDbname, rsmIds);
+							testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
+						}
+					});
+				}
+				return true;
+			}, (t) -> {
+
+			}, (f) -> {
+			}, false, stage);
+
 		});
 	}
 
@@ -130,10 +144,10 @@ public class ViewModel {
 	}
 
 	/**
-	 * *
-	 * Load the reference spectra from a peaklist file.
+	 * * Load the reference spectra from a peaklist file.
 	 *
-	 * @param refPklFilePath            the peaklist file path from where the spectra will be loaded.
+	 * @param refPklFilePath
+	 *            the peaklist file path from where the spectra will be loaded.
 	 */
 	public void loadRefPklFile(String refPklFilePath) {
 		try {
@@ -148,10 +162,10 @@ public class ViewModel {
 	}
 
 	/**
-	 * *
-	 * Load the spectra to test from a peaklist file.
+	 * * Load the spectra to test from a peaklist file.
 	 *
-	 * @param testPklFilePath            the peaklist file path from where the spectra will be loaded.
+	 * @param testPklFilePath
+	 *            the peaklist file path from where the spectra will be loaded.
 	 */
 	public void loadTestedPklFile(String testPklFilePath) {
 		try {
@@ -202,8 +216,7 @@ public class ViewModel {
 	}
 
 	/**
-	 * *
-	 * Exit Spectra-comp software.
+	 * * Exit Spectra-comp software.
 	 */
 	public void onExit() {
 		System.out.println("WARN | Exit spectra-comp");
@@ -216,15 +229,13 @@ public class ViewModel {
 	}
 
 	/**
-	 * *
-	 * About spectra.
+	 * * About spectra.
 	 */
 	public void onAboutSpectraComp() {
 	}
 
 	/**
-	 * *
-	 * Open user guide.
+	 * * Open user guide.
 	 */
 	public void onOpenUserGuide() {
 	}
