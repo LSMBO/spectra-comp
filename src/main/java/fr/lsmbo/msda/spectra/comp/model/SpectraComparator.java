@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -19,22 +21,22 @@ import fr.lsmbo.msda.spectra.comp.list.Spectra;
  * 
  */
 public class SpectraComparator {
-	
+
 	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(SpectraComparator.class);
-	
+
 	/** The second spectra. */
 	// Spectra to make comparison
 	private static Spectra secondSpectra;
-	
+
 	/** The sub list second spectra. */
 	// A sub list of spectra
 	private static Spectra subListSecondSpectra = new Spectra();
-	
+
 	/** The valid spectra. */
 	// Spectra which succeed all the step
 	private static Spectra validSpectra = new Spectra();
-	
+
 	/** The reference spectrum. */
 	// Spectrum reference
 	private static Spectrum referenceSpectrum;
@@ -42,10 +44,10 @@ public class SpectraComparator {
 	/** The nb peaks equals. */
 	// spectrum(TS) (same MOZ and same RT)
 	private static int nbPeaksEquals;
-	
+
 	/** The nb peaks. */
 	private static Integer nbPeaks;
-	
+
 	/** The cos theta. */
 	private static Double cosTheta;
 
@@ -53,37 +55,39 @@ public class SpectraComparator {
 	/** The list peaks reference spectrum. */
 	// deltaRT)
 	private static float[] listPeaksReferenceSpectrum;
-	
+
 	/** The list peaks tested spectrum. */
 	private static float[] listPeaksTestedSpectrum;
 
 	/** The list square rootpeaks tested spectrum. */
 	private static Double[] listSquareRootpeaksTestedSpectrum;
-	
+
 	/** The list square rootpeaks reference spectrum. */
 	private static Double[] listSquareRootpeaksReferenceSpectrum;
 
 	/** The delta moz. */
 	// Constant
 	private static Double deltaMoz;
-	
+
 	/** The delta RT. */
 	private static Integer deltaRT;
-	
+
 	/** The nb peaks min. */
 	private static Integer nbPeaksMin;
-	
+
 	/** The theta min. */
 	private static Integer thetaMin;
-	
+
 	/** The cos theta min. */
 	private static double cosThetaMin;
 
 	/**
 	 * Add a new value in the array.
 	 *
-	 * @param intensityFragmentReferenceSpectrum the intensity fragment reference spectrum
-	 * @param index the index
+	 * @param intensityFragmentReferenceSpectrum
+	 *            the intensity fragment reference spectrum
+	 * @param index
+	 *            the index
 	 */
 	private static void addPeakReferenceSpectrum(float intensityFragmentReferenceSpectrum, int index) {
 		listPeaksReferenceSpectrum[index] = intensityFragmentReferenceSpectrum;
@@ -93,8 +97,10 @@ public class SpectraComparator {
 	 * Add a new value in the array of TS, if a value is present for the same
 	 * peak of RS, keep the most intense value of intensity.
 	 *
-	 * @param intensityFragmentSubListSpectrum the intensity fragment sub list spectrum
-	 * @param index the index
+	 * @param intensityFragmentSubListSpectrum
+	 *            the intensity fragment sub list spectrum
+	 * @param index
+	 *            the index
 	 */
 	private static void addPeakTestedSpectrum(float intensityFragmentSubListSpectrum, int index) {
 		if (listPeaksTestedSpectrum[index] == 0) {
@@ -232,7 +238,8 @@ public class SpectraComparator {
 	 * Determines whether the number of peaks of the reference spectrum can have
 	 * their equivalent in a spectrum of sublist (same moz +/- deltaMoz).
 	 *
-	 * @param spectrumOfSecSpectraSubList the spectrum of sec spectra sub list
+	 * @param spectrumOfSecSpectraSubList
+	 *            the spectrum of sec spectra sub list
 	 */
 	private static void findFragment(Spectrum spectrumOfSecSpectraSubList) {
 		// Recover the nbpeaks most intense of the reference spectrum
@@ -341,9 +348,11 @@ public class SpectraComparator {
 	/**
 	 * Run.
 	 *
-	 * @param spectrumRef            the spectrum to set as reference.
+	 * @param spectrumRef
+	 *            the spectrum to set as reference.
 	 */
 	public static void run(Spectrum spectrumRef) {
+		BooleanProperty isMatched = new SimpleBooleanProperty(false);
 		referenceSpectrum = spectrumRef;
 		setReferenceSpectrum(referenceSpectrum);
 		logger.info("Reference spectrum : {} ", spectrumRef.getM_title());
@@ -369,6 +378,13 @@ public class SpectraComparator {
 								(int) ((testedSpectrum.getRetentionTime() * 60)
 										- (referenceSpectrum.getRetentionTime() * 60)));
 						validSpectra.addSpectrum(testedSpectrum);
+						// Set of reference spectra
+						testedSpectrum.getRef_idSet().add(spectrumRef.getM_id());
+						// Set of test spectra valid
+						spectrumRef.getM_testIdSet().add(testedSpectrum.getM_id());
+						isMatched.setValue(true);
+						spectrumRef.setMatched(isMatched);
+
 					}
 				}
 			}
@@ -386,7 +402,8 @@ public class SpectraComparator {
 	/**
 	 * Set as reference spectrum.
 	 *
-	 * @param _referenceSpectrum            the reference spectrum to set.
+	 * @param _referenceSpectrum
+	 *            the reference spectrum to set.
 	 */
 	public static void setReferenceSpectrum(Spectrum _referenceSpectrum) {
 		referenceSpectrum = _referenceSpectrum;

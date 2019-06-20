@@ -62,7 +62,7 @@ public class TaskRunner {
 			@Override
 			protected void failed() {
 				logger.error(getException());
-				System.err.println("ERROR - " + caption + " - has failed: " + getException().getMessage());
+				System.err.println("ERROR | " + caption + " - has failed: " + getException().getMessage());
 				mainView.getScene().setCursor(Cursor.DEFAULT);
 				error.accept(getException());
 				showProgress(false);
@@ -75,7 +75,7 @@ public class TaskRunner {
 			@Override
 			protected void running() {
 				logger.info(caption + " - is running...");
-				System.out.println("INFO - " + caption + " - is running...");
+				System.out.println("INFO | " + caption + " - is running...");
 				mainView.getScene().setCursor(Cursor.WAIT);
 				showProgress(true);
 			}
@@ -83,7 +83,7 @@ public class TaskRunner {
 			@Override
 			protected void succeeded() {
 				logger.info(caption + " - has finished successfully!");
-				System.out.println("INFO - " + caption + " - has finished successfully!");
+				System.out.println("INFO | " + caption + " - has finished successfully!");
 				mainView.getScene().setCursor(Cursor.DEFAULT);
 				success.accept(getValue());
 				showProgress(false);

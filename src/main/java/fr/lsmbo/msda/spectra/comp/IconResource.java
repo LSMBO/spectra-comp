@@ -15,43 +15,43 @@ public class IconResource {
 	 * Enum type that indicates the name of the icon.
 	 */
 	public enum ICON {
-		
+
 		/** The admin. */
-		ADMIN, 
- /** The spectra comp. */
- SPECTRA_COMP, 
- /** The tick. */
- TICK, 
- /** The console. */
- CONSOLE, 
- /** The help. */
- HELP, 
- /** The information. */
- INFORMATION, 
- /** The warning. */
- WARNING, 
- /** The reset. */
- RESET, 
- /** The exit. */
- EXIT, 
- /** The load. */
- LOAD, 
- /** The execute. */
- EXECUTE, 
- /** The cross. */
- CROSS, 
- /** The database. */
- DATABASE, 
- /** The edit. */
- EDIT, 
- /** The dataset rsm. */
- DATASET_RSM, 
- /** The dataset rsm merged a. */
- DATASET_RSM_MERGED_A, 
- /** The settings. */
- SETTINGS, 
- /** The progress. */
- PROGRESS;
+		ADMIN,
+		/** The spectra comp. */
+		SPECTRA_COMP,
+		/** The tick. */
+		TICK,
+		/** The console. */
+		CONSOLE,
+		/** The help. */
+		HELP,
+		/** The information. */
+		INFORMATION,
+		/** The warning. */
+		WARNING,
+		/** The reset. */
+		RESET,
+		/** The exit. */
+		EXIT,
+		/** The load. */
+		LOAD,
+		/** The execute. */
+		EXECUTE,
+		/** The cross. */
+		CROSS,
+		/** The database. */
+		DATABASE,
+		/** The edit. */
+		EDIT,
+		/** The dataset rsm. */
+		DATASET_RSM,
+		/** The dataset rsm merged a. */
+		DATASET_RSM_MERGED_A,
+		/** The settings. */
+		SETTINGS,
+		/** The progress. */
+		PROGRESS;
 	}
 
 	/** The images. */
@@ -60,14 +60,15 @@ public class IconResource {
 	/**
 	 * Return an image.
 	 *
-	 * @param icon            the icon to load.
+	 * @param icon
+	 *            the icon to load.
 	 * @return Image
 	 */
 	public static Image getImage(ICON icon) {
 		if (!images.containsKey(icon)) {
 			switch (icon) {
 			case EDIT:
-				images.put(icon, new Image(IconResource.class.getResourceAsStream("/images/edi.png")));
+				images.put(icon, new Image(IconResource.class.getResourceAsStream("/images/edit-parsing-rules.png")));
 				break;
 			case SETTINGS:
 				images.put(icon, new Image(IconResource.class.getResourceAsStream("/images/settings.png")));

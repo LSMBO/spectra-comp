@@ -103,9 +103,6 @@ public class MainPane extends StackPane {
 	/** The test nbr fragments column. */
 	private FilterableIntegerTableColumn<Spectrum, Integer> testNbrFragmentsColumn;
 
-	/** The test ref id column. */
-	private FilterableLongTableColumn<Spectrum, Long> testRefIdColumn;
-
 	/** The spectrum pane. */
 	// Spectrum pane
 	private SpectrumPane spectrumPane;
@@ -146,6 +143,11 @@ public class MainPane extends StackPane {
 		});
 		// Settings menu items
 		Menu settingsMenu = new Menu(" Settings ");
+		MenuItem parsingRules = new MenuItem(" Parsing Rules ");
+		parsingRules.setGraphic(new ImageView(IconResource.getImage(ICON.EDIT)));
+		parsingRules.setOnAction(e -> {
+			model.onEditParsingRules();
+		});
 		MenuItem dbParameters = new MenuItem(" Database parameters ");
 		dbParameters.setGraphic(new ImageView(IconResource.getImage(ICON.DATABASE)));
 		dbParameters.setOnAction(e -> {
@@ -180,7 +182,7 @@ public class MainPane extends StackPane {
 			model.onAboutSpectraComp();
 		});
 		fileMenu.getItems().addAll(loadSpectra, exitFile);
-		settingsMenu.getItems().addAll(dbParameters, compParameters);
+		settingsMenu.getItems().addAll(parsingRules, compParameters, dbParameters);
 		helpMenu.getItems().addAll(userGuide, aboutSpectraComp);
 		menuBar.getMenus().addAll(fileMenu, settingsMenu, helpMenu);
 		mainView.setTop(menuBar);
@@ -263,11 +265,8 @@ public class MainPane extends StackPane {
 		testNbrFragmentsColumn = new FilterableIntegerTableColumn<>("Fragment number");
 		testNbrFragmentsColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Integer>("nbFragments"));
 
-		// Identified Column
-		testRefIdColumn = new FilterableLongTableColumn<>("Ref Id");
-		testRefIdColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Long>("ref_id"));
 		testFilteredTable.getColumns().setAll(testIdColumn, testTitleColumn, testMozColumn, testIntensityColumn,
-				testChargeColumn, testRtColumn, testNbrFragmentsColumn, testRefIdColumn);
+				testChargeColumn, testRtColumn, testNbrFragmentsColumn);
 
 		testFilteredTable.autosize();
 		testFilteredTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -303,7 +302,9 @@ public class MainPane extends StackPane {
 		peaklistSplitPane.setPadding(new Insets(10));
 		peaklistSplitPane.setMinHeight(350);
 		Button compareButton = new Button("Compare");
+		// Compare spectra
 		compareButton.setOnAction(e -> {
+			model.onCompareSpectra();
 		});
 		BorderPane graphicsPane = new BorderPane();
 		graphicsPane.setMinHeight(150);

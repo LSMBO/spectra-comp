@@ -9,6 +9,7 @@ import fr.lsmbo.msda.spectra.comp.io.PeaklistReader;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.utils.ConfirmDialog;
 import fr.lsmbo.msda.spectra.comp.utils.TaskRunner;
+import fr.lsmbo.msda.spectra.comp.view.dialog.ParsingRulesDialog;
 import fr.lsmbo.msda.spectra.comp.view.dialog.SpectraLoaderDialog;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -85,7 +86,7 @@ public class ViewModel {
 		SpectraLoaderDialog spectraLoaderDialog = new SpectraLoaderDialog();
 		spectraLoaderDialog.showAndWait().ifPresent(params -> {
 			System.out.println("INFO | " + params.toString());
-			TaskRunner.doAsyncWork("Loading Spectra", () -> {
+			TaskRunner.doAsyncWork("Loading spectra", () -> {
 				// Step 1
 				if (!params.getRefPklByDataSourceMap().isEmpty()) {
 					params.getRefPklByDataSourceMap().forEach((k, v) -> {
@@ -121,9 +122,49 @@ public class ViewModel {
 					});
 				}
 				return true;
-			}, (t) -> {
+			}, (isSuccess) -> {
+				System.out.println("INFO | Task has finished sucessfully!");
+			}, (failure) -> {
+				System.err.println("INFO | Task has failed! " + failure);
+			}, false, stage);
 
-			}, (f) -> {
+		});
+	}
+
+	/**
+	 * Compare Spectra
+	 */
+	public void onCompareSpectra() {
+		TaskRunner.doAsyncWork("Comparing spectra", () -> {
+			PeakListProvider.compareSpectra();
+			return true;
+		}, (isSuccess) -> {
+			refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
+			testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
+			System.out.println("INFO | Task has finished sucessfully!");
+		}, (failure) -> {
+			System.err.println("INFO | Task has failed! " + failure);
+		}, false, stage);
+	}
+
+	/**
+	 * Edit parsing rules
+	 */
+	public void onEditParsingRules() {
+		ParsingRulesDialog parsingRulesDialog = new ParsingRulesDialog();
+		parsingRulesDialog.showAndWait().ifPresent(parsingRule -> {
+			TaskRunner.doAsyncWork("Update retention time", () -> {
+				ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
+						.forEach(spectrum -> spectrum.setRetentionTimeFromTitle(parsingRule.getRegex()));
+				ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
+						.forEach(spectrum -> spectrum.setRetentionTimeFromTitle(parsingRule.getRegex()));
+				return true;
+			}, (isSuccess) -> {
+				refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
+				testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
+				System.out.println("INFO | Task has finished sucessfully!");
+			}, (failure) -> {
+				System.err.println("INFO | Task has failed! " + failure);
 			}, false, stage);
 
 		});
@@ -149,7 +190,7 @@ public class ViewModel {
 	 * @param refPklFilePath
 	 *            the peaklist file path from where the spectra will be loaded.
 	 */
-	public void loadRefPklFile(String refPklFilePath) {
+	private void loadRefPklFile(String refPklFilePath) {
 		try {
 			PeaklistReader.isSecondPeakList = false;
 			PeakListProvider.loadRefSpectraFromFile(refPklFilePath);
@@ -167,7 +208,7 @@ public class ViewModel {
 	 * @param testPklFilePath
 	 *            the peaklist file path from where the spectra will be loaded.
 	 */
-	public void loadTestedPklFile(String testPklFilePath) {
+	private void loadTestedPklFile(String testPklFilePath) {
 		try {
 			PeaklistReader.isSecondPeakList = true;
 			PeakListProvider.loadTestedSpectraFromFile(testPklFilePath);
@@ -188,7 +229,7 @@ public class ViewModel {
 	 * @param rsmIds
 	 *            the result_summary ids from where to compute the spectra.
 	 */
-	void loadRefSpectraProline(String dbName, Set<Long> rsmIds) {
+	private void loadRefSpectraProline(String dbName, Set<Long> rsmIds) {
 		try {
 			PeakListProvider.loadRefSpectraFrmProline(dbName, rsmIds);
 		} catch (Exception e) {
@@ -206,7 +247,7 @@ public class ViewModel {
 	 * @param rsmIds
 	 *            the result_summary ids from where to compute the spectra.
 	 */
-	public void loadTestedSpectraProline(String dbName, Set<Long> rsmIds) {
+	private void loadTestedSpectraProline(String dbName, Set<Long> rsmIds) {
 		try {
 			PeakListProvider.loadTestedSpectraFrmProline(dbName, rsmIds);
 		} catch (Exception e) {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.model.ParsingRule;
+import fr.lsmbo.msda.spectra.comp.model.SoftwareType;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -16,14 +17,15 @@ public class ParsingRules {
 
 	/** The parsing rules. */
 	private static ArrayList<ParsingRule> parsingRules = new ArrayList<ParsingRule>();
-	
+
 	/** The current parsing rule index. */
 	private static Integer currentParsingRuleIndex = -1;
 
 	/**
-	 *  Add a new parsing rule.
+	 * Add a new parsing rule.
 	 *
-	 * @param rule the rule
+	 * @param rule
+	 *            the rule
 	 */
 	public static void add(ParsingRule rule) {
 		parsingRules.add(rule);
@@ -42,7 +44,8 @@ public class ParsingRules {
 	/**
 	 * Return a parsing rule via its key.
 	 *
-	 * @param key            the key of parsing rule to retrieve
+	 * @param key
+	 *            the key of parsing rule to retrieve
 	 * @return the parsing rule
 	 */
 	public static ParsingRule get(String key) {
@@ -54,7 +57,7 @@ public class ParsingRules {
 	}
 
 	/**
-	 *  Return the current parsing rule.
+	 * Return the current parsing rule.
 	 *
 	 * @return the current parsing rule
 	 */
@@ -71,20 +74,23 @@ public class ParsingRules {
 		if (parsingRules.isEmpty()) {
 			// lazy loading
 			try {
-				parsingRules.add(new ParsingRule(Session.USER_PARAMS.getParsingRules().getParsingRuleName(),
-						Session.USER_PARAMS.getParsingRules().getParsingRuleValue(),
-						Session.USER_PARAMS.getParsingRules().getParsingRuleName(), 0));
+				int i = 0;
+				for (SoftwareType type : SoftwareType.values()) {
+					parsingRules
+							.add(new ParsingRule(type.getRegexName(), type.getRegexValue(), type.getRegexName(), i));
+					i++;
+				}
 
 			} catch (Exception ex) {
 			}
-
 		}
 	}
 
 	/**
-	 *  Set a new current parsing rule.
+	 * Set a new current parsing rule.
 	 *
-	 * @param pr the new new current parsing rule
+	 * @param pr
+	 *            the new new current parsing rule
 	 */
 	public static void setNewCurrentParsingRule(ParsingRule pr) {
 		if (pr != null) {

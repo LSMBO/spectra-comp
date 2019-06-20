@@ -3,7 +3,6 @@
  */
 package fr.lsmbo.msda.spectra.comp.view.dialog;
 
-
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
@@ -38,14 +37,14 @@ import javafx.stage.Stage;
  * @author aromdhani
  *
  */
-public class ParsingRulesDialog extends Dialog<Object> {
-	
+public class ParsingRulesDialog extends Dialog<ParsingRule> {
+
 	/** The titles. */
 	private ObservableList<Spectrum> titles = FXCollections.observableArrayList();
-	
+
 	/** The selected parsing rule. */
 	private ParsingRule selectedParsingRule = null;
-	
+
 	/** The table. */
 	private TableView<Spectrum> table;
 
@@ -122,14 +121,19 @@ public class ParsingRulesDialog extends Dialog<Object> {
 		// Create and display the main dialog pane
 		DialogPane dialogPane = new DialogPane();
 		dialogPane.setContent(parsingRulesPane);
-		dialogPane.setHeaderText("Edit parsing rule");
+		dialogPane.setHeaderText("Edit parsing rules");
 		dialogPane.setGraphic(new ImageView(IconResource.getImage(ICON.EDIT)));
 		Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
 		stage.getIcons().add(new ImageView(IconResource.getImage(ICON.EDIT)).getImage());
 		dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 		dialogPane.setPrefSize(800, 500);
+		
 		Button buttonOk = (Button) dialogPane.lookupButton(ButtonType.OK);
-		this.setTitle("Parsing Rule");
+		buttonOk.setGraphic(new ImageView(IconResource.getImage(ICON.TICK)));
+		Button buttonCancel = (Button) dialogPane.lookupButton(ButtonType.CANCEL);
+		buttonCancel.setGraphic(new ImageView(IconResource.getImage(ICON.CROSS)));
+
+		this.setTitle("Parsing Rules");
 		this.setDialogPane(dialogPane);
 
 		// Enable Ok button when input fields are valid.
