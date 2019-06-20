@@ -130,7 +130,6 @@ public class ViewModel {
 			}, (failure) -> {
 				System.err.println("INFO | Task has failed! " + failure);
 			}, false, stage);
-
 		});
 	}
 
