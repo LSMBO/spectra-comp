@@ -149,7 +149,6 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 					public String toString(Project object) {
 						return object.getName();
 					}
-
 					@Override
 					public Project fromString(String string) {
 						return null;
@@ -385,7 +384,7 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 		dialogPane.setContent(peaklistSplitPane);
 		dialogPane.setHeaderText("Spectra Loader");
 		dialogPane.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
-		dialogPane.setPrefSize(1000, 600);
+		dialogPane.setPrefSize(1080, 640);
 		Stage stage = (Stage) this.getDialogPane().getScene().getWindow();
 		stage.getIcons().add(new ImageView(IconResource.getImage(ICON.LOAD)).getImage());
 		dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);

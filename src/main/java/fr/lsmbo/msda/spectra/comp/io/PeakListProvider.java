@@ -103,16 +103,15 @@ public class PeakListProvider {
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("restriction")
-	public static void loadTestedSpectraFrmProline(String projectName, Set<Long> rsmIds) throws Exception {
+	public static void loadTestedSpectraFrmProline(String dbName, Set<Long> rsmIds) throws Exception {
 		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
-			assert !StringsUtils.isEmpty(projectName) : "Project name must not be null nor empty!";
-			assert !rsmIds.isEmpty() : "Rsm ids must not be empty!";
+			assert !StringsUtils.isEmpty(dbName) : "Project name must not be null nor empty!";
 			logger.info("--- Start to retrieve spectra from reference peaklist from Proline project. Please wait ...");
 			System.out.println(
 					"INFO | Start to retrieve spectra from reference peaklist from Proline project. Please wait ...");
 			// Find the msi_search_ids
-			Set<Long> msiSearchIds = DBSpectraHandler.fillMsiSerachIds(projectName, rsmIds);
-			DBSpectraHandler.fillSpecByPeakList(projectName, msiSearchIds);
+			Set<Long> msiSearchIds = DBSpectraHandler.fillMsiSerachIds(dbName, rsmIds);
+			DBSpectraHandler.fillSpecByPeakList(dbName, msiSearchIds);
 			ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 		}

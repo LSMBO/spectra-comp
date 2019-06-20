@@ -1,7 +1,6 @@
 
 package fr.lsmbo.msda.spectra.comp.list;
 
-
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -50,8 +49,6 @@ public class Spectra {
 
 	}
 
-	
-
 	/**
 	 * Count the number of matched spectrum
 	 */
@@ -69,12 +66,12 @@ public class Spectra {
 	 * value of recover for this spectrum will be true
 	 */
 	public void countRecoveredAndIdentifiedSpectra() {
-		
+
 		nbIdentified = 0;
 		Integer nb = getSpectraAsObservable().size();
 		for (int i = 0; i < nb; i++) {
 			Spectrum spectrum = getSpectraAsObservable().get(i);
-			if (spectrum.getIdentified())
+			if (spectrum.getMatched().get())
 				nbIdentified++;
 		}
 	}
@@ -97,8 +94,6 @@ public class Spectra {
 		return nbMatched;
 	}
 
-	
-
 	/**
 	 * Return the number of spectra.
 	 * 
@@ -115,8 +110,6 @@ public class Spectra {
 		computePercentageIdentified();
 		return percentageIdentified;
 	}
-
-	
 
 	/**
 	 * Return an observable list of spectra.
@@ -183,6 +176,7 @@ public class Spectra {
 			sp.setCosTheta(0);
 		}
 	}
+
 	/**
 	 * Update the retention time from the titles.
 	 */

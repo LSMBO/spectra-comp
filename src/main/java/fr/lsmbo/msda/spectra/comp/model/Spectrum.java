@@ -10,16 +10,21 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
+import javafx.beans.property.BooleanProperty;
 
 public class Spectrum {
+	private static final Logger logger = LogManager.getLogger(Spectrum.class);
 
 	public static final int MASSES_INDEX = 0;
 	public static final int INTENSITIES_INDEX = 1;
 
 	private long m_id;
-
+	private long ref_id = -1;
 	private Integer m_firstScan;
 	private Integer m_lastScan;
 
@@ -36,8 +41,8 @@ public class Spectrum {
 
 	private String m_title = null;
 	private Integer nbMatch;
-	private Boolean identified;
-	
+	private BooleanProperty matched;
+
 	private float retentionTime;
 
 	// The index of the line start in file of the spectrum
@@ -228,8 +233,8 @@ public class Spectrum {
 		return fragments;
 	}
 
-	public Boolean getIdentified() {
-		return identified;
+	public BooleanProperty getMatched() {
+		return matched;
 	}
 
 	public double[] getIntensities() {
@@ -471,11 +476,11 @@ public class Spectrum {
 	}
 
 	/**
-	 * @param identified
-	 *            the identified to set
+	 * @param matched
+	 *            the matched to set
 	 */
-	public final void setIdentified(Boolean identified) {
-		this.identified = identified;
+	public final void setMatched(BooleanProperty matched) {
+		this.matched = matched;
 	}
 
 	/**
@@ -652,6 +657,21 @@ public class Spectrum {
 	 */
 	public final void setTitleReferenceSpectrum(String titleReferenceSpectrum) {
 		this.titleReferenceSpectrum = titleReferenceSpectrum;
+	}
+
+	/**
+	 * @return the ref_id
+	 */
+	public final long getRef_id() {
+		return ref_id;
+	}
+
+	/**
+	 * @param ref_id
+	 *            the ref_id to set
+	 */
+	public final void setRef_id(long ref_id) {
+		this.ref_id = ref_id;
 	}
 
 	/*

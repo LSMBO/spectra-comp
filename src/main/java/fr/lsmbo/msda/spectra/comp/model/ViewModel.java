@@ -27,7 +27,8 @@ public class ViewModel {
 	}
 
 	/**
-	 * @param refItems the refItems to set
+	 * @param refItems
+	 *            the refItems to set
 	 */
 	public final void setRefItems(ObservableList<Spectrum> refItems) {
 		this.refItems = refItems;
@@ -41,7 +42,8 @@ public class ViewModel {
 	}
 
 	/**
-	 * @param testItems the testItems to set
+	 * @param testItems
+	 *            the testItems to set
 	 */
 	public final void setTestItems(ObservableList<Spectrum> testItems) {
 		this.testItems = testItems;
@@ -64,23 +66,33 @@ public class ViewModel {
 			System.out.println("INFO | " + params.toString());
 			if (!params.getRefPklByDataSourceMap().isEmpty()) {
 				params.getRefPklByDataSourceMap().forEach((k, v) -> {
+					// Reference spectra loaded from a file
 					if (k.equals(DataSource.FILE)) {
 						String refFilePath = (String) v;
 						loadRefPklFile(refFilePath);
 						refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
 					} else {
-
+						// Reference spectra loaded from a Proline project
+						String msiDbname = params.getRefDbName();
+						Set rsmIds = (Set) v;
+						loadRefSpectraProline(msiDbname, rsmIds);
+						refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
 					}
 				});
 			}
 			if (!params.getTestedPklByDataSourceMap().isEmpty()) {
 				params.getTestedPklByDataSourceMap().forEach((k, v) -> {
+					// Test spectra loaded from a file
 					if (k.equals(DataSource.FILE)) {
 						String testFilePath = (String) v;
 						loadTestedPklFile(testFilePath);
 						testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
 					} else {
-
+						// Test spectra loaded from a Proline project
+						String msiDbname = params.getRefDbName();
+						Set rsmIds = (Set) v;
+						loadTestedSpectraProline(msiDbname, rsmIds);
+						testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
 					}
 				});
 			}
@@ -106,8 +118,8 @@ public class ViewModel {
 	/***
 	 * Load the reference spectra from a peaklist file
 	 * 
-	 * @param refPklFilePath the peaklist file path from where the spectra will be
-	 *                       loaded.
+	 * @param refPklFilePath
+	 *            the peaklist file path from where the spectra will be loaded.
 	 */
 	public void loadRefPklFile(String refPklFilePath) {
 		try {
@@ -124,8 +136,8 @@ public class ViewModel {
 	/***
 	 * Load the spectra to test from a peaklist file
 	 * 
-	 * @param testPklFilePath the peaklist file path from where the spectra will be
-	 *                        loaded.
+	 * @param testPklFilePath
+	 *            the peaklist file path from where the spectra will be loaded.
 	 */
 	public void loadTestedPklFile(String testPklFilePath) {
 		try {
@@ -142,8 +154,11 @@ public class ViewModel {
 	/**
 	 * Load reference spectra from a Proline project.
 	 * 
-	 * @param dbName The database name to connect to. Usually it's msi_db_project_ID
-	 * @param rsmIds the result_summary ids from where to compute the spectra.
+	 * @param dbName
+	 *            The database name to connect to. Usually it's
+	 *            msi_db_project_ID
+	 * @param rsmIds
+	 *            the result_summary ids from where to compute the spectra.
 	 */
 	void loadRefSpectraProline(String dbName, Set<Long> rsmIds) {
 		try {
@@ -157,8 +172,11 @@ public class ViewModel {
 	/**
 	 * Load tested spectra from a Proline project.
 	 * 
-	 * @param dbName the database name to connect to. Usually it's msi_db_project_ID
-	 * @param rsmIds the result_summary ids from where to compute the spectra.
+	 * @param dbName
+	 *            the database name to connect to. Usually it's
+	 *            msi_db_project_ID
+	 * @param rsmIds
+	 *            the result_summary ids from where to compute the spectra.
 	 */
 	public void loadTestedSpectraProline(String dbName, Set<Long> rsmIds) {
 		try {
