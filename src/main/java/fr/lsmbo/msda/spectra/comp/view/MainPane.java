@@ -1,5 +1,8 @@
 package fr.lsmbo.msda.spectra.comp.view;
 
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
 import org.google.jhsheets.filtered.FilteredTableView;
 import org.google.jhsheets.filtered.tablecolumn.FilterableBooleanTableColumn;
 import org.google.jhsheets.filtered.tablecolumn.FilterableDoubleTableColumn;
@@ -13,6 +16,7 @@ import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import fr.lsmbo.msda.spectra.comp.model.ViewModel;
 import fr.lsmbo.msda.spectra.comp.utils.TaskRunner;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -103,8 +107,13 @@ public class MainPane extends StackPane {
 	/** The test nbr fragments column. */
 	private FilterableIntegerTableColumn<Spectrum, Integer> testNbrFragmentsColumn;
 
+	private Spectrum refSelectedSpectrum = null;
+	private Spectrum testSelectedSpectrum = null;
+
+	/** The spectrum property */
+	private SpectrumProperty spectrumProperty = new SpectrumProperty();
+
 	/** The spectrum pane. */
-	// Spectrum pane
 	private SpectrumPane spectrumPane;
 
 	/** The swing node for chart. */
@@ -323,7 +332,67 @@ public class MainPane extends StackPane {
 		TaskRunner.mainView = mainSplitPane;
 		TaskRunner.glassPane = glassPane;
 		TaskRunner.statusLabel = new Label("");
+		// Reference spectrum
+		// Update view on reference spectrum selection
+		spectrumProperty.getRefSpectrumProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				refSelectedSpectrum = newValue;
+				// Create the spectrum chart node
+				SpectrumPane spectrumPane = new SpectrumPane(refSelectedSpectrum);
+				// Update the spectrum view
+				SwingUtilities.invokeLater(() -> {
+					swingNodeForChart.setContent(spectrumPane.getSpectrumPanel());
+				});
+			} else {
+				refSelectedSpectrum = null;
+				// Update the spectrum view
+				SwingUtilities.invokeLater(() -> {
+					swingNodeForChart.setContent(new JPanel());
+				});
+			}
+			Platform.runLater(() -> {
+				refFilteredTable.refresh();
+			});
+		});
+		// Test spectrum
+		spectrumProperty.getTestSpectrumProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				testSelectedSpectrum = newValue;
+				// Create the spectrum chart node
+				SpectrumPane spectrumPane = new SpectrumPane(testSelectedSpectrum);
+				// Update the spectrum view
+				SwingUtilities.invokeLater(() -> {
+					swingNodeForChart.setContent(spectrumPane.getSpectrumPanel());
+				});
+			} else {
+				testSelectedSpectrum = null;
+				// Update the spectrum view
+				SwingUtilities.invokeLater(() -> {
+					swingNodeForChart.setContent(new JPanel());
+				});
+			}
+			Platform.runLater(() -> {
+				testFilteredTable.refresh();
+			});
+		});
+		refFilteredTable.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+			if (newValue != null) {
+				refSelectedSpectrum = newValue;
+				spectrumProperty.getRefSpectrumProperty().setValue(refSelectedSpectrum);
+				refFilteredTable.refresh();
+			}
+		});
 
+		// Update view on spectrum test selection
+		testFilteredTable.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+			if (newValue != null) {
+				testSelectedSpectrum = newValue;
+				spectrumProperty.getTestSpectrumProperty().setValue(testSelectedSpectrum);
+				refFilteredTable.refresh();
+			}
+		});
+
+		// Create the spectrum chart node
 		this.getChildren().addAll(mainView, glassPane);
 	}
 }

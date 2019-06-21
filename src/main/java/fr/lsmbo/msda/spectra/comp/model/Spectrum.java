@@ -63,7 +63,7 @@ public class Spectrum {
 	private double[][] m_massIntensitiesValues = null;
 
 	/** The m precursor charge. */
-	private Integer m_precursorCharge;
+	private int m_precursorCharge = -1;
 
 	/** The m precursor intensity. */
 	private Float m_precursorIntensity;
@@ -922,7 +922,8 @@ public class Spectrum {
 	}
 
 	/**
-	 * @param m_testIdSet the m_testIdSet to set
+	 * @param m_testIdSet
+	 *            the m_testIdSet to set
 	 */
 	public final void setM_testIdSet(Set<Long> m_testIdSet) {
 		this.m_testIdSet = m_testIdSet;
