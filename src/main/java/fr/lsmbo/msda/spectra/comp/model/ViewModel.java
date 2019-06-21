@@ -124,7 +124,7 @@ public class ViewModel {
 				return true;
 			}, (isSuccess) -> {
 				System.out.println("INFO | Task has finished sucessfully!");
-				if (!PeaklistReader.isRetentionTimesDefined()) {
+				if (!PeaklistReader.isRetentionTimesMissing()) {
 					onEditParsingRules();
 				}
 			}, (failure) -> {

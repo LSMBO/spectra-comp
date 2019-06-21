@@ -74,7 +74,7 @@ public class ParsingRulesDialog extends Dialog<ParsingRule> {
 		titles.clear();
 		table = new TableView<Spectrum>(titles);
 		TableColumn<Spectrum, String> title = new TableColumn<Spectrum, String>("Title");
-		title.setCellValueFactory(new PropertyValueFactory<Spectrum, String>("title"));
+		title.setCellValueFactory(new PropertyValueFactory<Spectrum, String>("m_title"));
 		TableColumn<Spectrum, Float> newRT = new TableColumn<Spectrum, Float>("Retention time");
 		newRT.setCellValueFactory(new PropertyValueFactory<Spectrum, Float>("retentionTime"));
 		table.getColumns().addAll(title, newRT);
@@ -86,7 +86,7 @@ public class ParsingRulesDialog extends Dialog<ParsingRule> {
 			selectedParsingRuleTF.setText(selectedParsingRule.getRegex());
 			tryRegex();
 		});
-		Integer nb = ListOfSpectra.getFirstSpectra().getSpectraAsObservable().size();
+		int nb = ListOfSpectra.getFirstSpectra().getSpectraAsObservable().size();
 		if (nb > 5)
 			nb = 5;
 		for (int i = 0; i < nb; i++) {
@@ -127,7 +127,7 @@ public class ParsingRulesDialog extends Dialog<ParsingRule> {
 		stage.getIcons().add(new ImageView(IconResource.getImage(ICON.EDIT)).getImage());
 		dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 		dialogPane.setPrefSize(800, 500);
-		
+
 		Button buttonOk = (Button) dialogPane.lookupButton(ButtonType.OK);
 		buttonOk.setGraphic(new ImageView(IconResource.getImage(ICON.TICK)));
 		Button buttonCancel = (Button) dialogPane.lookupButton(ButtonType.CANCEL);
