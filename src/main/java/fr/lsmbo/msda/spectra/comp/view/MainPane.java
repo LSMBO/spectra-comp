@@ -317,7 +317,7 @@ public class MainPane extends StackPane {
 		peaklistSplitPane.getItems().addAll(referenceTabPane, testedTabPane);
 		peaklistSplitPane.setPadding(new Insets(10));
 		peaklistSplitPane.setMinHeight(350);
-		// Settings spectra pane
+		/* Settings spectra pane */
 		Button compareButton = new Button("Compare");
 		compareButton.setGraphic(new ImageView(IconResource.getImage(ICON.EXECUTE)));
 		compareButton.setOnAction(e -> {
@@ -327,6 +327,7 @@ public class MainPane extends StackPane {
 						return true;
 					}, stage);
 		});
+
 		BorderPane graphicsPane = new BorderPane();
 		graphicsPane.setMinHeight(150);
 		Label deltaMozLabel = new Label("Delta moz:");
@@ -334,37 +335,55 @@ public class MainPane extends StackPane {
 		deltaMozTF.setTooltip(new Tooltip("Enter the delta Moz value!"));
 		deltaMozTF.setPrefWidth(100);
 		deltaMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaMoz()));
+		deltaMozTF.textProperty().addListener((o, v, n) -> {
+			if (n != null)
+				Session.USER_PARAMS.getComparison().setDeltaMoz(Float.valueOf(n));
+		});
 
 		Label deltaRTLabel = new Label("Delta rt:");
 		TextField deltaRTTF = new TextField();
 		deltaRTTF.setPrefWidth(100);
 		deltaRTTF.setTooltip(new Tooltip("Enter the delta retention time value!"));
 		deltaRTTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaRT()));
+		deltaRTTF.textProperty().addListener((o, v, n) -> {
+			if (n != null)
+				Session.USER_PARAMS.getComparison().setDeltaRT(Integer.valueOf(n));
+		});
 
 		Label minPeaksNbrLabel = new Label("Min peaks number:");
 		TextField minPeaksNbrTF = new TextField();
 		minPeaksNbrTF.setPrefWidth(100);
 		minPeaksNbrTF.setTooltip(new Tooltip("Enter the minimum peaks number value!"));
 		minPeaksNbrTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaksMin()));
+		minPeaksNbrTF.textProperty().addListener((o, v, n) -> {
+			if (n != null)
+				Session.USER_PARAMS.getComparison().setNbPeaksMin(Integer.valueOf(n));
+		});
 
 		Label thetaMinLabel = new Label("Theta min:");
 		TextField thetaMinTF = new TextField();
 		thetaMinTF.setPrefWidth(100);
 		thetaMinTF.setTooltip(new Tooltip("Enter the Theta min value!"));
 		thetaMinTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getThetaMin()));
+		thetaMinTF.textProperty().addListener((o, v, n) -> {
+			if (n != null)
+				Session.USER_PARAMS.getComparison().setThetaMin(Integer.valueOf(n));
+		});
 
 		Label peaksNbrLabel = new Label("peaks number:");
 		TextField peaksNbrTF = new TextField();
 		peaksNbrTF.setPrefWidth(100);
 		peaksNbrTF.setTooltip(new Tooltip("Enter the peaks number value!"));
 		peaksNbrTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaks()));
-
+		peaksNbrTF.textProperty().addListener((o, v, n) -> {
+			if (n != null)
+				Session.USER_PARAMS.getComparison().setNbPeaks(Integer.valueOf(n));
+		});
 		addFloatValidation(deltaMozTF);
 		addIntegerValidation(deltaRTTF);
 		addIntegerValidation(minPeaksNbrTF);
 		addIntegerValidation(thetaMinTF);
 		addIntegerValidation(peaksNbrTF);
-
 		compareButton.disableProperty()
 				.bind(deltaMozTF.textProperty().isEmpty()
 						.or(deltaRTTF.textProperty().isEmpty().or(minPeaksNbrTF.textProperty().isEmpty()
@@ -462,11 +481,9 @@ public class MainPane extends StackPane {
 	}
 
 	/**
-	 * Input value must be a valid float
 	 * 
 	 * @param field
-	 *            the textFiled to set text formatter.
-	 **/
+	 */
 	private void addFloatValidation(TextField field) {
 		field.getProperties().put("type", "float");
 		field.setTextFormatter(new TextFormatter<>(c -> {
@@ -478,19 +495,17 @@ public class MainPane extends StackPane {
 					Float.parseFloat(c.getControlNewText());
 					return c;
 				} catch (NumberFormatException e) {
-					return null;
 				}
+				return null;
 			}
 			return c;
 		}));
 	}
 
 	/**
-	 * Input value must be a valid integer
 	 * 
 	 * @param field
-	 *            the textFiled to set text formatter.
-	 **/
+	 */
 	private void addIntegerValidation(TextField field) {
 		field.getProperties().put("type", "integer");
 		field.setTextFormatter(new TextFormatter<>(c -> {
@@ -502,8 +517,8 @@ public class MainPane extends StackPane {
 					Integer.parseInt(c.getControlNewText());
 					return c;
 				} catch (NumberFormatException e) {
-					return null;
 				}
+				return null;
 			}
 			return c;
 		}));

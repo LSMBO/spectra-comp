@@ -10,6 +10,7 @@ import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.utils.ConfirmDialog;
 import fr.lsmbo.msda.spectra.comp.utils.TaskRunner;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ParsingRulesDialog;
+import fr.lsmbo.msda.spectra.comp.view.dialog.ShowPopupDialog;
 import fr.lsmbo.msda.spectra.comp.view.dialog.SpectraLoaderDialog;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -134,33 +135,13 @@ public class ViewModel {
 	}
 
 	/**
-	 * Compare spectra task
+	 * Compare two peaklists task
 	 * 
 	 */
 	public void onCompareSpectra() {
-		TaskRunner.doAsyncWork("Comparing spectra", () -> {
-			PeakListProvider.compareSpectra();
-			return true;
-		}, (isSuccess) -> {
-			refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
-			testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
-			System.out.println("INFO | Task has finished sucessfully!");
-		}, (failure) -> {
-			System.err.println("INFO | Task has failed! " + failure);
-		}, false, stage);
-	}
-
-	/**
-	 * Edit parsing rules
-	 */
-	public void onEditParsingRules() {
-		ParsingRulesDialog parsingRulesDialog = new ParsingRulesDialog();
-		parsingRulesDialog.showAndWait().ifPresent(parsingRule -> {
-			TaskRunner.doAsyncWork("Update retention time", () -> {
-				ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
-						.forEach(spectrum -> spectrum.setRetentionTimeFromTitle(parsingRule.getRegex()));
-				ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
-						.forEach(spectrum -> spectrum.setRetentionTimeFromTitle(parsingRule.getRegex()));
+		if (isValidSpectra()) {
+			TaskRunner.doAsyncWork("Comparing spectra", () -> {
+				PeakListProvider.compareSpectra();
 				return true;
 			}, (isSuccess) -> {
 				refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
@@ -169,8 +150,35 @@ public class ViewModel {
 			}, (failure) -> {
 				System.err.println("INFO | Task has failed! " + failure);
 			}, false, stage);
+		} else {
+			new ShowPopupDialog("Empty Spectra", "The peaklists to compare must not be empty!", stage);
+		}
+	}
 
-		});
+	/**
+	 * Edit parsing rules
+	 */
+	public void onEditParsingRules() {
+		if (isValidSpectra()) {
+			ParsingRulesDialog parsingRulesDialog = new ParsingRulesDialog();
+			parsingRulesDialog.showAndWait().ifPresent(parsingRule -> {
+				TaskRunner.doAsyncWork("Update retention time", () -> {
+					ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
+							.forEach(spectrum -> spectrum.setRetentionTimeFromTitle(parsingRule.getRegex()));
+					ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
+							.forEach(spectrum -> spectrum.setRetentionTimeFromTitle(parsingRule.getRegex()));
+					return true;
+				}, (isSuccess) -> {
+					refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
+					testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
+					System.out.println("INFO | Task has finished sucessfully!");
+				}, (failure) -> {
+					System.err.println("INFO | Task has failed! " + failure);
+				}, false, stage);
+			});
+		} else {
+			new ShowPopupDialog("Empty Spectra", "The peaklists to compare must not be empty!", stage);
+		}
 	}
 
 	/**
@@ -270,6 +278,17 @@ public class ViewModel {
 					System.exit(0);
 					return null;
 				}, stage);
+	}
+
+	/**
+	 * Determines whether the peaklist to compare are not empty.
+	 * 
+	 * @return <code>true</> if the two peaklists to compare are not empty.
+	 */
+
+	private Boolean isValidSpectra() {
+		return (!ListOfSpectra.getFirstSpectra().getSpectraAsObservable().isEmpty()
+				&& !ListOfSpectra.getSecondSpectra().getSpectraAsObservable().isEmpty());
 	}
 
 	/**
