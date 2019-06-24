@@ -418,7 +418,7 @@ public class MainPane extends StackPane {
 				spectrumPane = new SpectrumPane(refSelectedSpectrum, true);
 				// Update the spectrum view
 				SwingUtilities.invokeLater(() -> {
-					swingNodeForChart.setContent(spectrumPane.getSpectrumPanel());
+					swingNodeForChart.setContent(spectrumPane.getPanel());
 				});
 			} else {
 				refSelectedSpectrum = null;
@@ -434,15 +434,16 @@ public class MainPane extends StackPane {
 		// Test spectrum
 		spectrumProperty.getTestSpectrumProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null && spectrumPane != null) {
-				testSelectedSpectrum = newValue;
-				// Create the spectrum chart node
-				// spectrumPane.addSpectrumAsMirror(testSelectedSpectrum);
-				// Update the spectrum view
-				spectrumPane.addAdditional(testSelectedSpectrum);
-				SwingUtilities.invokeLater(() -> {
-					swingNodeForChart.setContent(spectrumPane.getSpectrumPanel());
+				Platform.runLater(() -> {
+					testSelectedSpectrum = newValue;
+					// Create the spectrum chart node
+					// spectrumPane.addSpectrumAsMirror(testSelectedSpectrum);
+					// Update the spectrum view
+					spectrumPane.addAdditional(testSelectedSpectrum);
+					SwingUtilities.invokeLater(() -> {
+						swingNodeForChart.setContent(spectrumPane.getPanel());
+					});
 				});
-
 			} else {
 				testSelectedSpectrum = null;
 				// Update the spectrum view
