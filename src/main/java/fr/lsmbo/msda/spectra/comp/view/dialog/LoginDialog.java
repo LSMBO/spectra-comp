@@ -96,7 +96,7 @@ public class LoginDialog extends Dialog<ObservableList<Project>> {
 		loginPane.add(userNameTF, 1, 3, 1, 1);
 		loginPane.add(passwordLabel, 0, 4, 1, 1);
 		loginPane.add(passwordTF, 1, 4, 1, 1);
-		loginPane.setHgrow(hostNameTF, Priority.ALWAYS);
+		GridPane.setHgrow(hostNameTF, Priority.ALWAYS);
 
 		/********************
 		 * Main dialog pane *

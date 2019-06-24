@@ -532,7 +532,7 @@ public class Spectrum {
 			FloatBuffer intensityFloatBuffer = intensityByteBuffer.asFloatBuffer();
 			double[] intensityDoubleArray = new double[intensityFloatBuffer.remaining()];
 			for (int i = 0; i < intensityDoubleArray.length; i++) {
-				intensityDoubleArray[i] = (double) intensityFloatBuffer.get();
+				intensityDoubleArray[i] = intensityFloatBuffer.get();
 			}
 
 			ByteBuffer massByteBuffer = ByteBuffer.wrap(m_mozList).order(ByteOrder.LITTLE_ENDIAN);

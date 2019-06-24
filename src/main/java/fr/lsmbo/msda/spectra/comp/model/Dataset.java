@@ -414,7 +414,7 @@ public class Dataset {
 	public Set<Dataset> getIdentificationDatasets() {
 		Set<Dataset> idfDS = new HashSet<Dataset>();
 		if ((getChildren() == null || getChildren().isEmpty()) && (getType().equals(DatasetType.IDENTIFICATION))) {
-			idfDS.add((Dataset) this);
+			idfDS.add(this);
 		}
 
 		for (Dataset ds : getChildren()) {

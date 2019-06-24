@@ -172,7 +172,7 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 		refPklListPane.add(refPklListLabel, 0, 2, 1, 1);
 		refPklListPane.add(refPklListTF, 1, 2, 1, 1);
 		refPklListPane.add(loadRefPklListButton, 2, 2, 1, 1);
-		refPklListPane.setHgrow(refPklListTF, Priority.ALWAYS);
+		GridPane.setHgrow(refPklListTF, Priority.ALWAYS);
 		// From Proline projects
 		Button ButtonConnection = new Button("Connect ...");
 		ButtonConnection.setGraphic(new ImageView(IconResource.getImage(ICON.ADMIN)));
@@ -244,7 +244,7 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 		refPklListDBPane.add(userProjectLabel, 0, 2, 2, 1);
 		refPklListDBPane.add(userProjectsCBX, 3, 2, 1, 1);
 		refPklListDBPane.add(firstRoot, 0, 3, 4, 1);
-		refPklListDBPane.setHgrow(firstRoot, Priority.ALWAYS);
+		GridPane.setHgrow(firstRoot, Priority.ALWAYS);
 		peaklist1SplitPane.getItems().addAll(refPklListPane, refPklListDBPane);
 		// Control
 		warningPane.visibleProperty().bind(refPklListTF.textProperty().isEmpty());
@@ -303,7 +303,7 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 		secondPklListPane.add(secondPklListLabel, 0, 2, 1, 1);
 		secondPklListPane.add(secondPklListTF, 1, 2, 1, 1);
 		secondPklListPane.add(loadSecondPklListButton, 2, 2, 1, 1);
-		secondPklListPane.setHgrow(secondPklListTF, Priority.ALWAYS);
+		GridPane.setHgrow(secondPklListTF, Priority.ALWAYS);
 		// From Proline databases
 		Button secondButtonConnection = new Button("Connect ...");
 		secondButtonConnection.setGraphic(new ImageView(IconResource.getImage(ICON.ADMIN)));
@@ -373,7 +373,7 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 		secondPklListDBPane.add(secondUserProjectLabel, 0, 2, 2, 1);
 		secondPklListDBPane.add(secondUserProjectsCBX, 3, 2, 1, 1);
 		secondPklListDBPane.add(secondRoot, 0, 3, 4, 1);
-		secondPklListDBPane.setHgrow(secondRoot, Priority.ALWAYS);
+		GridPane.setHgrow(secondRoot, Priority.ALWAYS);
 		peaklist2SplitPane.getItems().addAll(secondPklListPane, secondPklListDBPane);
 
 		// Control
