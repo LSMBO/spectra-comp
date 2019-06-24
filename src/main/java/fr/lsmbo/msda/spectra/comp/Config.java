@@ -23,10 +23,10 @@ public class Config {
 
 	/** The spectra comp file name. */
 	private static String spectraCompFileName = "spectra-comp.json";
-	
+
 	/** The default params file name. */
 	private static String defaultParamsFileName = "default-params.json";
-	
+
 	/** The instance. */
 	private static Config instance = null;
 
@@ -60,7 +60,8 @@ public class Config {
 	/**
 	 * Return the file path.
 	 *
-	 * @param fileName            the file name to get its path
+	 * @param fileName
+	 *            the file name to get its path
 	 * @return the file path
 	 */
 	public String getConfigFilePath(String fileName) {
@@ -103,6 +104,10 @@ public class Config {
 			JsonReader reader = new JsonReader(new FileReader(new File(getConfigFilePath(spectraCompFileName))));
 			Session.SPECTRACOMP_VERSION = gson.fromJson(reader, Version.class);
 			System.out.println(Session.SPECTRACOMP_VERSION.toString());
+			Session.SPECTRACOMP_RELEASE_NAME = Session.SPECTRACOMP_VERSION.getName();
+			Session.SPECTRACOMP_RELEASE_DESCRIPTION = Session.SPECTRACOMP_VERSION.getDescription();
+			Session.SPECTRACOMP_RELEASE_VERSION = Session.SPECTRACOMP_VERSION.getVersion();
+			Session.SPECTRACOMP_RELEASE_DATE = Session.SPECTRACOMP_VERSION.getBuildDate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

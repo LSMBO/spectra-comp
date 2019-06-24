@@ -17,12 +17,14 @@ import javafx.stage.Stage;
  * @author Aromdhani
  */
 public class FileUtils {
-	
+
 	/**
 	 * Read file bytes via input stream and close correctly the input stream.
 	 *
-	 * @param path            the file path to load
-	 * @param fileConsumer            the action
+	 * @param path
+	 *            the file path to load
+	 * @param fileConsumer
+	 *            the action
 	 */
 	public static void readBytesFrmFile(String path, Consumer<Properties> fileConsumer) {
 		InputStream fileInputStream = null;
@@ -45,12 +47,14 @@ public class FileUtils {
 			}
 		}
 	}
-	
+
 	/**
 	 * Open peak list file.
 	 *
-	 * @param peakListConsumer            a Consumer of peak list file when the file is loaded.
-	 * @param stage the stage
+	 * @param peakListConsumer
+	 *            a Consumer of peak list file when the file is loaded.
+	 * @param stage
+	 *            the stage
 	 */
 	public static void openPeakListFile(Consumer<File> peakListConsumer, Stage stage) {
 		// Default folder is 'Documents'
@@ -65,6 +69,22 @@ public class FileUtils {
 		File file = fileChooser.showOpenDialog(stage);
 		if (file != null) {
 			peakListConsumer.accept(file);
+		}
+	}
+
+	/**
+	 * Browse and show a file
+	 * 
+	 * @param path
+	 *            the path of file to browse and to show.
+	 */
+	public static void showFile(String path) {
+		if (java.awt.Desktop.isDesktopSupported()) {
+			try {
+				java.awt.Desktop.getDesktop().browse(new File(path).toURI());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

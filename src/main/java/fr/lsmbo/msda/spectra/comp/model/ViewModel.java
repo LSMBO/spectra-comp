@@ -1,5 +1,7 @@
 package fr.lsmbo.msda.spectra.comp.model;
 
+import java.io.File;
+import java.net.URI;
 import java.util.Set;
 
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
@@ -7,7 +9,9 @@ import fr.lsmbo.msda.spectra.comp.db.DataSource;
 import fr.lsmbo.msda.spectra.comp.io.PeakListProvider;
 import fr.lsmbo.msda.spectra.comp.io.PeaklistReader;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
+import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 import fr.lsmbo.msda.spectra.comp.utils.TaskRunner;
+import fr.lsmbo.msda.spectra.comp.view.dialog.AboutDialog;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ConfirmDialog;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ParsingRulesDialog;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ShowPopupDialog;
@@ -295,11 +299,26 @@ public class ViewModel {
 	 * * About spectra.
 	 */
 	public void onAboutSpectraComp() {
+		AboutDialog aboutDialog = new AboutDialog();
+		aboutDialog.showAndWait().ifPresent(spectraComp -> {
+			System.out.println("INFO | About spectra-comp software: " + spectraComp);
+		});
 	}
 
 	/**
-	 * * Open user guide.
+	 * Open the user guide file(RecoverFx_user_guide.pdf).
+	 * 
 	 */
 	public void onOpenUserGuide() {
+		try {
+			System.out.println("INFO | Open user guide file: spectra_comp_user_guide.pdf.");
+			URI srcPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
+			String path = new File(srcPath).getParent().replaceAll("\\\\", "/") + File.separator + "config"
+					+ File.separator + "documentation" + File.separator + "spectra_comp_user_guide.pdf";
+			FileUtils.showFile(path);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
