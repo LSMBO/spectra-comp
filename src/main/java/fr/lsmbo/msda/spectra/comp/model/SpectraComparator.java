@@ -378,6 +378,7 @@ public class SpectraComparator {
 								(int) ((testedSpectrum.getRetentionTime() * 60)
 										- (referenceSpectrum.getRetentionTime() * 60)));
 						validSpectra.addSpectrum(testedSpectrum);
+						spectrumRef.getM_matchedSpectra().add(testedSpectrum);
 						// Set of reference spectra
 						testedSpectrum.getRef_idSet().add(spectrumRef.getM_id());
 						// Set of test spectra valid

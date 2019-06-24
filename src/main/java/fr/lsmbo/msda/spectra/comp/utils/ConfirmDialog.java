@@ -61,7 +61,9 @@ public class ConfirmDialog<T> extends Stage {
 		Button buttonOk = new Button(" OK ");
 		buttonOk.setGraphic(new ImageView(IconResource.getImage(ICON.TICK)));
 		buttonOk.setOnAction((e) -> {
+			popup.close();
 			action.get();
+			
 		});
 		// Create dialog content
 		VBox root = new VBox(30);
@@ -78,7 +80,7 @@ public class ConfirmDialog<T> extends Stage {
 		popup.setTitle(popupTitle);
 		popup.setScene(scene);
 		// Size
-		popup.setWidth(400);
+		popup.setWidth(480);
 		popup.setHeight(160);
 		popup.setResizable(false);
 		popup.show();

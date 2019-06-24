@@ -134,7 +134,8 @@ public class ViewModel {
 	}
 
 	/**
-	 * Compare Spectra
+	 * Compare spectra task
+	 * 
 	 */
 	public void onCompareSpectra() {
 		TaskRunner.doAsyncWork("Comparing spectra", () -> {

@@ -13,10 +13,15 @@ import org.google.jhsheets.filtered.tablecolumn.FilterableStringTableColumn;
 
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
+import fr.lsmbo.msda.spectra.comp.Session;
+import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import fr.lsmbo.msda.spectra.comp.model.ViewModel;
+import fr.lsmbo.msda.spectra.comp.utils.ConfirmDialog;
 import fr.lsmbo.msda.spectra.comp.utils.TaskRunner;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -32,6 +37,9 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -39,7 +47,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -79,7 +87,7 @@ public class MainPane extends StackPane {
 	private FilterableIntegerTableColumn<Spectrum, Integer> refNbrFragmentsColumn;
 
 	/** The ref matched column. */
-	private FilterableBooleanTableColumn<Spectrum, Boolean> refMatchedColumn;
+	private FilterableIntegerTableColumn<Spectrum, Integer> refMatchedColumn;
 
 	/** The test filtered table. */
 	// Test table view
@@ -230,9 +238,8 @@ public class MainPane extends StackPane {
 		refNbrFragmentsColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Integer>("nbFragments"));
 
 		// Identified Column
-		refMatchedColumn = new FilterableBooleanTableColumn<>("Matched");
-		refMatchedColumn.setCellValueFactory(cellData -> cellData.getValue().getMatched());
-		refMatchedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(refMatchedColumn));
+		refMatchedColumn = new FilterableIntegerTableColumn<>("Matched");
+		refMatchedColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Integer>("m_matchedSize"));
 
 		refFilteredTable.getColumns().setAll(refIdColumn, refTitleColumn, refMozColumn, refIntensityColumn,
 				refChargeColumn, refRtColumn, refNbrFragmentsColumn, refMatchedColumn);
@@ -306,25 +313,81 @@ public class MainPane extends StackPane {
 		testedPklFileTab.setContent(testFilteredTable);
 		testedPklFileTab.setClosable(false);
 		testedTabPane.getTabs().addAll(testedPklFileTab);
-		//
+		// Main pane
 		peaklistSplitPane.getItems().addAll(referenceTabPane, testedTabPane);
 		peaklistSplitPane.setPadding(new Insets(10));
 		peaklistSplitPane.setMinHeight(350);
+		// Settings spectra pane
 		Button compareButton = new Button("Compare");
-		// Compare spectra
+		compareButton.setGraphic(new ImageView(IconResource.getImage(ICON.EXECUTE)));
 		compareButton.setOnAction(e -> {
-			model.onCompareSpectra();
+			new ConfirmDialog<Boolean>(ICON.WARNING, "Compare spectra",
+					"Are you sure that you want to compare spectra ? This action could take a while!", () -> {
+						model.onCompareSpectra();
+						return true;
+					}, stage);
 		});
 		BorderPane graphicsPane = new BorderPane();
 		graphicsPane.setMinHeight(150);
-		// Create and Set SwingContent(swingNode);
-		HBox compareButtonPane = new HBox();
-		compareButtonPane.getChildren().addAll(compareButton);
-		compareButtonPane.setPadding(new Insets(5));
-		compareButtonPane.setAlignment(Pos.BASELINE_CENTER);
-		graphicsPane.setTop(compareButtonPane);
+		Label deltaMozLabel = new Label("Delta moz:");
+		TextField deltaMozTF = new TextField();
+		deltaMozTF.setTooltip(new Tooltip("Enter the delta Moz value!"));
+		deltaMozTF.setPrefWidth(100);
+		deltaMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaMoz()));
+
+		Label deltaRTLabel = new Label("Delta rt:");
+		TextField deltaRTTF = new TextField();
+		deltaRTTF.setPrefWidth(100);
+		deltaRTTF.setTooltip(new Tooltip("Enter the delta retention time value!"));
+		deltaRTTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaRT()));
+
+		Label minPeaksNbrLabel = new Label("Min peaks number:");
+		TextField minPeaksNbrTF = new TextField();
+		minPeaksNbrTF.setPrefWidth(100);
+		minPeaksNbrTF.setTooltip(new Tooltip("Enter the minimum peaks number value!"));
+		minPeaksNbrTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaksMin()));
+
+		Label thetaMinLabel = new Label("Theta min:");
+		TextField thetaMinTF = new TextField();
+		thetaMinTF.setPrefWidth(100);
+		thetaMinTF.setTooltip(new Tooltip("Enter the Theta min value!"));
+		thetaMinTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getThetaMin()));
+
+		Label peaksNbrLabel = new Label("peaks number:");
+		TextField peaksNbrTF = new TextField();
+		peaksNbrTF.setPrefWidth(100);
+		peaksNbrTF.setTooltip(new Tooltip("Enter the peaks number value!"));
+		peaksNbrTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaks()));
+
+		addFloatValidation(deltaMozTF);
+		addIntegerValidation(deltaRTTF);
+		addIntegerValidation(minPeaksNbrTF);
+		addIntegerValidation(thetaMinTF);
+		addIntegerValidation(peaksNbrTF);
+
+		compareButton.disableProperty()
+				.bind(deltaMozTF.textProperty().isEmpty()
+						.or(deltaRTTF.textProperty().isEmpty().or(minPeaksNbrTF.textProperty().isEmpty()
+								.or(thetaMinTF.textProperty().isEmpty().or(peaksNbrTF.textProperty().isEmpty())))));
+
+		GridPane settingsPane = new GridPane();
+		settingsPane.setPadding(new Insets(2));
+		settingsPane.setHgap(10);
+		settingsPane.setAlignment(Pos.BASELINE_CENTER);
+		settingsPane.add(deltaMozLabel, 0, 0, 1, 1);
+		settingsPane.add(deltaMozTF, 1, 0, 1, 1);
+		settingsPane.add(deltaRTLabel, 2, 0, 1, 1);
+		settingsPane.add(deltaRTTF, 3, 0, 1, 1);
+		settingsPane.add(minPeaksNbrLabel, 4, 0, 1, 1);
+		settingsPane.add(minPeaksNbrTF, 5, 0, 1, 1);
+		settingsPane.add(thetaMinLabel, 6, 0, 1, 1);
+		settingsPane.add(thetaMinTF, 7, 0, 1, 1);
+		settingsPane.add(peaksNbrLabel, 8, 0, 1, 1);
+		settingsPane.add(peaksNbrTF, 9, 0, 1, 1);
+		settingsPane.add(compareButton, 11, 0, 1, 1);
+		graphicsPane.setTop(settingsPane);
+
 		graphicsPane.setCenter(swingNodeForChart);
-		compareButton.setGraphic(new ImageView(IconResource.getImage(ICON.EXECUTE)));
 		mainSplitPane.getItems().addAll(peaklistSplitPane, graphicsPane, ConsolePane.getInstance());
 		mainView.setTop(menuBar);
 		mainView.setCenter(mainSplitPane);
@@ -338,7 +401,7 @@ public class MainPane extends StackPane {
 			if (newValue != null) {
 				refSelectedSpectrum = newValue;
 				// Create the spectrum chart node
-				SpectrumPane spectrumPane = new SpectrumPane(refSelectedSpectrum);
+				spectrumPane = new SpectrumPane(refSelectedSpectrum, true);
 				// Update the spectrum view
 				SwingUtilities.invokeLater(() -> {
 					swingNodeForChart.setContent(spectrumPane.getSpectrumPanel());
@@ -356,14 +419,16 @@ public class MainPane extends StackPane {
 		});
 		// Test spectrum
 		spectrumProperty.getTestSpectrumProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue != null) {
+			if (newValue != null && spectrumPane != null) {
 				testSelectedSpectrum = newValue;
 				// Create the spectrum chart node
-				SpectrumPane spectrumPane = new SpectrumPane(testSelectedSpectrum);
+				// spectrumPane.addSpectrumAsMirror(testSelectedSpectrum);
 				// Update the spectrum view
+				spectrumPane.addAdditional(testSelectedSpectrum);
 				SwingUtilities.invokeLater(() -> {
 					swingNodeForChart.setContent(spectrumPane.getSpectrumPanel());
 				});
+
 			} else {
 				testSelectedSpectrum = null;
 				// Update the spectrum view
@@ -394,5 +459,53 @@ public class MainPane extends StackPane {
 
 		// Create the spectrum chart node
 		this.getChildren().addAll(mainView, glassPane);
+	}
+
+	/**
+	 * Input value must be a valid float
+	 * 
+	 * @param field
+	 *            the textFiled to set text formatter.
+	 **/
+	private void addFloatValidation(TextField field) {
+		field.getProperties().put("type", "float");
+		field.setTextFormatter(new TextFormatter<>(c -> {
+			if (c.isContentChange()) {
+				if (c.getControlNewText().length() == 0) {
+					return c;
+				}
+				try {
+					Float.parseFloat(c.getControlNewText());
+					return c;
+				} catch (NumberFormatException e) {
+					return null;
+				}
+			}
+			return c;
+		}));
+	}
+
+	/**
+	 * Input value must be a valid integer
+	 * 
+	 * @param field
+	 *            the textFiled to set text formatter.
+	 **/
+	private void addIntegerValidation(TextField field) {
+		field.getProperties().put("type", "integer");
+		field.setTextFormatter(new TextFormatter<>(c -> {
+			if (c.isContentChange()) {
+				if (c.getControlNewText().length() == 0) {
+					return c;
+				}
+				try {
+					Integer.parseInt(c.getControlNewText());
+					return c;
+				} catch (NumberFormatException e) {
+					return null;
+				}
+			}
+			return c;
+		}));
 	}
 }

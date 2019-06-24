@@ -30,20 +30,21 @@ import fr.lsmbo.msda.spectra.comp.model.Spectrum;
  *
  */
 public class SpectrumPane {
-	
+
 	/** The spectrum to plot. */
 	private Spectrum spectrum;
-	
+
 	/** A list of the peaks to plot. */
 	private ArrayList<Fragment> fragments;
-	
+
 	/** The panel that can be embedded in the interface. */
 	private SpectrumPanel panel;
 
 	/**
 	 * Instantiates a new spectrum pane.
 	 *
-	 * @param spectrumToPlot the spectrum to plot
+	 * @param spectrumToPlot
+	 *            the spectrum to plot
 	 */
 	public SpectrumPane(Spectrum spectrumToPlot) {
 		this.spectrum = spectrumToPlot;
@@ -52,11 +53,18 @@ public class SpectrumPane {
 											// speed the plot on screen
 	}
 
+	public SpectrumPane(Spectrum spectrumToPlot, Boolean refSpectrum) {
+		drawSpectrum(spectrumToPlot); // Called in the constructor to
+										// speed the plot on screen
+	}
+
 	/**
 	 * Creates the panel that can be embedded in the interface.
 	 *
-	 * @param withAnnotations            Choose to include annotation on the spectrum or not.
-	 * @param beautify            Choose to center the spectrum in the spectrum view.
+	 * @param withAnnotations
+	 *            Choose to include annotation on the spectrum or not.
+	 * @param beautify
+	 *            Choose to center the spectrum in the spectrum view.
 	 */
 	private void generateSpectrumPanel(boolean withAnnotations, boolean beautify) {
 		// Gather values to plot the spectrum
@@ -114,12 +122,27 @@ public class SpectrumPane {
 		}
 	}
 
+	public void drawSpectrum(Spectrum spectrumToplot) {
+		this.panel = new SpectrumPanel(spectrumToplot.getMasses(), spectrumToplot.getIntensities(),
+				spectrumToplot.getM_precursorMoz(), String.valueOf(spectrumToplot.getM_precursorCharge()),
+				spectrumToplot.getM_title());
+	}
+
 	/**
 	 * Gets the spectrum panel.
 	 *
 	 * @return the spectrum panel
 	 */
 	public SpectrumPanel getSpectrumPanel() {
-		return panel;
+		return this.panel;
+	}
+
+	/**
+	 * Add a spectrum as a mirror
+	 * 
+	 */
+	public void addAdditional(Spectrum spectrumToplot) {
+		this.panel.addAdditionalDataset(spectrumToplot.getMasses(), spectrumToplot.getIntensities(), Color.BLUE,
+				Color.RED);
 	}
 }

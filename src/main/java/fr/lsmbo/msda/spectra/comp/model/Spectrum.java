@@ -18,6 +18,8 @@ import org.apache.logging.log4j.Logger;
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 import javafx.beans.property.BooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -41,6 +43,8 @@ public class Spectrum {
 	private Set<Long> m_refIdSet = new HashSet<>();
 	/** The test ids. */
 	private Set<Long> m_testIdSet = new HashSet<>();
+	private ObservableList<Spectrum> m_matchedSpectra = FXCollections.observableArrayList();
+	private int m_matchedSize = 0;
 	/** The m first scan. */
 	private Integer m_firstScan;
 
@@ -927,6 +931,37 @@ public class Spectrum {
 	 */
 	public final void setM_testIdSet(Set<Long> m_testIdSet) {
 		this.m_testIdSet = m_testIdSet;
+	}
+
+	/**
+	 * @return the m_matchedSpectra
+	 */
+	public final ObservableList<Spectrum> getM_matchedSpectra() {
+		return m_matchedSpectra;
+	}
+
+	/**
+	 * @param m_matchedSpectra
+	 *            the m_matchedSpectra to set
+	 */
+	public final void setM_matchedSpectra(ObservableList<Spectrum> m_matchedSpectra) {
+		this.m_matchedSpectra = m_matchedSpectra;
+	}
+
+	/**
+	 * @return the m_matchedSize
+	 */
+	public final int getM_matchedSize() {
+		m_matchedSize = m_matchedSpectra.size();
+		return m_matchedSize;
+	}
+
+	/**
+	 * @param m_matchedSize
+	 *            the m_matchedSize to set
+	 */
+	public final void setM_matchedSize(int m_matchedSize) {
+		this.m_matchedSize = m_matchedSize;
 	}
 
 	/*
