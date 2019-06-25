@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import org.google.jhsheets.filtered.FilteredTableView;
+import org.google.jhsheets.filtered.tablecolumn.FilterableBooleanTableColumn;
 import org.google.jhsheets.filtered.tablecolumn.FilterableDoubleTableColumn;
 import org.google.jhsheets.filtered.tablecolumn.FilterableFloatTableColumn;
 import org.google.jhsheets.filtered.tablecolumn.FilterableIntegerTableColumn;
@@ -18,6 +19,8 @@ import fr.lsmbo.msda.spectra.comp.model.ViewModel;
 import fr.lsmbo.msda.spectra.comp.utils.TaskRunner;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ConfirmDialog;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -36,6 +39,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -109,6 +113,8 @@ public class MainPane extends StackPane {
 
 	/** The test nbr fragments column. */
 	private FilterableIntegerTableColumn<Spectrum, Integer> testNbrFragmentsColumn;
+
+	private FilterableBooleanTableColumn<Spectrum, Boolean> testMatchedColumn;
 
 	private Spectrum refSelectedSpectrum = null;
 	private Spectrum testSelectedSpectrum = null;
@@ -276,8 +282,12 @@ public class MainPane extends StackPane {
 		testNbrFragmentsColumn = new FilterableIntegerTableColumn<>("Fragment number");
 		testNbrFragmentsColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Integer>("nbFragments"));
 
+		testMatchedColumn = new FilterableBooleanTableColumn<>("Matched");
+		testMatchedColumn.setCellValueFactory(cellData -> cellData.getValue().getMatched());
+		testMatchedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(testMatchedColumn));
+
 		testFilteredTable.getColumns().setAll(testIdColumn, testTitleColumn, testMozColumn, testIntensityColumn,
-				testChargeColumn, testRtColumn, testNbrFragmentsColumn);
+				testChargeColumn, testRtColumn, testNbrFragmentsColumn, testMatchedColumn);
 
 		testFilteredTable.autosize();
 		testFilteredTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -412,23 +422,35 @@ public class MainPane extends StackPane {
 		// Reference spectrum
 		// Update view on reference spectrum selection
 		spectrumProperty.getRefSpectrumProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue != null) {
-				refSelectedSpectrum = newValue;
-				// Create the spectrum chart node
-				spectrumPane = new SpectrumPane(refSelectedSpectrum, true);
-				// Update the spectrum view
-				SwingUtilities.invokeLater(() -> {
-					swingNodeForChart.setContent(spectrumPane.getPanel());
-				});
-			} else {
-				refSelectedSpectrum = null;
-				// Update the spectrum view
-				SwingUtilities.invokeLater(() -> {
-					swingNodeForChart.setContent(new JPanel());
-				});
-			}
 			Platform.runLater(() -> {
+				if (newValue != null) {
+					refSelectedSpectrum = newValue;
+					// Update the matched spectra of test table view
+					System.out.println(refSelectedSpectrum.getM_matchedSpectra());
+					model.getTestItems().forEach(spec -> {
+						if (refSelectedSpectrum.getM_matchedSpectra().contains(spec)) {
+							spec.getMatched().setValue(true);
+						} else {
+							spec.getMatched().setValue(false);
+						}
+					});
+					// Create the spectrum chart node
+					spectrumPane = new SpectrumPane(refSelectedSpectrum, true);
+					// Update the spectrum view
+					SwingUtilities.invokeLater(() -> {
+						swingNodeForChart.setContent(spectrumPane.getPanel());
+					});
+				} else {
+					refSelectedSpectrum = null;
+					// Update the spectrum view
+					SwingUtilities.invokeLater(() -> {
+						swingNodeForChart.setContent(new JPanel());
+					});
+				}
 				refFilteredTable.refresh();
+				testFilteredTable.refresh();
+				model.getTestItems();
+
 			});
 		});
 		// Test spectrum
@@ -436,8 +458,6 @@ public class MainPane extends StackPane {
 			if (newValue != null && spectrumPane != null) {
 				Platform.runLater(() -> {
 					testSelectedSpectrum = newValue;
-					// Create the spectrum chart node
-					// spectrumPane.addSpectrumAsMirror(testSelectedSpectrum);
 					// Update the spectrum view
 					spectrumPane.addAdditional(testSelectedSpectrum);
 					SwingUtilities.invokeLater(() -> {
@@ -518,5 +538,9 @@ public class MainPane extends StackPane {
 			}
 			return c;
 		}));
+	}
+
+	private void updateTestMatchedSpectra() {
+
 	}
 }

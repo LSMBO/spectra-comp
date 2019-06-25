@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -82,7 +83,7 @@ public class Spectrum {
 	private Integer nbMatch;
 
 	/** The matched. */
-	private BooleanProperty matched;
+	private BooleanProperty matched = new SimpleBooleanProperty(false);
 
 	/** The retention time. */
 	private float retentionTime;
@@ -307,7 +308,14 @@ public class Spectrum {
 	@Override
 	public boolean equals(Object obj) {
 		// TODO Auto-generated method stub
-		return super.equals(obj);
+		if (obj == this) {
+			return true;
+		}
+		if (!(obj instanceof Spectrum)) {
+			return false;
+		}
+		Spectrum spec = (Spectrum) obj;
+		return (this.getM_title().equals(spec.getM_title()));
 	}
 
 	/**

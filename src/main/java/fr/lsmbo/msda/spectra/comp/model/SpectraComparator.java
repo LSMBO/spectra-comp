@@ -346,7 +346,7 @@ public class SpectraComparator {
 	}
 
 	/**
-	 * Run.
+	 * Run spectra comparison
 	 *
 	 * @param spectrumRef
 	 *            the spectrum to set as reference.
@@ -379,13 +379,9 @@ public class SpectraComparator {
 										- (referenceSpectrum.getRetentionTime() * 60)));
 						validSpectra.addSpectrum(testedSpectrum);
 						spectrumRef.getM_matchedSpectra().add(testedSpectrum);
-						// Set of reference spectra
-						testedSpectrum.getRef_idSet().add(spectrumRef.getM_id());
-						// Set of test spectra valid
-						spectrumRef.getM_testIdSet().add(testedSpectrum.getM_id());
-						isMatched.setValue(true);
-						spectrumRef.setMatched(isMatched);
-
+						// tag the tested spectra
+						// isMatched.setValue(true);
+						testedSpectrum.setMatched(isMatched);
 					}
 				}
 			}
