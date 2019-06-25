@@ -71,8 +71,10 @@ public class SpectrumPane {
 	/**
 	 * Add a spectrum as a mirror
 	 * 
+	 * @param spectrumToplot
+	 *            the spectrum to add in panel as mirror
 	 */
-	public void addAdditional(Spectrum spectrumToplot) {
+	public void addMirroredSpectrum(Spectrum spectrumToplot) {
 		List<Double> mozListTemp = new ArrayList<>();
 		List<Double> intensitiesListTemp = new ArrayList<>();
 		spectrumToplot.getFragments().forEach(frg -> {

@@ -19,8 +19,6 @@ import fr.lsmbo.msda.spectra.comp.model.ViewModel;
 import fr.lsmbo.msda.spectra.comp.utils.TaskRunner;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ConfirmDialog;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -454,23 +452,24 @@ public class MainPane extends StackPane {
 		});
 		// Test spectrum
 		spectrumProperty.getTestSpectrumProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue != null && spectrumPane != null) {
-				Platform.runLater(() -> {
-					testSelectedSpectrum = newValue;
-					// Update the spectrum view
-					spectrumPane.addAdditional(testSelectedSpectrum);
-					SwingUtilities.invokeLater(() -> {
-						swingNodeForChart.setContent(spectrumPane.getPanel());
-					});
-				});
-			} else {
-				testSelectedSpectrum = null;
-				// Update the spectrum view
-				SwingUtilities.invokeLater(() -> {
-					swingNodeForChart.setContent(new JPanel());
-				});
-			}
 			Platform.runLater(() -> {
+				if (newValue != null && spectrumPane != null) {
+					Platform.runLater(() -> {
+						testSelectedSpectrum = newValue;
+						// Update the spectrum view
+						spectrumPane.addMirroredSpectrum(testSelectedSpectrum);
+						SwingUtilities.invokeLater(() -> {
+							swingNodeForChart.setContent(spectrumPane.getPanel());
+						});
+					});
+				} else {
+					testSelectedSpectrum = null;
+					// Update the spectrum view
+					SwingUtilities.invokeLater(() -> {
+						swingNodeForChart.setContent(new JPanel());
+					});
+				}
+
 				testFilteredTable.refresh();
 			});
 		});
