@@ -426,7 +426,6 @@ public class MainPane extends StackPane {
 				if (newValue != null) {
 					refSelectedSpectrum = newValue;
 					// Update the matched spectra of test table view
-					System.out.println(refSelectedSpectrum.getM_matchedSpectra());
 					model.getTestItems().forEach(spec -> {
 						if (refSelectedSpectrum.getM_matchedSpectra().contains(spec)) {
 							spec.getMatched().setValue(true);
