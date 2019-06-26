@@ -112,12 +112,16 @@ public class MainPane extends StackPane {
 	/** The test nbr fragments column. */
 	private FilterableIntegerTableColumn<Spectrum, Integer> testNbrFragmentsColumn;
 
+	/** The test matched column. */
 	private FilterableBooleanTableColumn<Spectrum, Boolean> testMatchedColumn;
 
+	/** The ref selected spectrum. */
 	private Spectrum refSelectedSpectrum = null;
+
+	/** The test selected spectrum. */
 	private Spectrum testSelectedSpectrum = null;
 
-	/** The spectrum property */
+	/** The spectrum property. */
 	private SpectrumProperty spectrumProperty = new SpectrumProperty();
 
 	/** The spectrum pane. */
@@ -156,6 +160,10 @@ public class MainPane extends StackPane {
 		loadSpectra.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
 		loadSpectra.setOnAction(e -> {
 			model.onLoadSpectra();
+		});
+		MenuItem exportSpectra = new MenuItem(" Excel export ");
+		exportSpectra.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
+		exportSpectra.setOnAction(e -> {
 		});
 		// Settings menu items
 		Menu settingsMenu = new Menu(" Settings ");
@@ -198,7 +206,7 @@ public class MainPane extends StackPane {
 			model.onAboutSpectraComp();
 		});
 		fileMenu.getItems().addAll(loadSpectra, exitFile);
-		settingsMenu.getItems().addAll(parsingRules, compParameters, dbParameters);
+		settingsMenu.getItems().addAll(parsingRules, compParameters);
 		helpMenu.getItems().addAll(userGuide, aboutSpectraComp);
 		menuBar.getMenus().addAll(fileMenu, settingsMenu, helpMenu);
 		mainView.setTop(menuBar);
@@ -447,7 +455,6 @@ public class MainPane extends StackPane {
 				refFilteredTable.refresh();
 				testFilteredTable.refresh();
 				model.getTestItems();
-
 			});
 		});
 		// Test spectrum
@@ -495,8 +502,10 @@ public class MainPane extends StackPane {
 	}
 
 	/**
-	 * 
+	 * Adds the float validation.
+	 *
 	 * @param field
+	 *            the field
 	 */
 	private void addFloatValidation(TextField field) {
 		field.getProperties().put("type", "float");
@@ -517,8 +526,10 @@ public class MainPane extends StackPane {
 	}
 
 	/**
-	 * 
+	 * Adds the integer validation.
+	 *
 	 * @param field
+	 *            the field
 	 */
 	private void addIntegerValidation(TextField field) {
 		field.getProperties().put("type", "integer");
@@ -538,7 +549,4 @@ public class MainPane extends StackPane {
 		}));
 	}
 
-	private void updateTestMatchedSpectra() {
-
-	}
 }

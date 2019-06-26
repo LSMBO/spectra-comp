@@ -33,12 +33,11 @@ public class SpectrumPane {
 	/** The panel that can be embedded in the interface. */
 	private SpectrumPanel panel;
 
-	/***
-	 * 
-	 * @param spectrumToPlot
-	 *            the spectrum to plot
-	 * @param isBeauty
-	 *            show the notifications
+	/**
+	 * *.
+	 *
+	 * @param spectrumToPlot            the spectrum to plot
+	 * @param isBeauty            show the notifications
 	 */
 	public SpectrumPane(Spectrum spectrumToPlot, Boolean isBeauty) {
 		drawSpectrum(spectrumToPlot);
@@ -69,10 +68,9 @@ public class SpectrumPane {
 	}
 
 	/**
-	 * Add a spectrum as a mirror
-	 * 
-	 * @param spectrumToplot
-	 *            the spectrum to add in panel as mirror
+	 * Add a spectrum as a mirror.
+	 *
+	 * @param spectrumToplot            the spectrum to add in panel as mirror
 	 */
 	public void addMirroredSpectrum(Spectrum spectrumToplot) {
 		List<Double> mozListTemp = new ArrayList<>();
@@ -87,10 +85,10 @@ public class SpectrumPane {
 	}
 
 	/**
-	 * Convert a list of objects to an array[double]
-	 * 
-	 * @param list
-	 *            to convert
+	 * Convert a list of objects to an array[double].
+	 *
+	 * @param List the list
+	 * @return the double[]
 	 */
 	private double[] convertToDouble(List<Double> List) {
 		double[] ret = new double[List.size()];
@@ -102,6 +100,8 @@ public class SpectrumPane {
 	}
 
 	/**
+	 * Gets the spectrum.
+	 *
 	 * @return the spectrum
 	 */
 	public final Spectrum getSpectrum() {
@@ -109,14 +109,17 @@ public class SpectrumPane {
 	}
 
 	/**
-	 * @param spectrum
-	 *            the spectrum to set
+	 * Sets the spectrum.
+	 *
+	 * @param spectrum            the spectrum to set
 	 */
 	public final void setSpectrum(Spectrum spectrum) {
 		this.spectrum = spectrum;
 	}
 
 	/**
+	 * Gets the fragments.
+	 *
 	 * @return the fragments
 	 */
 	public final ArrayList<Fragment> getFragments() {
@@ -124,14 +127,17 @@ public class SpectrumPane {
 	}
 
 	/**
-	 * @param fragments
-	 *            the fragments to set
+	 * Sets the fragments.
+	 *
+	 * @param fragments            the fragments to set
 	 */
 	public final void setFragments(ArrayList<Fragment> fragments) {
 		this.fragments = fragments;
 	}
 
 	/**
+	 * Gets the panel.
+	 *
 	 * @return the panel
 	 */
 	public final SpectrumPanel getPanel() {
@@ -139,8 +145,9 @@ public class SpectrumPane {
 	}
 
 	/**
-	 * @param panel
-	 *            the panel to set
+	 * Sets the panel.
+	 *
+	 * @param panel            the panel to set
 	 */
 	public final void setPanel(SpectrumPanel panel) {
 		this.panel = panel;

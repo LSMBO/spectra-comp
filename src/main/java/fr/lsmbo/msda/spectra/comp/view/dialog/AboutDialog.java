@@ -18,6 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+// TODO: Auto-generated Javadoc
 /**
  * Creates and displays about Spectra-comp software dialog.
  * 
@@ -25,10 +26,19 @@ import javafx.stage.Stage;
  *
  */
 public class AboutDialog extends Dialog<String> {
+	
+	/** The name. */
 	String name = null;
+	
+	/** The description. */
 	String description = null;
+	
+	/** The version. */
 	String version = null;
 
+	/**
+	 * Instantiates a new about dialog.
+	 */
 	public AboutDialog() {
 
 		name = Session.SPECTRACOMP_RELEASE_NAME;

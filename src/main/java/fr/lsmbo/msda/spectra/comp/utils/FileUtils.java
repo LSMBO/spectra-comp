@@ -73,10 +73,9 @@ public class FileUtils {
 	}
 
 	/**
-	 * Browse and show a file
-	 * 
-	 * @param path
-	 *            the path of file to browse and to show.
+	 * Browse and show a file.
+	 *
+	 * @param path            the path of file to browse and to show.
 	 */
 	public static void showFile(String path) {
 		if (java.awt.Desktop.isDesktopSupported()) {

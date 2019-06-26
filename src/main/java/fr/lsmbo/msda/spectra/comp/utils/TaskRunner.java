@@ -17,6 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class TaskRunner.
  * 
@@ -24,17 +25,27 @@ import javafx.stage.Stage;
  * 
  */
 public class TaskRunner {
+	
+	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(TaskRunner.class);
+	
+	/** The main view. */
 	/* The main view. */
 	public static Node mainView;
 
+	/** The glass pane. */
 	/* The glass pane. */
 	public static Node glassPane;
 
+	/** The status label. */
 	/* The status label. */
 	public static Label statusLabel;
 
-	/** Disable/enable the main view */
+	/**
+	 *  Disable/enable the main view.
+	 *
+	 * @param progressEnabled the progress enabled
+	 */
 	private static void showProgress(boolean progressEnabled) {
 		// mainView.setDisable(progressEnabled);
 		mainView.setDisable(false);
@@ -42,14 +53,15 @@ public class TaskRunner {
 	}
 
 	/**
-	 * 
-	 * Perform an async call
-	 * 
-	 * @param action
-	 * @param success
-	 * @param error
-	 * @param showDialog
-	 * @param stage
+	 * Perform an async call.
+	 *
+	 * @param <T> the generic type
+	 * @param caption the caption
+	 * @param action the action
+	 * @param success the success
+	 * @param error the error
+	 * @param showDialog the show dialog
+	 * @param stage the stage
 	 */
 	public static <T extends Object> void doAsyncWork(String caption, Supplier<T> action, Consumer<T> success,
 			Consumer<Throwable> error, boolean showDialog, Stage stage) {

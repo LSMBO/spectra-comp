@@ -44,7 +44,11 @@ public class Spectrum {
 	private Set<Long> m_refIdSet = new HashSet<>();
 	/** The test ids. */
 	private Set<Long> m_testIdSet = new HashSet<>();
+	
+	/** The m matched spectra. */
 	private ObservableList<Spectrum> m_matchedSpectra = FXCollections.observableArrayList();
+	
+	/** The m matched size. */
 	private int m_matchedSize = 0;
 	/** The m first scan. */
 	private Integer m_firstScan;
@@ -912,6 +916,8 @@ public class Spectrum {
 	}
 
 	/**
+	 * Gets the ref id set.
+	 *
 	 * @return the ref_idSet
 	 */
 	public final Set<Long> getRef_idSet() {
@@ -919,14 +925,17 @@ public class Spectrum {
 	}
 
 	/**
-	 * @param ref_idSet
-	 *            the m_reference ids to set
+	 * Sets the ref id set.
+	 *
+	 * @param ref_idSet            the m_reference ids to set
 	 */
 	public final void setRef_idSet(Set<Long> ref_idSet) {
 		this.m_refIdSet = ref_idSet;
 	}
 
 	/**
+	 * Gets the m test id set.
+	 *
 	 * @return the m_testIdSet
 	 */
 	public final Set<Long> getM_testIdSet() {
@@ -934,14 +943,17 @@ public class Spectrum {
 	}
 
 	/**
-	 * @param m_testIdSet
-	 *            the m_testIdSet to set
+	 * Sets the m test id set.
+	 *
+	 * @param m_testIdSet            the m_testIdSet to set
 	 */
 	public final void setM_testIdSet(Set<Long> m_testIdSet) {
 		this.m_testIdSet = m_testIdSet;
 	}
 
 	/**
+	 * Gets the m matched spectra.
+	 *
 	 * @return the m_matchedSpectra
 	 */
 	public final ObservableList<Spectrum> getM_matchedSpectra() {
@@ -949,14 +961,17 @@ public class Spectrum {
 	}
 
 	/**
-	 * @param m_matchedSpectra
-	 *            the m_matchedSpectra to set
+	 * Sets the m matched spectra.
+	 *
+	 * @param m_matchedSpectra            the m_matchedSpectra to set
 	 */
 	public final void setM_matchedSpectra(ObservableList<Spectrum> m_matchedSpectra) {
 		this.m_matchedSpectra = m_matchedSpectra;
 	}
 
 	/**
+	 * Gets the m matched size.
+	 *
 	 * @return the m_matchedSize
 	 */
 	public final int getM_matchedSize() {
@@ -965,8 +980,9 @@ public class Spectrum {
 	}
 
 	/**
-	 * @param m_matchedSize
-	 *            the m_matchedSize to set
+	 * Sets the m matched size.
+	 *
+	 * @param m_matchedSize            the m_matchedSize to set
 	 */
 	public final void setM_matchedSize(int m_matchedSize) {
 		this.m_matchedSize = m_matchedSize;

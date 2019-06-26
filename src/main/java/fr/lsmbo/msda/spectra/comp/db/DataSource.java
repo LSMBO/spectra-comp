@@ -9,7 +9,9 @@ package fr.lsmbo.msda.spectra.comp.db;
 
 public enum DataSource {
 
-	DATABASE("database"), FILE("file");
+	/** The database. */
+	DATABASE("database"), /** The file. */
+ FILE("file");
 
 	/**
 	 * Gets the type.

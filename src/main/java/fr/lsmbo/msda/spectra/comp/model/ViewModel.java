@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.Set;
 
+import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.db.DataSource;
 import fr.lsmbo.msda.spectra.comp.io.PeakListProvider;
@@ -13,6 +14,7 @@ import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 import fr.lsmbo.msda.spectra.comp.utils.TaskRunner;
 import fr.lsmbo.msda.spectra.comp.view.dialog.AboutDialog;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ConfirmDialog;
+import fr.lsmbo.msda.spectra.comp.view.dialog.ParametersDialog;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ParsingRulesDialog;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ShowPopupDialog;
 import fr.lsmbo.msda.spectra.comp.view.dialog.SpectraLoaderDialog;
@@ -36,7 +38,7 @@ public class ViewModel {
 	/** The test items. */
 	private ObservableList<Spectrum> testItems = FXCollections.observableArrayList();
 
-	/** The task runner */
+	/** The task runner. */
 	private TaskRunner task = new TaskRunner();
 
 	/**
@@ -139,8 +141,7 @@ public class ViewModel {
 	}
 
 	/**
-	 * Compare two peaklists task
-	 * 
+	 * Compare two peaklists task.
 	 */
 	public void onCompareSpectra() {
 		if (isValidSpectra()) {
@@ -160,7 +161,7 @@ public class ViewModel {
 	}
 
 	/**
-	 * Edit parsing rules
+	 * Edit parsing rules.
 	 */
 	public void onEditParsingRules() {
 		if (isValidSpectra()) {
@@ -193,10 +194,22 @@ public class ViewModel {
 	}
 
 	/**
-	 * Create and displays comparison spectra editor dialog.
+	 * Create and displays comparison spectra editor dialog. It will update
+	 * session comparison parameters.
+	 * 
 	 */
 	public void onEditCompParameters() {
-
+		ParametersDialog paramsDialog = new ParametersDialog();
+		paramsDialog.showAndWait().ifPresent(parametersMap -> {
+			if (!parametersMap.isEmpty()) {
+				Session.USER_PARAMS.getComparison().setDeltaMoz((float) parametersMap.get("delta_moz"));
+				Session.USER_PARAMS.getComparison().setDeltaRT((int) parametersMap.get("delta_rt"));
+				Session.USER_PARAMS.getComparison().setNbPeaksMin((int) parametersMap.get("min_peaks_number"));
+				Session.USER_PARAMS.getComparison().setNbPeaks((int) parametersMap.get("peaks_number"));
+				Session.USER_PARAMS.getComparison().setThetaMin((int) parametersMap.get("theta_min"));
+				System.out.println("INFO | Session comparison parameters have been changed successfully!");
+			}
+		});
 	}
 
 	/**

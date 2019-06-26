@@ -346,10 +346,9 @@ public class SpectraComparator {
 	}
 
 	/**
-	 * Run spectra comparison
+	 * Run spectra comparison.
 	 *
-	 * @param spectrumRef
-	 *            the spectrum to set as reference.
+	 * @param spectrumRef            the spectrum to set as reference.
 	 */
 	public static void run(Spectrum spectrumRef) {
 		BooleanProperty isMatched = new SimpleBooleanProperty(false);
