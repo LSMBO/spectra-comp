@@ -1,14 +1,14 @@
 # Spectra-comp
 Spectra-comp is an Ms/Ms spectra comparison tool. The reference spectra could be loaded from:
 * Proline project (you should have proline software installed and a proline account as well). 
-* Peaklist file (<code> .mgf or .pkl </code>).
+* Peaklist file (<code>.mgf or .pkl</code>).
 
 The tested spectra could be loaded from :
 
 * Proline project. 
-* Peaklist file (<code> .mgf or .pkl </code>).
+* Peaklist file (<code>.mgf or .pkl</code>).
 
-The spectra are compared using a dot product method. The user could set up the comaprison spectra parameters from the graphical interface or from the paremeters JSON file (<code> default-params.json </code>).
+The spectra are compared using a dot product method. The user could set up the comaprison spectra parameters from the graphical interface or from the paremeters JSON file (<code>default-params.json</code>).
 The parameters of comparison are :
 * <code>Delta Moz</code>
 * <code>Delta retention time</code>   
