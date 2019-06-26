@@ -335,6 +335,8 @@ public class MainPane extends StackPane {
 			new ConfirmDialog<Boolean>(ICON.WARNING, "Compare spectra",
 					"Are you sure that you want to compare spectra ? This action could take a while!", () -> {
 						model.onCompareSpectra();
+						refFilteredTable.refresh();
+						testFilteredTable.refresh();
 						return true;
 					}, stage);
 		});
@@ -435,6 +437,7 @@ public class MainPane extends StackPane {
 					model.getTestItems().forEach(spec -> {
 						if (refSelectedSpectrum.getM_matchedSpectra().contains(spec)) {
 							spec.getMatched().setValue(true);
+							System.out.println(spec.getM_title());
 						} else {
 							spec.getMatched().setValue(false);
 						}
@@ -454,20 +457,17 @@ public class MainPane extends StackPane {
 				}
 				refFilteredTable.refresh();
 				testFilteredTable.refresh();
-				model.getTestItems();
 			});
 		});
 		// Test spectrum
 		spectrumProperty.getTestSpectrumProperty().addListener((observable, oldValue, newValue) -> {
 			Platform.runLater(() -> {
 				if (newValue != null && spectrumPane != null) {
-					Platform.runLater(() -> {
-						testSelectedSpectrum = newValue;
-						// Update the spectrum view
-						spectrumPane.addMirroredSpectrum(testSelectedSpectrum);
-						SwingUtilities.invokeLater(() -> {
-							swingNodeForChart.setContent(spectrumPane.getPanel());
-						});
+					testSelectedSpectrum = newValue;
+					// Update the spectrum view
+					spectrumPane.addMirroredSpectrum(testSelectedSpectrum);
+					SwingUtilities.invokeLater(() -> {
+						swingNodeForChart.setContent(spectrumPane.getPanel());
 					});
 				} else {
 					testSelectedSpectrum = null;
@@ -476,7 +476,7 @@ public class MainPane extends StackPane {
 						swingNodeForChart.setContent(new JPanel());
 					});
 				}
-
+				refFilteredTable.refresh();
 				testFilteredTable.refresh();
 			});
 		});

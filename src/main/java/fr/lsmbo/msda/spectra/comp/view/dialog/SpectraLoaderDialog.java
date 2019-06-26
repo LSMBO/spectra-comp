@@ -489,7 +489,7 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 	// TODO Handle by better way the datasets
 	private ArrayList<TreeItem> createDatasets(Long projectId) {
 		ArrayList<TreeItem> datasets = new ArrayList<>();
-		Map<Long, Set<Long>> dataSetIdByParentIdMap = new HashMap<>();
+
 		try {
 			DBSpectraHandler.fillDataSetByProject(projectId).forEach(ds -> {
 				if (ds.getType() == DatasetType.IDENTIFICATION) {
