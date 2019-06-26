@@ -21,60 +21,60 @@ public class Dataset {
 	 * The Enum DatasetType.
 	 */
 	public enum DatasetType {
-		
+
 		/** The identification. */
-		IDENTIFICATION, 
- /** The quantitation. */
- QUANTITATION, 
- /** The aggregate. */
- AGGREGATE, 
- /** The trash. */
- TRASH, 
- /** The quantitation folder. */
- QUANTITATION_FOLDER, 
- /** The identification folder. */
- IDENTIFICATION_FOLDER
+		IDENTIFICATION,
+		/** The quantitation. */
+		QUANTITATION,
+		/** The aggregate. */
+		AGGREGATE,
+		/** The trash. */
+		TRASH,
+		/** The quantitation folder. */
+		QUANTITATION_FOLDER,
+		/** The identification folder. */
+		IDENTIFICATION_FOLDER
 	};
 
 	/** The id. */
 	private long id;
-	
+
 	/** The description. */
 	private String description;
-	
+
 	/** The child count. */
 	private int childCount;
-	
+
 	/** The keywords. */
 	private String keywords;
-	
+
 	/** The modification log. */
 	private String modificationLog;
-	
+
 	/** The name. */
 	private String name;
-	
+
 	/** The type. */
 	private DatasetType type;
-	
+
 	/** The number. */
 	private int number;
 
 	/** The project. */
 	private Project project;
-	
+
 	/** The parent dataset. */
 	private Dataset parentDataset;
-	
+
 	/** The children. */
 	private List<Dataset> children;
-	
+
 	/** The result set id. */
 	private Long resultSetId;
-	
+
 	/** The result summary id. */
 	private Long resultSummaryId;
-	
+
 	/** The parent dataset id. */
 	private Long parentDatasetId;
 
@@ -87,14 +87,22 @@ public class Dataset {
 	/**
 	 * Instantiates a new dataset.
 	 *
-	 * @param id the id
-	 * @param description the description
-	 * @param childCount the child count
-	 * @param name the name
-	 * @param number the number
-	 * @param parentDatasetId the parent dataset id
-	 * @param resultSetId the result set id
-	 * @param resultSummaryId the result summary id
+	 * @param id
+	 *            the id
+	 * @param description
+	 *            the description
+	 * @param childCount
+	 *            the child count
+	 * @param name
+	 *            the name
+	 * @param number
+	 *            the number
+	 * @param parentDatasetId
+	 *            the parent dataset id
+	 * @param resultSetId
+	 *            the result set id
+	 * @param resultSummaryId
+	 *            the result summary id
 	 */
 	public Dataset(long id, String description, int childCount, String name, int number, Long parentDatasetId,
 			Long resultSetId, Long resultSummaryId) {
@@ -121,7 +129,8 @@ public class Dataset {
 	/**
 	 * Sets the id.
 	 *
-	 * @param pId the new id
+	 * @param pId
+	 *            the new id
 	 */
 	public void setId(final long pId) {
 		id = pId;
@@ -139,7 +148,8 @@ public class Dataset {
 	/**
 	 * Sets the children count.
 	 *
-	 * @param pChildrenCount the new children count
+	 * @param pChildrenCount
+	 *            the new children count
 	 */
 	public void setChildrenCount(final int pChildrenCount) {
 		childCount = pChildrenCount;
@@ -157,7 +167,8 @@ public class Dataset {
 	/**
 	 * Sets the description.
 	 *
-	 * @param description the new description
+	 * @param description
+	 *            the new description
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -175,7 +186,8 @@ public class Dataset {
 	/**
 	 * Sets the type.
 	 *
-	 * @param type the new type
+	 * @param type
+	 *            the new type
 	 */
 	public void setType(DatasetType type) {
 		this.type = type;
@@ -193,7 +205,8 @@ public class Dataset {
 	/**
 	 * Sets the parent dataset.
 	 *
-	 * @param parentDataset the new parent dataset
+	 * @param parentDataset
+	 *            the new parent dataset
 	 */
 	public void setParentDataset(Dataset parentDataset) {
 		this.parentDataset = parentDataset;
@@ -211,7 +224,8 @@ public class Dataset {
 	/**
 	 * Sets the result set id.
 	 *
-	 * @param pResultSetId the new result set id
+	 * @param pResultSetId
+	 *            the new result set id
 	 */
 	public void setResultSetId(final Long pResultSetId) {
 		resultSetId = pResultSetId;
@@ -229,7 +243,8 @@ public class Dataset {
 	/**
 	 * Sets the result summary id.
 	 *
-	 * @param pResultSummaryId the new result summary id
+	 * @param pResultSummaryId
+	 *            the new result summary id
 	 */
 	public void setResultSummaryId(final Long pResultSummaryId) {
 		resultSummaryId = pResultSummaryId;
@@ -247,7 +262,8 @@ public class Dataset {
 	/**
 	 * Sets the keywords.
 	 *
-	 * @param keywords the new keywords
+	 * @param keywords
+	 *            the new keywords
 	 */
 	public void setKeywords(String keywords) {
 		this.keywords = keywords;
@@ -265,7 +281,8 @@ public class Dataset {
 	/**
 	 * Sets the modification log.
 	 *
-	 * @param modificationLog the new modification log
+	 * @param modificationLog
+	 *            the new modification log
 	 */
 	public void setModificationLog(String modificationLog) {
 		this.modificationLog = modificationLog;
@@ -283,7 +300,8 @@ public class Dataset {
 	/**
 	 * Sets the name.
 	 *
-	 * @param name the new name
+	 * @param name
+	 *            the new name
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -301,7 +319,8 @@ public class Dataset {
 	/**
 	 * Sets the number.
 	 *
-	 * @param pNumber the new number
+	 * @param pNumber
+	 *            the new number
 	 */
 	public void setNumber(final int pNumber) {
 		number = pNumber;
@@ -319,7 +338,8 @@ public class Dataset {
 	/**
 	 * Sets the project.
 	 *
-	 * @param project the new project
+	 * @param project
+	 *            the new project
 	 */
 	public void setProject(Project project) {
 		this.project = project;
@@ -337,7 +357,8 @@ public class Dataset {
 	/**
 	 * Sets the children.
 	 *
-	 * @param children the new children
+	 * @param children
+	 *            the new children
 	 */
 	public void setChildren(final List<Dataset> children) {
 		this.children = children;
@@ -346,7 +367,8 @@ public class Dataset {
 	/**
 	 * Adds the child.
 	 *
-	 * @param child the child
+	 * @param child
+	 *            the child
 	 */
 	public void addChild(Dataset child) {
 		List<Dataset> childrenList = getChildren();
@@ -363,8 +385,10 @@ public class Dataset {
 	/**
 	 * Insert child.
 	 *
-	 * @param child the child
-	 * @param index the index
+	 * @param child
+	 *            the child
+	 * @param index
+	 *            the index
 	 */
 	public void insertChild(Dataset child, int index) {
 		List<Dataset> childrenList = getChildren();
@@ -385,7 +409,8 @@ public class Dataset {
 	/**
 	 * Replace all children.
 	 *
-	 * @param newChildren the new children
+	 * @param newChildren
+	 *            the new children
 	 */
 	public void replaceAllChildren(List<Dataset> newChildren) {
 		List<Dataset> childrenList = getChildren();

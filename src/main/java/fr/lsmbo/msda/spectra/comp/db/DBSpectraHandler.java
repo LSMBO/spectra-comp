@@ -10,6 +10,7 @@ import java.util.Set;
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
 import fr.lsmbo.msda.spectra.comp.model.Dataset;
+import fr.lsmbo.msda.spectra.comp.model.Dataset.DatasetType;
 import fr.lsmbo.msda.spectra.comp.model.Fragment;
 import fr.lsmbo.msda.spectra.comp.model.Project;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
@@ -103,6 +104,7 @@ public class DBSpectraHandler {
 				if (id > 0L) {
 					Dataset dataset = new Dataset(id, description, childCount, name, number, parentDatasetId,
 							resultSetId, resultSummaryId);
+					dataset.setType(DatasetType.valueOf(type));
 					list.add(dataset);
 				}
 			}

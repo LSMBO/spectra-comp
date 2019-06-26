@@ -116,7 +116,7 @@ public class ParametersDialog extends Dialog<Map<String, Number>> {
 		textFields.add(minNbrPeaksTF);
 		textFields.add(peaksNbrTF);
 		textFields.add(thetaMinTF);
-		textFields.forEach(field -> field.prefWidth(120));
+		textFields.forEach(field -> field.prefWidth(150));
 		// Layout
 		GridPane loginPane = new GridPane();
 		loginPane.setAlignment(Pos.TOP_LEFT);

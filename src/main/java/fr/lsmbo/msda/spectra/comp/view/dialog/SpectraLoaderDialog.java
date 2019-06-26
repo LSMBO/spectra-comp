@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
@@ -12,6 +13,7 @@ import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.db.DataSource;
 import fr.lsmbo.msda.spectra.comp.model.Dataset;
+import fr.lsmbo.msda.spectra.comp.model.Dataset.DatasetType;
 import fr.lsmbo.msda.spectra.comp.model.Project;
 import fr.lsmbo.msda.spectra.comp.model.SpectraParams;
 import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
@@ -53,66 +55,66 @@ import javafx.util.StringConverter;
  *
  */
 public class SpectraLoaderDialog extends Dialog<SpectraParams> {
-	
+
 	/** The connection label. */
 	// Components
 	private Label connectionLabel;
-	
+
 	/** The second connection label. */
 	private Label secondConnectionLabel;
-	
+
 	/** The user projects CBX. */
 	private ComboBox<Project> userProjectsCBX = new ComboBox<Project>();
-	
+
 	/** The second user projects CBX. */
 	private ComboBox<Project> secondUserProjectsCBX = new ComboBox<Project>();
-	
+
 	/** The ref user projects. */
 	private ObservableList<Project> refUserProjects = FXCollections.observableArrayList();
-	
+
 	/** The test user projects. */
 	private ObservableList<Project> testUserProjects = FXCollections.observableArrayList();
-	
+
 	/** The params. */
 	private SpectraParams params;
 
 	/** The first root. */
 	private StackPane firstRoot;
-	
+
 	/** The root item. */
 	private TreeItem rootItem;
-	
+
 	/** The tree view. */
 	private TreeView<Dataset> treeView;
 
 	/** The second root. */
 	private StackPane secondRoot;
-	
+
 	/** The second root item. */
 	private TreeItem secondRootItem;
-	
+
 	/** The second tree view. */
 	private TreeView<Dataset> secondTreeView;
-	
+
 	/** The stage. */
 	public static Stage stage;
-	
+
 	/** The ref db name. */
 	//
 	private String refDbName;
-	
+
 	/** The test db name. */
 	private String testDbName;
-	
+
 	/** The ref pkl by data source map. */
 	private Map<DataSource, Object> refPklByDataSourceMap = new HashMap<>();
-	
+
 	/** The test pkl by data source map. */
 	private Map<DataSource, Object> testPklByDataSourceMap = new HashMap<>();
-	
+
 	/** The ref rsm ids. */
 	private HashSet<Long> refRsmIds = new HashSet<>();
-	
+
 	/** The test rsm ids. */
 	private HashSet<Long> testRsmIds = new HashSet<>();
 
@@ -187,6 +189,7 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 					public String toString(Project object) {
 						return object.getName();
 					}
+
 					@Override
 					public Project fromString(String string) {
 						return null;
@@ -466,7 +469,8 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 	/**
 	 * Load file.
 	 *
-	 * @param text the text
+	 * @param text
+	 *            the text
 	 */
 
 	private void load(TextField text) {
@@ -478,17 +482,25 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 	/**
 	 * Create dataset nodes.
 	 *
-	 * @param projectId            the selected project id
+	 * @param projectId
+	 *            the selected project id
 	 * @return the dataset nodes of the chosen project.
 	 */
 	// TODO Handle by better way the datasets
 	private ArrayList<TreeItem> createDatasets(Long projectId) {
 		ArrayList<TreeItem> datasets = new ArrayList<>();
+		Map<Long, Set<Long>> dataSetIdByParentIdMap = new HashMap<>();
 		try {
 			DBSpectraHandler.fillDataSetByProject(projectId).forEach(ds -> {
-				TreeItem dsName = new TreeItem(ds);
-				dsName.setGraphic(new ImageView(IconResource.getImage(ICON.DATASET_RSM)));
-				datasets.add(dsName);
+				if (ds.getType() == DatasetType.IDENTIFICATION) {
+					TreeItem dsName = new TreeItem(ds);
+					dsName.setGraphic(new ImageView(IconResource.getImage(ICON.DATASET_RSM)));
+					datasets.add(dsName);
+				} else if (ds.getType() == DatasetType.AGGREGATE) {
+					TreeItem dsName = new TreeItem(ds);
+					dsName.setGraphic(new ImageView(IconResource.getImage(ICON.DATASET_RSM_MERGED_A)));
+					datasets.add(dsName);
+				}
 			});
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
