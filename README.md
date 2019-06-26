@@ -21,3 +21,7 @@ The parameters of comparison are :
  <code> RS.peak = intensity of peaks RS(reference spectra)</code> 
  
  <code> Cos theta = ∑NB_PEAKS(√RS.peak * √TS.peak)/(√(∑NB_PEAKS(RS.peak))*√(∑NB_PEAKS(TS.peak)))</code> 
+ 
+ <h2>Description</h2>
+
+![alt text](https://github.com/LSMBO/spectra-comp/blob/master/src/main/resources/images/screen_shot.png)
