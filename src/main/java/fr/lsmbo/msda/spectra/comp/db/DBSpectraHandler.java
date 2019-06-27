@@ -27,38 +27,36 @@ public class DBSpectraHandler {
 
 	/** The Constant USER. */
 	private static final String USER = "SELECT login FROM user_account WHERE login=?";
-	
+
 	/** The Constant PROJECT. */
 	private static final String PROJECT = "SELECT * FROM external_db WHERE name=?";
-	
+
 	/** The Constant PEAKLIST. */
 	private static final String PEAKLIST = "SELECT * FROM peaklist";
-	
-	/** The Constant SPECTRA_BY_PEAKLIST. */
-	private static final String SPECTRA_BY_PEAKLIST = "SELECT spec.*,pklsof.name as pkl_software FROM peaklist pkl,peaklist_software pklsof,spectrum spec WHERE spec.peaklist_id=pkl.id AND pklsof.id=pkl.peaklist_software_id AND pkl.path=?";
-	
+
 	/** The Constant PROJECTS_BY_OWNER. */
 	private static final String PROJECTS_BY_OWNER = "SELECT project.id as id ,project.name as name,project.description as description FROM user_account ,project WHERE user_account.id=project.owner_id AND user_account.login=?";
-	
+
 	/** The Constant UDS_DATASET. */
 	private static final String UDS_DATASET = "SELECT DISTINCT(ds.result_summary_id) AS rsm_id,ds.* ,proj.name proj_name FROM data_set ds,project proj WHERE  proj.id=ds.project_id AND ds.type IN ('AGGREGATE','IDENTIFICATION') AND ds.result_summary_id>0 AND ds.project_id=? order by ds.result_summary_id";
-	
-	/** The Constant PKL_BY_RSM. */
-	private static final String PKL_BY_RSM = "SELECT distinct(pkl.*) FROM result_summary rsm, result_set rs,msi_search msi,peaklist pkl WHERE rsm.result_set_id=rs.id AND rs.msi_search_id=msi.id AND msi.peaklist_id= pkl.id AND rsm.id=? ";
-	
+
+	/** The Constant ALL_DATASET. */
+	private static final String ALL_DATASET = "select * from data_set where project_id =? order by parent_dataset_id desc";
 	/** The Constant VALIDATED_MSI_SEARCH_IDS. */
+
 	private static final String VALIDATED_MSI_SEARCH_IDS = "SELECT distinct(msi.id) as msi_search_id FROM result_summary rsm, result_set rs, msi_search msi, peaklist pkl, protein_set ps WHERE rsm.result_set_id=rs.id AND rs.msi_search_id=msi.id AND msi.peaklist_id= pkl.id AND ps.result_summary_id=rsm.id AND ps.is_validated=true AND rs.type IN('SEARCH','USER') AND rsm.id=?";
-	
+
 	/** The Constant SPECTRA_BY_MSI_SEARCH. */
 	private static final String SPECTRA_BY_MSI_SEARCH = "SELECT spec.*,pklsof.name as pkl_software FROM msi_search msi,peaklist pkl,peaklist_software pklsof,spectrum spec WHERE spec.peaklist_id=pkl.id AND  pkl.id=msi.peaklist_id AND pkl.peaklist_software_id=pklsof.id AND msi.id=?";
-	
+
 	/** The spectra. */
 	private static Spectra spectra = new Spectra();
 
 	/**
 	 * Find PeakList.
 	 *
-	 * @throws SQLException the SQL exception
+	 * @throws SQLException
+	 *             the SQL exception
 	 */
 	public static void allPeakList() throws SQLException {
 		PreparedStatement allPklistStmt = null;
@@ -75,11 +73,13 @@ public class DBSpectraHandler {
 	}
 
 	/**
-	 * Find all dataset by project.
+	 * Find uds dataset by project.
 	 *
-	 * @param projectId the project id
+	 * @param projectId
+	 *            the project id
 	 * @return the observable list
-	 * @throws SQLException the SQL exception
+	 * @throws SQLException
+	 *             the SQL exception
 	 */
 	public static ObservableList<Dataset> fillDataSetByProject(Long projectId) throws SQLException {
 		PreparedStatement datasetStmt = null;
@@ -116,12 +116,62 @@ public class DBSpectraHandler {
 	}
 
 	/**
+	 * Find all dataset by project.
+	 *
+	 * @param projectId
+	 *            the project id
+	 * @return the observable list
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public static ObservableList<Dataset> fillAllDataSetByProject(Long projectId) throws SQLException {
+		PreparedStatement datasetStmt = null;
+		ResultSet rs = null;
+		ObservableList<Dataset> list = FXCollections.observableArrayList();
+		try {
+			datasetStmt = DBAccess.openUdsDBConnection().prepareStatement(ALL_DATASET);
+			System.out.println("INFO | Load datasets from project=" + projectId + ".");
+			datasetStmt.setLong(1, projectId);
+			rs = datasetStmt.executeQuery();
+			int i = 0;
+			while (rs.next()) {
+				Long id = rs.getLong("id");
+				String description = rs.getString("description");
+				int childCount = rs.getInt("child_count");
+				int number = rs.getInt("number");
+				String name = rs.getString("name");
+				String type = rs.getString("type");
+				Long resultSummaryId = rs.getLong("result_summary_id");
+				Long resultSetId = rs.getLong("result_set_id");
+				Long parentDatasetId = rs.getLong("parent_dataset_id");
+				Integer projId = rs.getInt("project_id");
+				if (id > 0L) {
+					Dataset dataset = new Dataset(id, description, childCount, name, number, parentDatasetId,
+							resultSetId, resultSummaryId);
+					dataset.setType(DatasetType.valueOf(type));
+					if (parentDatasetId != null && parentDatasetId > 0L) {
+						dataset.addChild(list.get(i));
+					}
+					list.add(dataset);
+				}
+			}
+		} finally {
+			tryToCloseResultSet(rs);
+			tryToCloseStatement(datasetStmt);
+		}
+		return list;
+	}
+
+	/**
 	 * Find all msi_search _ids by set of rsm ids.
 	 *
-	 * @param msiName            the database name
-	 * @param rsmIds            the rsm ids
+	 * @param msiName
+	 *            the database name
+	 * @param rsmIds
+	 *            the rsm ids
 	 * @return the sets the
-	 * @throws SQLException the SQL exception
+	 * @throws SQLException
+	 *             the SQL exception
 	 */
 	public static Set<Long> fillMsiSerachIds(String msiName, Set<Long> rsmIds) throws SQLException {
 		PreparedStatement peakListStmt = null;
@@ -151,9 +201,12 @@ public class DBSpectraHandler {
 	/**
 	 * Find all spectra set by project.
 	 *
-	 * @param msiName the msi name
-	 * @param msiIds the msi ids
-	 * @throws SQLException the SQL exception
+	 * @param msiName
+	 *            the msi name
+	 * @param msiIds
+	 *            the msi ids
+	 * @throws SQLException
+	 *             the SQL exception
 	 */
 	public static void fillSpecByPeakList(String msiName, Set<Long> msiIds) throws SQLException {
 		PreparedStatement peakListStmt = null;
@@ -215,8 +268,10 @@ public class DBSpectraHandler {
 	/**
 	 * Find a project by name.
 	 *
-	 * @param name the name
-	 * @throws Exception the exception
+	 * @param name
+	 *            the name
+	 * @throws Exception
+	 *             the exception
 	 */
 	public static void findProject(String name) throws Exception {
 		PreparedStatement findProjectStmt = null;
@@ -236,8 +291,10 @@ public class DBSpectraHandler {
 	/**
 	 * Find an user by login.
 	 *
-	 * @param login the login
-	 * @throws Exception the exception
+	 * @param login
+	 *            the login
+	 * @throws Exception
+	 *             the exception
 	 */
 	public static void findUser(String login) throws Exception {
 		PreparedStatement findUserStmt = null;
@@ -262,9 +319,11 @@ public class DBSpectraHandler {
 	/**
 	 * Find an user by login.
 	 *
-	 * @param login the login
+	 * @param login
+	 *            the login
 	 * @return the observable list
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	public static ObservableList<Project> findProjects(String login) throws Exception {
 		PreparedStatement findUserStmt = null;
@@ -303,7 +362,8 @@ public class DBSpectraHandler {
 	/**
 	 * Sets the spectra.
 	 *
-	 * @param spectra            the spectra to set
+	 * @param spectra
+	 *            the spectra to set
 	 */
 	public static void setSpectra(Spectra spectra) {
 		DBSpectraHandler.spectra = spectra;
@@ -312,7 +372,8 @@ public class DBSpectraHandler {
 	/**
 	 * Close statement.
 	 *
-	 * @param rs the rs
+	 * @param rs
+	 *            the rs
 	 */
 	private static void tryToCloseResultSet(ResultSet rs) {
 		try {
@@ -327,7 +388,8 @@ public class DBSpectraHandler {
 	/**
 	 * Close statement.
 	 *
-	 * @param stmt            the statement to close
+	 * @param stmt
+	 *            the statement to close
 	 */
 	private static void tryToCloseStatement(Statement stmt) {
 		try {

@@ -8,8 +8,6 @@ import org.apache.logging.log4j.Logger;
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -159,6 +157,7 @@ public class SpectraComparator {
 		cosTheta = numeratorCosTheta / (leftDenominator * rightDenominator);
 	}
 
+	
 	/**
 	 * Find the non 0 values in the array of reference spectrum, get back the
 	 * square root of this value and return a new array (size equals to number
