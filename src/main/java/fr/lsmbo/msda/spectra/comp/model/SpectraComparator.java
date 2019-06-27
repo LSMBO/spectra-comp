@@ -336,6 +336,7 @@ public class SpectraComparator {
 	private static void initialize() {
 		secondSpectra = ListOfSpectra.getSecondSpectra();
 		subListSecondSpectra.initialize();
+		validSpectra.initialize();
 		// validSpectra.initialize();
 		deltaMoz = Session.USER_PARAMS.getComparison().getDeltaMoz();
 		deltaRT = Session.USER_PARAMS.getComparison().getDeltaRT();
@@ -348,13 +349,13 @@ public class SpectraComparator {
 	/**
 	 * Run spectra comparison.
 	 *
-	 * @param spectrumRef            the spectrum to set as reference.
+	 * @param spectrumRef
+	 *            the spectrum to set as reference.
 	 */
 	public static void run(Spectrum spectrumRef) {
-		BooleanProperty isMatched = new SimpleBooleanProperty(false);
+		logger.info("Reference spectrum : {} ", spectrumRef.getM_title());
 		referenceSpectrum = spectrumRef;
 		setReferenceSpectrum(referenceSpectrum);
-		logger.info("Reference spectrum : {} ", spectrumRef.getM_title());
 		initialize();
 		computeSubListSecondSpectra();
 		if (subListSecondSpectra.getSpectraAsObservable().size() != 0) {
@@ -377,10 +378,7 @@ public class SpectraComparator {
 								(int) ((testedSpectrum.getRetentionTime() * 60)
 										- (referenceSpectrum.getRetentionTime() * 60)));
 						validSpectra.addSpectrum(testedSpectrum);
-						spectrumRef.getM_matchedSpectra().add(testedSpectrum);
-						// tag the tested spectra
-						// isMatched.setValue(true);
-						testedSpectrum.setMatched(isMatched);
+						spectrumRef.getM_matchedSpectra().setAll(validSpectra.getSpectraAsObservable());
 					}
 				}
 			}

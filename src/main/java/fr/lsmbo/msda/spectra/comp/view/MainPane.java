@@ -437,7 +437,6 @@ public class MainPane extends StackPane {
 					model.getTestItems().forEach(spec -> {
 						if (refSelectedSpectrum.getM_matchedSpectra().contains(spec)) {
 							spec.getMatched().setValue(true);
-							System.out.println(spec.getM_title());
 						} else {
 							spec.getMatched().setValue(false);
 						}
