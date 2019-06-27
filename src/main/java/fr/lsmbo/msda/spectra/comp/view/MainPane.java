@@ -343,9 +343,9 @@ public class MainPane extends StackPane {
 
 		BorderPane graphicsPane = new BorderPane();
 		graphicsPane.setMinHeight(150);
-		Label deltaMozLabel = new Label("Delta moz:");
+		Label deltaMozLabel = new Label("Delta moz (Da):");
 		TextField deltaMozTF = new TextField();
-		deltaMozTF.setTooltip(new Tooltip("Enter the delta Moz value!"));
+		deltaMozTF.setTooltip(new Tooltip("Enter the delta Moz value (Da)!"));
 		deltaMozTF.setPrefWidth(100);
 		deltaMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaMoz()));
 		deltaMozTF.textProperty().addListener((o, v, n) -> {
@@ -353,10 +353,10 @@ public class MainPane extends StackPane {
 				Session.USER_PARAMS.getComparison().setDeltaMoz(Float.valueOf(n));
 		});
 
-		Label deltaRTLabel = new Label("Delta rt:");
+		Label deltaRTLabel = new Label("Delta rt (sec):");
 		TextField deltaRTTF = new TextField();
 		deltaRTTF.setPrefWidth(100);
-		deltaRTTF.setTooltip(new Tooltip("Enter the delta retention time value!"));
+		deltaRTTF.setTooltip(new Tooltip("Enter the delta retention time value in secondes!"));
 		deltaRTTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaRT()));
 		deltaRTTF.textProperty().addListener((o, v, n) -> {
 			if (n != null)

@@ -81,7 +81,7 @@ public class LoginDialog extends Dialog<ObservableList<Project>> {
 		else
 			passwordTF.setText("proline");
 		passwordLabel.setTooltip(new Tooltip("Enter a user password"));
-
+		passwordTF.setDisable(true);
 		// Layout
 		GridPane loginPane = new GridPane();
 		loginPane.setAlignment(Pos.TOP_LEFT);
