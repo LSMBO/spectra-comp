@@ -39,8 +39,8 @@ public class SpectraComparator {
 	// Spectrum reference
 	private static Spectrum referenceSpectrum;
 	// Number of peaks equals between reference spectrum (RS) and tested
-	/** The nb peaks equals. */
 	// spectrum(TS) (same MOZ and same RT)
+	/** The nb peaks equals. */
 	private static int nbPeaksEquals;
 
 	/** The nb peaks. */
@@ -49,9 +49,8 @@ public class SpectraComparator {
 	/** The cos theta. */
 	private static Double cosTheta;
 
-	// Arrays which contain at the same index the same peaks (same moz +/-
+	// Arrays which contain at the same index the same peaks (same moz +/-// deltaRT)
 	/** The list peaks reference spectrum. */
-	// deltaRT)
 	private static float[] listPeaksReferenceSpectrum;
 
 	/** The list peaks tested spectrum. */
@@ -196,7 +195,6 @@ public class SpectraComparator {
 	 * moz +/- deltamoz and same RT +/- deltaRT).
 	 */
 	private static void computeSubListSecondSpectra() {
-		logger.info("Start to compute a sublist of the second spectra ...");
 		double referenceSpectrumMoz = referenceSpectrum.getM_precursorMoz();
 		// RT of reference spectrum in sec.
 		// TODO think if RT was already in seconds
@@ -218,7 +216,6 @@ public class SpectraComparator {
 				}
 			}
 		}
-		logger.info("subList of second spectra size: {}", subListSecondSpectra.getSpectraAsObservable().size());
 	}
 
 	/**
@@ -242,7 +239,6 @@ public class SpectraComparator {
 	 */
 	private static void findFragment(Spectrum spectrumOfSecSpectraSubList) {
 		// Recover the nbpeaks most intense of the reference spectrum
-		logger.info("Start to compare between ref spectrum and tested spectum in sublist fragments");
 		Fragment[] nbIntensePeaks = referenceSpectrum.getNbIntensePeaks();
 		if (nbIntensePeaks != null) {
 			logger.info("The number of intense peaks is: {}", nbIntensePeaks.length);
@@ -352,7 +348,6 @@ public class SpectraComparator {
 	 *            the spectrum to set as reference.
 	 */
 	public static void run(Spectrum spectrumRef) {
-		logger.info("Reference spectrum : {} ", spectrumRef.getM_title());
 		referenceSpectrum = spectrumRef;
 		setReferenceSpectrum(referenceSpectrum);
 		initialize();
@@ -360,11 +355,8 @@ public class SpectraComparator {
 		if (subListSecondSpectra.getSpectraAsObservable().size() != 0) {
 			for (int i = 0; i < subListSecondSpectra.getSpectraAsObservable().size(); i++) {
 				Spectrum testedSpectrum = subListSecondSpectra.getSpectraAsObservable().get(i);
-				logger.info("Tested spectrum : {} ", testedSpectrum.getM_title());
 				findFragment(testedSpectrum);
 				countNbPeak();
-				logger.info("number of equal peaks: {}", nbPeaksEquals);
-				logger.info("min peaks: {}", nbPeaksMin);
 				testedSpectrum.setNbPeaksIdenticalWithReferenceSpectrum(nbPeaksEquals);
 				if (nbPeaksEquals >= nbPeaksMin) {
 					computeCosTheta();

@@ -119,9 +119,9 @@ public class PeakListProvider {
 	public static void loadTestedSpectraFrmProline(String dbName, Set<Long> rsmIds) throws Exception {
 		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
 			assert !StringsUtils.isEmpty(dbName) : "Project name must not be null nor empty!";
-			logger.info("--- Start to retrieve spectra from reference peaklist from Proline project. Please wait ...");
+			logger.info("--- Start to retrieve spectra from test peaklist from Proline project. Please wait ...");
 			System.out.println(
-					"INFO | Start to retrieve spectra from reference peaklist from Proline project. Please wait ...");
+					"INFO | Start to retrieve spectra from test peaklist from Proline project. Please wait ...");
 			// Find the msi_search_ids
 			Set<Long> msiSearchIds = DBSpectraHandler.fillMsiSerachIds(dbName, rsmIds);
 			DBSpectraHandler.fillSpecByPeakList(dbName, msiSearchIds);
