@@ -1,6 +1,6 @@
 # Spectra-comp
 Spectra-comp is an Ms/Ms spectra comparison tool. The reference spectra could be loaded from:
-* Proline project (you should have proline software installed and a proline account as well). 
+* Proline project (you should have proline software installed and a proline account as well https://github.com/profiproteomics). 
 * Peaklist file (<code>.mgf or .pkl</code>).
 
 The tested spectra could be loaded from :
