@@ -19,6 +19,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -79,6 +80,7 @@ public class ParametersDialog extends Dialog<Map<String, Number>> {
 		warningDbPane.getChildren().addAll(emptyParemetersLabel);
 		deltaMozLabel = new Label("Delta moz: ");
 		deltaMozTF = new TextField();
+		deltaMozTF.setMinWidth(250);
 		if (!StringsUtils.isEmpty(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaMoz())))
 			deltaMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaMoz()));
 		deltaMozTF.setTooltip(new Tooltip("Enter the delta moz value"));
@@ -109,14 +111,11 @@ public class ParametersDialog extends Dialog<Map<String, Number>> {
 			thetaMinTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getThetaMin()));
 
 		thetaMinTF.setTooltip(new Tooltip("Enter the minimum theta"));
-		// Style
-		List<TextField> textFields = new ArrayList<>();
-		textFields.add(deltaMozTF);
-		textFields.add(deltaRTTF);
-		textFields.add(minNbrPeaksTF);
-		textFields.add(peaksNbrTF);
-		textFields.add(thetaMinTF);
-		textFields.forEach(field -> field.prefWidth(150));
+		addFloatValidation(deltaMozTF);
+		addIntegerValidation(deltaRTTF);
+		addIntegerValidation(minNbrPeaksTF);
+		addIntegerValidation(peaksNbrTF);
+		addIntegerValidation(thetaMinTF);
 		// Layout
 		GridPane loginPane = new GridPane();
 		loginPane.setAlignment(Pos.TOP_LEFT);
@@ -179,5 +178,53 @@ public class ParametersDialog extends Dialog<Map<String, Number>> {
 			}
 			return parametersMap;
 		});
+	}
+
+	/**
+	 * Adds the float validation.
+	 *
+	 * @param field
+	 *            the field
+	 */
+	private void addFloatValidation(TextField field) {
+		field.getProperties().put("type", "float");
+		field.setTextFormatter(new TextFormatter<>(c -> {
+			if (c.isContentChange()) {
+				if (c.getControlNewText().length() == 0) {
+					return c;
+				}
+				try {
+					Float.parseFloat(c.getControlNewText());
+					return c;
+				} catch (NumberFormatException e) {
+				}
+				return null;
+			}
+			return c;
+		}));
+	}
+
+	/**
+	 * Adds the integer validation.
+	 *
+	 * @param field
+	 *            the field
+	 */
+	private void addIntegerValidation(TextField field) {
+		field.getProperties().put("type", "integer");
+		field.setTextFormatter(new TextFormatter<>(c -> {
+			if (c.isContentChange()) {
+				if (c.getControlNewText().length() == 0) {
+					return c;
+				}
+				try {
+					Integer.parseInt(c.getControlNewText());
+					return c;
+				} catch (NumberFormatException e) {
+				}
+				return null;
+			}
+			return c;
+		}));
 	}
 }

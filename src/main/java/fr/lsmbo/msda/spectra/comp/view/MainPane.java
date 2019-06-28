@@ -132,6 +132,127 @@ public class MainPane extends StackPane {
 
 	/** The stage. */
 	public static Stage stage;
+	private TextField deltaMozTF, deltaRTTF, minPeaksNbrTF, thetaMinTF, peaksNbrTF;
+
+	/**
+	 * @return the refFilteredTable
+	 */
+	public final FilteredTableView<Spectrum> getRefFilteredTable() {
+		return refFilteredTable;
+	}
+
+	/**
+	 * @param refFilteredTable
+	 *            the refFilteredTable to set
+	 */
+	public final void setRefFilteredTable(FilteredTableView<Spectrum> refFilteredTable) {
+		this.refFilteredTable = refFilteredTable;
+	}
+
+	/**
+	 * @return the testFilteredTable
+	 */
+	public final FilteredTableView<Spectrum> getTestFilteredTable() {
+		return testFilteredTable;
+	}
+
+	/**
+	 * @param testFilteredTable
+	 *            the testFilteredTable to set
+	 */
+	public final void setTestFilteredTable(FilteredTableView<Spectrum> testFilteredTable) {
+		this.testFilteredTable = testFilteredTable;
+	}
+
+	/**
+	 * @return the spectrumProperty
+	 */
+	public final SpectrumProperty getSpectrumProperty() {
+		return spectrumProperty;
+	}
+
+	/**
+	 * @param spectrumProperty
+	 *            the spectrumProperty to set
+	 */
+	public final void setSpectrumProperty(SpectrumProperty spectrumProperty) {
+		this.spectrumProperty = spectrumProperty;
+	}
+
+	/**
+	 * @return the deltaMozTF
+	 */
+	public final TextField getDeltaMozTF() {
+		return deltaMozTF;
+	}
+
+	/**
+	 * @param deltaMozTF
+	 *            the deltaMozTF to set
+	 */
+	public final void setDeltaMozTF(TextField deltaMozTF) {
+		this.deltaMozTF = deltaMozTF;
+	}
+
+	/**
+	 * @return the deltaRTTF
+	 */
+	public final TextField getDeltaRTTF() {
+		return deltaRTTF;
+	}
+
+	/**
+	 * @param deltaRTTF
+	 *            the deltaRTTF to set
+	 */
+	public final void setDeltaRTTF(TextField deltaRTTF) {
+		this.deltaRTTF = deltaRTTF;
+	}
+
+	/**
+	 * @return the minPeaksNbrTF
+	 */
+	public final TextField getMinPeaksNbrTF() {
+		return minPeaksNbrTF;
+	}
+
+	/**
+	 * @param minPeaksNbrTF
+	 *            the minPeaksNbrTF to set
+	 */
+	public final void setMinPeaksNbrTF(TextField minPeaksNbrTF) {
+		this.minPeaksNbrTF = minPeaksNbrTF;
+	}
+
+	/**
+	 * @return the thetaMinTF
+	 */
+	public final TextField getThetaMinTF() {
+		return thetaMinTF;
+	}
+
+	/**
+	 * @param thetaMinTF
+	 *            the thetaMinTF to set
+	 */
+	public final void setThetaMinTF(TextField thetaMinTF) {
+		this.thetaMinTF = thetaMinTF;
+	}
+
+	/**
+	 * @return the peaksNbrTF
+	 */
+	public final TextField getPeaksNbrTF() {
+		return peaksNbrTF;
+	}
+
+	/**
+	 * @param peaksNbrTF
+	 *            the peaksNbrTF to set
+	 */
+	public final void setPeaksNbrTF(TextField peaksNbrTF) {
+		this.peaksNbrTF = peaksNbrTF;
+	}
 
 	/**
 	 * Instantiates a new main pane.
@@ -181,6 +302,11 @@ public class MainPane extends StackPane {
 		compParameters.setGraphic(new ImageView(IconResource.getImage(ICON.SETTINGS)));
 		compParameters.setOnAction(e -> {
 			model.onEditCompParameters();
+			deltaMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaMoz()));
+			peaksNbrTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaks()));
+			thetaMinTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getThetaMin()));
+			minPeaksNbrTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaksMin()));
+			deltaRTTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaRT()));
 		});
 		// Exit
 		MenuItem exitFile = new MenuItem(" Exit ");
@@ -344,7 +470,7 @@ public class MainPane extends StackPane {
 		BorderPane graphicsPane = new BorderPane();
 		graphicsPane.setMinHeight(150);
 		Label deltaMozLabel = new Label("Delta moz (Da):");
-		TextField deltaMozTF = new TextField();
+		deltaMozTF = new TextField();
 		deltaMozTF.setTooltip(new Tooltip("Enter the delta Moz value (Da)!"));
 		deltaMozTF.setPrefWidth(100);
 		deltaMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaMoz()));
@@ -354,7 +480,7 @@ public class MainPane extends StackPane {
 		});
 
 		Label deltaRTLabel = new Label("Delta rt (sec):");
-		TextField deltaRTTF = new TextField();
+		deltaRTTF = new TextField();
 		deltaRTTF.setPrefWidth(100);
 		deltaRTTF.setTooltip(new Tooltip("Enter the delta retention time value in secondes!"));
 		deltaRTTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaRT()));
@@ -364,7 +490,7 @@ public class MainPane extends StackPane {
 		});
 
 		Label minPeaksNbrLabel = new Label("Min peaks number:");
-		TextField minPeaksNbrTF = new TextField();
+		minPeaksNbrTF = new TextField();
 		minPeaksNbrTF.setPrefWidth(100);
 		minPeaksNbrTF.setTooltip(new Tooltip("Enter the minimum peaks number value!"));
 		minPeaksNbrTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaksMin()));
@@ -374,7 +500,7 @@ public class MainPane extends StackPane {
 		});
 
 		Label thetaMinLabel = new Label("Theta min:");
-		TextField thetaMinTF = new TextField();
+		thetaMinTF = new TextField();
 		thetaMinTF.setPrefWidth(100);
 		thetaMinTF.setTooltip(new Tooltip("Enter the Theta min value!"));
 		thetaMinTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getThetaMin()));
@@ -384,7 +510,7 @@ public class MainPane extends StackPane {
 		});
 
 		Label peaksNbrLabel = new Label("peaks number:");
-		TextField peaksNbrTF = new TextField();
+		peaksNbrTF = new TextField();
 		peaksNbrTF.setPrefWidth(100);
 		peaksNbrTF.setTooltip(new Tooltip("Enter the peaks number value!"));
 		peaksNbrTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaks()));
