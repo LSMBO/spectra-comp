@@ -49,7 +49,8 @@ public class SpectraComparator {
 	/** The cos theta. */
 	private static Double cosTheta;
 
-	// Arrays which contain at the same index the same peaks (same moz +/-// deltaRT)
+	// Arrays which contain at the same index the same peaks (same moz +/-//
+	// deltaRT)
 	/** The list peaks reference spectrum. */
 	private static float[] listPeaksReferenceSpectrum;
 
@@ -156,7 +157,6 @@ public class SpectraComparator {
 		cosTheta = numeratorCosTheta / (leftDenominator * rightDenominator);
 	}
 
-	
 	/**
 	 * Find the non 0 values in the array of reference spectrum, get back the
 	 * square root of this value and return a new array (size equals to number

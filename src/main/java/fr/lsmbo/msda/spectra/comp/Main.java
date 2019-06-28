@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package fr.lsmbo.msda.spectra.comp;
 
 import org.apache.logging.log4j.LogManager;

@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package fr.lsmbo.msda.spectra.comp;
 
 import java.io.File;
