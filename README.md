@@ -20,6 +20,6 @@ The parameters of comparison are :
  
  <code>TS.peak = intensity of peaks TS(tested spectra)</code>  and <code> RS.peak = intensity of peaks RS(reference spectra)</code> 
  
- <h2>Description</h2>
+ <h3>Screenshot</h3>
 
 ![alt text](https://github.com/LSMBO/spectra-comp/blob/master/src/main/resources/images/screen_shot.png)
