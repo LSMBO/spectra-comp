@@ -141,6 +141,25 @@ public class ViewModel {
 	}
 
 	/**
+	 * Export comparison
+	 * 
+	 */
+	public void onExportComparsion() {
+		if (isValidSpectra()) {
+			TaskRunner.doAsyncWork("Export spectra comparison", () -> {
+
+				return true;
+			}, (isSuccess) -> {
+				System.out.println("INFO | Task has finished sucessfully!");
+			}, (failure) -> {
+				System.err.println("INFO | Task has failed! " + failure);
+			}, false, stage);
+		} else {
+			new ShowPopupDialog("Empty Spectra", "The peaklists to compare must not be empty!", stage);
+		}
+	}
+
+	/**
 	 * Compare two peaklists task.
 	 */
 	public void onCompareSpectra() {

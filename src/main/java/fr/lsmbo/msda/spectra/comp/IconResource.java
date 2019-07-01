@@ -54,7 +54,7 @@ public class IconResource {
 		/** The settings. */
 		SETTINGS,
 		/** The progress. */
-		PROGRESS;
+		PROGRESS, EXPORT;
 	}
 
 	/** The images. */
@@ -70,6 +70,9 @@ public class IconResource {
 	public static Image getImage(ICON icon) {
 		if (!images.containsKey(icon)) {
 			switch (icon) {
+			case EXPORT:
+				images.put(icon, new Image(IconResource.class.getResourceAsStream("/images/export.png")));
+				break;
 			case EDIT:
 				images.put(icon, new Image(IconResource.class.getResourceAsStream("/images/edit-parsing-rules.png")));
 				break;

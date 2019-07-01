@@ -283,9 +283,10 @@ public class MainPane extends StackPane {
 		loadSpectra.setOnAction(e -> {
 			model.onLoadSpectra();
 		});
-		MenuItem exportSpectra = new MenuItem(" Excel export ");
-		exportSpectra.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
-		exportSpectra.setOnAction(e -> {
+		MenuItem exportComparison = new MenuItem(" Export comparison ");
+		exportComparison.setGraphic(new ImageView(IconResource.getImage(ICON.EXPORT)));
+		exportComparison.setOnAction(e -> {
+			model.onExportComparsion();
 		});
 		// Settings menu items
 		Menu settingsMenu = new Menu(" Settings ");
@@ -332,7 +333,7 @@ public class MainPane extends StackPane {
 		aboutSpectraComp.setOnAction((ActionEvent t) -> {
 			model.onAboutSpectraComp();
 		});
-		fileMenu.getItems().addAll(loadSpectra, exitFile);
+		fileMenu.getItems().addAll(loadSpectra, exportComparison, exitFile);
 		settingsMenu.getItems().addAll(parsingRules, compParameters);
 		helpMenu.getItems().addAll(userGuide, aboutSpectraComp);
 		menuBar.getMenus().addAll(fileMenu, settingsMenu, helpMenu);
