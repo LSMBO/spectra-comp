@@ -7,15 +7,16 @@ import java.net.URI;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.apache.commons.collections4.functors.PredicateTransformer;
-
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.parser.Line;
 
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
@@ -376,31 +377,44 @@ public class ViewModel {
 	 * @throws FileNotFoundException
 	 */
 	private void createPdfFile() throws FileNotFoundException, DocumentException {
-		Document document = new Document();
-
 		FileUtils.openPdfFile(file -> {
-			try {
-				PdfWriter.getInstance(document, new FileOutputStream(file.getAbsolutePath()));
-				document.open();
-				document.addTitle("Sepctra-Comp" + Session.SPECTRACOMP_RELEASE_VERSION);
-				document.addHeader("Spectra comparison", "");
+			TaskRunner.doAsyncWork("Export Comparison file", () -> {
+				Document document = new Document();
+				try {
+					PdfWriter.getInstance(document, new FileOutputStream(file.getAbsolutePath()));
+					document.open();
+					document.addTitle("Sepctra-Comp" + Session.SPECTRACOMP_RELEASE_VERSION);
+					document.addHeader("Spectra comparison", "");
 
-				// Add title
-				// Add comparison parameters
-				// Reference spectra
-				// Test spectra
-				PdfPTable table = new PdfPTable(3);
-				addTableHeader(table);
-				addRows(table);
-				// addCustomRows(table);
-				document.add(table);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-				if (document != null && document.isOpen())
-					document.close();
-			}
+					// Add comparison parameters
+					Paragraph p1 = new Paragraph("The comparison parameters:");
+					document.add(p1);
+					PdfPTable paramsTable = new PdfPTable(6);
+					addTableHeaderContent(paramsTable);
+					addParamsRow(paramsTable);
+					document.add(paramsTable);
+					// Add comparison result
+					Paragraph p2 = new Paragraph("The comparison result:");
+					document.add(p2);
+					PdfPTable table = new PdfPTable(3);
+					addTableHeader(table);
+					addRows(table);
+					// addCustomRows(table);
+					document.add(table);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+
+				} finally {
+					if (document != null && document.isOpen())
+						document.close();
+				}
+				return true;
+			}, (isSuccess) -> {
+				System.out.println("INFO | Task has finished sucessfully!");
+			}, (failure) -> {
+				System.err.println("INFO | Task has failed! " + failure);
+			}, false, stage);
 		}, stage);
 
 	}
@@ -429,7 +443,6 @@ public class ViewModel {
 	 */
 	private void addRows(PdfPTable table) {
 		Long refItemsSize = refItems.stream().filter(spec -> !spec.getM_matchedSpectra().isEmpty()).count();
-
 		table.addCell("Reference spectra");
 		table.addCell(refItems.size() + "");
 		table.addCell(refItemsSize + "");
@@ -437,6 +450,37 @@ public class ViewModel {
 		table.addCell("Tested spectra");
 		table.addCell(testItems.size() + "");
 		table.addCell("" + refItemsSize);
+	}
 
+	/**
+	 * Create pdf table
+	 * 
+	 * @param table
+	 *            the table to add
+	 */
+	private void addTableHeaderContent(PdfPTable table) {
+		Stream.of("", "Delta Moz(da) ", "Delta retention time(s)", "Min peaks number", "Min theta", "Peaks number")
+				.forEach(columnTitle -> {
+					PdfPCell header = new PdfPCell();
+					header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+					header.setBorderWidth(1);
+					header.setPhrase(new Phrase(columnTitle));
+					table.addCell(header);
+				});
+	}
+
+	/**
+	 * add rows to the pdf table
+	 * 
+	 * @param table
+	 *            the table to add rows in.
+	 */
+	private void addParamsRow(PdfPTable table) {
+		table.addCell("Comparison parameters");
+		table.addCell(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaMoz()));
+		table.addCell(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaRT()));
+		table.addCell(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaksMin()));
+		table.addCell(String.valueOf(Session.USER_PARAMS.getComparison().getThetaMin()));
+		table.addCell(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaks()));
 	}
 }
