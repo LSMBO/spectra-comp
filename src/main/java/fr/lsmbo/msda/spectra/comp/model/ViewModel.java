@@ -1,8 +1,21 @@
 package fr.lsmbo.msda.spectra.comp.model;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.net.URI;
 import java.util.Set;
+import java.util.stream.Stream;
+
+import org.apache.commons.collections4.functors.PredicateTransformer;
+
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
@@ -146,21 +159,23 @@ public class ViewModel {
 	 */
 	public void onExportComparsion() {
 		if (isValidSpectra()) {
-			TaskRunner.doAsyncWork("Export spectra comparison", () -> {
+			try {
+				createPdfFile();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DocumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-				return true;
-			}, (isSuccess) -> {
-				System.out.println("INFO | Task has finished sucessfully!");
-			}, (failure) -> {
-				System.err.println("INFO | Task has failed! " + failure);
-			}, false, stage);
 		} else {
 			new ShowPopupDialog("Empty Spectra", "The peaklists to compare must not be empty!", stage);
 		}
 	}
 
 	/**
-	 * Compare two peaklists task.
+	 * Compare two peak lists task.
 	 */
 	public void onCompareSpectra() {
 		if (isValidSpectra()) {
@@ -352,5 +367,76 @@ public class ViewModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/***
+	 * Create Pdf file
+	 * 
+	 * @throws DocumentException
+	 * @throws FileNotFoundException
+	 */
+	private void createPdfFile() throws FileNotFoundException, DocumentException {
+		Document document = new Document();
+
+		FileUtils.openPdfFile(file -> {
+			try {
+				PdfWriter.getInstance(document, new FileOutputStream(file.getAbsolutePath()));
+				document.open();
+				document.addTitle("Sepctra-Comp" + Session.SPECTRACOMP_RELEASE_VERSION);
+				document.addHeader("Spectra comparison", "");
+
+				// Add title
+				// Add comparison parameters
+				// Reference spectra
+				// Test spectra
+				PdfPTable table = new PdfPTable(3);
+				addTableHeader(table);
+				addRows(table);
+				// addCustomRows(table);
+				document.add(table);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				if (document != null && document.isOpen())
+					document.close();
+			}
+		}, stage);
+
+	}
+
+	/**
+	 * Create pdf table
+	 * 
+	 * @param table
+	 *            the table to add
+	 */
+	private void addTableHeader(PdfPTable table) {
+		Stream.of(" ", "Spectra number", "Full match number").forEach(columnTitle -> {
+			PdfPCell header = new PdfPCell();
+			header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+			header.setBorderWidth(1);
+			header.setPhrase(new Phrase(columnTitle));
+			table.addCell(header);
+		});
+	}
+
+	/**
+	 * add rows to the pdf table
+	 * 
+	 * @param table
+	 *            the table to add rows in.
+	 */
+	private void addRows(PdfPTable table) {
+		Long refItemsSize = refItems.stream().filter(spec -> !spec.getM_matchedSpectra().isEmpty()).count();
+
+		table.addCell("Reference spectra");
+		table.addCell(refItems.size() + "");
+		table.addCell(refItemsSize + "");
+		// tested spectra
+		table.addCell("Tested spectra");
+		table.addCell(testItems.size() + "");
+		table.addCell("" + refItemsSize);
+
 	}
 }

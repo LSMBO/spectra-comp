@@ -73,9 +73,33 @@ public class FileUtils {
 	}
 
 	/**
+	 * Open pdf file.
+	 *
+	 * @param pdfFileConsumer
+	 *            a Consumer of pdf file when the file is loaded.
+	 * @param stage
+	 *            the stage
+	 */
+	public static void openPdfFile(Consumer<File> pdfConsumer, Stage stage) {
+		// Default folder is 'Documents'
+		File initialDirectory = new File(System.getProperty("user.home"));
+		FileChooser fileChooser = new FileChooser();
+		// Set extension filter
+		fileChooser.setInitialDirectory(initialDirectory);
+		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Pdf files (*.pdf)", "*.pdf"));
+		fileChooser.setTitle("Open pdf file");
+		// Show open file dialog
+		File file = fileChooser.showSaveDialog(stage);
+		if (file != null) {
+			pdfConsumer.accept(file);
+		}
+	}
+
+	/**
 	 * Browse and show a file.
 	 *
-	 * @param path            the path of file to browse and to show.
+	 * @param path
+	 *            the path of file to browse and to show.
 	 */
 	public static void showFile(String path) {
 		if (java.awt.Desktop.isDesktopSupported()) {
@@ -86,5 +110,6 @@ public class FileUtils {
 			}
 		}
 	}
+
 
 }
