@@ -112,6 +112,7 @@ public class MainPane extends StackPane {
 	/** The test nbr fragments column. */
 	private FilterableIntegerTableColumn<Spectrum, Integer> testNbrFragmentsColumn;
 
+	private FilterableDoubleTableColumn<Spectrum, Double> testCosColumn;
 	/** The test matched column. */
 	private FilterableBooleanTableColumn<Spectrum, Boolean> testMatchedColumn;
 
@@ -414,12 +415,15 @@ public class MainPane extends StackPane {
 		testNbrFragmentsColumn = new FilterableIntegerTableColumn<>("Fragment number");
 		testNbrFragmentsColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Integer>("nbFragments"));
 
+		testCosColumn = new FilterableDoubleTableColumn<>("Cos θ");
+		testCosColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Double>("cosTheta"));
+
 		testMatchedColumn = new FilterableBooleanTableColumn<>("Matched");
 		testMatchedColumn.setCellValueFactory(cellData -> cellData.getValue().getMatched());
 		testMatchedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(testMatchedColumn));
 
 		testFilteredTable.getColumns().setAll(testIdColumn, testTitleColumn, testMozColumn, testIntensityColumn,
-				testChargeColumn, testRtColumn, testNbrFragmentsColumn, testMatchedColumn);
+				testChargeColumn, testRtColumn, testNbrFragmentsColumn, testCosColumn, testMatchedColumn);
 
 		testFilteredTable.autosize();
 		testFilteredTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
