@@ -13,7 +13,7 @@ The parameters of comparison are :
 * Delta Moz: the delta (+- Moz), it will be used for the precursor moz and for the fragments moz.
 * Delta retention time: the delta retention time (-+ in secondes).  
 * Number of minimum peaks: the minimum number of peaks that matched between the reference spectrum and the tested specrum(same Moz and RT) .  
-* Number of peaks: the number of peaks that matched: for the TS if a value is present for the same peak of RS, keep the most intense value of intensity.   
+* Number of peaks: the number of peaks that matched: for the tested spectra if a value is present for the same peak of reference spectra, we keep the most intense value of intensity.   
 * Minimum theta: this value is computed as <code>Math.cos(Math.toRadians(thetaMin))</code>  
 
  <code> Cos theta = ∑NB_PEAKS(√RS.peak * √TS.peak)/(√(∑NB_PEAKS(RS.peak))*√(∑NB_PEAKS(TS.peak)))</code> 
