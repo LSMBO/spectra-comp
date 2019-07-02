@@ -121,7 +121,7 @@ public class ViewModel {
 							Set rsmIds = (Set) v;
 							loadRefSpectraProline(msiDbname, rsmIds);
 							refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
-							Session.USER_PARAMS.setFirstPklList(msiDbname + " rsm Id=# " + rsmIds);
+							Session.USER_PARAMS.setFirstPklList(msiDbname + " Rsm id= " + rsmIds);
 						}
 					});
 				}
@@ -139,7 +139,7 @@ public class ViewModel {
 							Set rsmIds = (Set) v;
 							loadTestedSpectraProline(msiDbname, rsmIds);
 							testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
-							Session.USER_PARAMS.setSecondPklList(msiDbname + " rsm Id=# " + rsmIds);
+							Session.USER_PARAMS.setSecondPklList(msiDbname + " Rsm id= " + rsmIds);
 						}
 					});
 				}
