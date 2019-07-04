@@ -133,7 +133,8 @@ public class MainPane extends StackPane {
 
 	/** The stage. */
 	public static Stage stage;
-	private TextField precDeltaMozTF, peaksDeltaMozTF, deltaRTTF, minPeaksNbrTF, thetaMinTF, peaksNbrTF;
+
+	private TextField deltaPrecMozTF, deltaPeaksMozTF, deltaRTTF, minPeaksNbrTF, thetaMinTF, peaksNbrTF;
 
 	/**
 	 * @return the refFilteredTable
@@ -184,7 +185,7 @@ public class MainPane extends StackPane {
 	 * @return the deltaMozTF
 	 */
 	public final TextField getPrecDeltaMozTF() {
-		return precDeltaMozTF;
+		return deltaPrecMozTF;
 	}
 
 	/**
@@ -192,7 +193,7 @@ public class MainPane extends StackPane {
 	 *            the deltaMozTF to set
 	 */
 	public final void setPrecDeltaMozTF(TextField deltaMozTF) {
-		this.precDeltaMozTF = deltaMozTF;
+		this.deltaPrecMozTF = deltaMozTF;
 	}
 
 	/**
@@ -304,8 +305,8 @@ public class MainPane extends StackPane {
 		compParameters.setGraphic(new ImageView(IconResource.getImage(ICON.SETTINGS)));
 		compParameters.setOnAction(e -> {
 			model.onEditCompParameters();
-			precDeltaMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPrecMoz()));
-			peaksDeltaMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPeaksMoz()));
+			deltaPrecMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPrecMoz()));
+			deltaPeaksMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPeaksMoz()));
 			peaksNbrTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaks()));
 			thetaMinTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getThetaMin()));
 			minPeaksNbrTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaksMin()));
@@ -476,28 +477,28 @@ public class MainPane extends StackPane {
 		BorderPane graphicsPane = new BorderPane();
 		graphicsPane.setMinHeight(150);
 		Label deltaMozLabel = new Label("Prec delta moz (Da):");
-		precDeltaMozTF = new TextField();
-		precDeltaMozTF.setTooltip(new Tooltip("Enter the delta moz value (Da)!"));
-		precDeltaMozTF.setPrefWidth(100);
-		precDeltaMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPrecMoz()));
-		precDeltaMozTF.textProperty().addListener((o, v, n) -> {
+		deltaPrecMozTF = new TextField();
+		deltaPrecMozTF.setTooltip(new Tooltip("Enter the delta moz value (Da)!"));
+		deltaPrecMozTF.setPrefWidth(80);
+		deltaPrecMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPrecMoz()));
+		deltaPrecMozTF.textProperty().addListener((o, v, n) -> {
 			if (n != null)
 				Session.USER_PARAMS.getComparison().setDeltaPrecMoz(Float.valueOf(n));
 		});
 
 		Label peaksDeltaMozLabel = new Label("Peaks delta moz (Da):");
-		peaksDeltaMozTF = new TextField();
-		peaksDeltaMozTF.setTooltip(new Tooltip("Enter the peaks delta moz value (Da)!"));
-		peaksDeltaMozTF.setPrefWidth(100);
-		peaksDeltaMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPeaksMoz()));
-		peaksDeltaMozTF.textProperty().addListener((o, v, n) -> {
+		deltaPeaksMozTF = new TextField();
+		deltaPeaksMozTF.setTooltip(new Tooltip("Enter the peaks delta moz value (Da)!"));
+		deltaPeaksMozTF.setPrefWidth(80);
+		deltaPeaksMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPeaksMoz()));
+		deltaPeaksMozTF.textProperty().addListener((o, v, n) -> {
 			if (n != null)
 				Session.USER_PARAMS.getComparison().setDeltaPeaksMoz(Float.valueOf(n));
 		});
 
 		Label deltaRTLabel = new Label("Delta rt (sec):");
 		deltaRTTF = new TextField();
-		deltaRTTF.setPrefWidth(100);
+		deltaRTTF.setPrefWidth(80);
 		deltaRTTF.setTooltip(new Tooltip("Enter the delta retention time value in secondes!"));
 		deltaRTTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaRT()));
 		deltaRTTF.textProperty().addListener((o, v, n) -> {
@@ -507,7 +508,7 @@ public class MainPane extends StackPane {
 
 		Label minPeaksNbrLabel = new Label("Min peaks number:");
 		minPeaksNbrTF = new TextField();
-		minPeaksNbrTF.setPrefWidth(100);
+		minPeaksNbrTF.setPrefWidth(80);
 		minPeaksNbrTF.setTooltip(new Tooltip("Enter the minimum peaks number value!"));
 		minPeaksNbrTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaksMin()));
 		minPeaksNbrTF.textProperty().addListener((o, v, n) -> {
@@ -517,7 +518,7 @@ public class MainPane extends StackPane {
 
 		Label thetaMinLabel = new Label("Theta min:");
 		thetaMinTF = new TextField();
-		thetaMinTF.setPrefWidth(100);
+		thetaMinTF.setPrefWidth(80);
 		thetaMinTF.setTooltip(new Tooltip("Enter the Theta min value!"));
 		thetaMinTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getThetaMin()));
 		thetaMinTF.textProperty().addListener((o, v, n) -> {
@@ -525,33 +526,33 @@ public class MainPane extends StackPane {
 				Session.USER_PARAMS.getComparison().setThetaMin(Integer.valueOf(n));
 		});
 
-		Label peaksNbrLabel = new Label("peaks number:");
+		Label peaksNbrLabel = new Label("Peaks number:");
 		peaksNbrTF = new TextField();
-		peaksNbrTF.setPrefWidth(100);
+		peaksNbrTF.setPrefWidth(80);
 		peaksNbrTF.setTooltip(new Tooltip("Enter the peaks number value!"));
 		peaksNbrTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaks()));
 		peaksNbrTF.textProperty().addListener((o, v, n) -> {
 			if (n != null)
 				Session.USER_PARAMS.getComparison().setNbPeaks(Integer.valueOf(n));
 		});
-		addFloatValidation(precDeltaMozTF);
+		addFloatValidation(deltaPrecMozTF);
+		addFloatValidation(deltaPeaksMozTF);
 		addIntegerValidation(deltaRTTF);
 		addIntegerValidation(minPeaksNbrTF);
 		addIntegerValidation(thetaMinTF);
 		addIntegerValidation(peaksNbrTF);
-		compareButton.disableProperty()
-				.bind(precDeltaMozTF.textProperty().isEmpty()
-						.or(deltaRTTF.textProperty().isEmpty().or(minPeaksNbrTF.textProperty().isEmpty()
-								.or(thetaMinTF.textProperty().isEmpty().or(peaksNbrTF.textProperty().isEmpty())))));
+		compareButton.disableProperty().bind(deltaPrecMozTF.textProperty().isEmpty().or(deltaRTTF.textProperty()
+				.isEmpty().or(minPeaksNbrTF.textProperty().isEmpty().or(thetaMinTF.textProperty().isEmpty()
+						.or(peaksNbrTF.textProperty().isEmpty().or(deltaPeaksMozTF.textProperty().isEmpty()))))));
 
 		GridPane settingsPane = new GridPane();
 		settingsPane.setPadding(new Insets(2));
 		settingsPane.setHgap(10);
 		settingsPane.setAlignment(Pos.BASELINE_CENTER);
 		settingsPane.add(deltaMozLabel, 0, 0, 1, 1);
-		settingsPane.add(precDeltaMozTF, 1, 0, 1, 1);
+		settingsPane.add(deltaPrecMozTF, 1, 0, 1, 1);
 		settingsPane.add(peaksDeltaMozLabel, 2, 0, 1, 1);
-		settingsPane.add(peaksDeltaMozTF, 3, 0, 1, 1);
+		settingsPane.add(deltaPeaksMozTF, 3, 0, 1, 1);
 		settingsPane.add(deltaRTLabel, 4, 0, 1, 1);
 		settingsPane.add(deltaRTTF, 5, 0, 1, 1);
 		settingsPane.add(minPeaksNbrLabel, 6, 0, 1, 1);
