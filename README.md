@@ -22,4 +22,4 @@ The parameters of comparison are :
  
  <h3>Screenshot</h3>
 
-![alt text](https://github.com/LSMBO/spectra-comp/blob/master/src/main/resources/images/screen_shot.png)
+![alt text](https://github.com/LSMBO/spectra-comp/blob/master/src/main/resources/images/screen-shot.png)
