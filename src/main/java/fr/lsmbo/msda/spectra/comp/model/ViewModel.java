@@ -107,11 +107,11 @@ public class ViewModel {
 		spectraLoaderDialog.showAndWait().ifPresent(params -> {
 			System.out.println("INFO | " + params.toString());
 			TaskRunner.doAsyncWork("Loading spectra", () -> {
-				// Step 1
+				// Step 1 : load reference spectra
 				if (!params.getRefPklByDataSourceMap().isEmpty()) {
 					params.getRefPklByDataSourceMap().forEach((k, v) -> {
-						// Reference spectra loaded from a file
 						if (k.equals(DataSource.FILE)) {
+							// Reference spectra loaded from a file
 							String refFilePath = (String) v;
 							loadRefPklFile(refFilePath);
 							refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
@@ -125,7 +125,7 @@ public class ViewModel {
 						}
 					});
 				}
-				// Step 2
+				// Step 2: load test spectra
 				if (!params.getTestedPklByDataSourceMap().isEmpty()) {
 					params.getTestedPklByDataSourceMap().forEach((k, v) -> {
 						// Test spectra loaded from a file
