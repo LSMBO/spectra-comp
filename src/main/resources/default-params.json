@@ -7,7 +7,8 @@
   "secondPklList": "C:\\Users\\Administrateur\\Desktop\\Algo_Beaux_Spectres\\X004081MROLM.mgf",
   "dataSource":"file",
   "comparison": {
-    "deltaMoz": 0.007,
+    "deltaPrecMoz": 0.007,
+    "deltaPeaksMoz": 0.006,
     "deltaRT": 90,
     "nbPeaksMin": 4,
     "thetaMin":11,

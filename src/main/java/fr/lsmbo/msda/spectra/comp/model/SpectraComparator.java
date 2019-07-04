@@ -63,10 +63,12 @@ public class SpectraComparator {
 	/** The list square rootpeaks reference spectrum. */
 	private static Double[] listSquareRootpeaksReferenceSpectrum;
 
-	/** The delta moz. */
+	/** The precursor delta moz. */
 	// Constant
-	private static Double deltaMoz;
+	private static Double deltaPrecMoz;
 
+	/** The delta peaks moz */
+	private static Double deltaPeaksMoz;
 	/** The delta RT. */
 	private static Integer deltaRT;
 
@@ -204,8 +206,8 @@ public class SpectraComparator {
 			Spectrum testedSpectrum = secondSpectra.getSpectraAsObservable().get(i);
 			// check if the moz precursor of the tested spectrum is equals to
 			// moz precursor of reference spectrum (+/- deltamoz)
-			if (testedSpectrum.getM_precursorMoz() >= (referenceSpectrumMoz - deltaMoz)
-					&& testedSpectrum.getM_precursorMoz() <= (referenceSpectrumMoz + deltaMoz)) {
+			if (testedSpectrum.getM_precursorMoz() >= (referenceSpectrumMoz - deltaPrecMoz)
+					&& testedSpectrum.getM_precursorMoz() <= (referenceSpectrumMoz + deltaPrecMoz)) {
 				// check if the RT of the tested spectrum is equals to RT of
 				// reference spectrum (+/- deltaRT)
 				if ((testedSpectrum.getRetentionTime() * 60) >= (referenceSpectrumRTSec - deltaRT)
@@ -256,8 +258,8 @@ public class SpectraComparator {
 		for (int i = 0; nbIntensePeaks != null && i < nbIntensePeaks.length; i++) {
 			Fragment fragmentReferenceSpectrum = nbIntensePeaks[i];
 			// set the range of moz
-			double minMozFragmentReferenceSpectrum = fragmentReferenceSpectrum.getMz() - deltaMoz;
-			double maxMozFragmentReferenceSpectrum = fragmentReferenceSpectrum.getMz() + deltaMoz;
+			double minMozFragmentReferenceSpectrum = fragmentReferenceSpectrum.getMz() - deltaPeaksMoz;
+			double maxMozFragmentReferenceSpectrum = fragmentReferenceSpectrum.getMz() + deltaPeaksMoz;
 			// get fragment of the tested spectrum
 			for (int j = 0; j < nbFragmentSpectrumSubList; j++) {
 				Fragment fragmentSubListSpectrum = spectrumOfSecSpectraSubList.getFragments().get(j);
@@ -333,7 +335,8 @@ public class SpectraComparator {
 		subListSecondSpectra.initialize();
 		validSpectra.initialize();
 		// validSpectra.initialize();
-		deltaMoz = Session.USER_PARAMS.getComparison().getDeltaMoz();
+		deltaPrecMoz = Session.USER_PARAMS.getComparison().getDeltaPrecMoz();
+		deltaPeaksMoz = Session.USER_PARAMS.getComparison().getDeltaPeaksMoz();
 		deltaRT = Session.USER_PARAMS.getComparison().getDeltaRT();
 		nbPeaksMin = Session.USER_PARAMS.getComparison().getNbPeaksMin();
 		thetaMin = Session.USER_PARAMS.getComparison().getThetaMin();

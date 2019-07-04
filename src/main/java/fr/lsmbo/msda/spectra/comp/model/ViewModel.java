@@ -238,7 +238,8 @@ public class ViewModel {
 		ParametersDialog paramsDialog = new ParametersDialog();
 		paramsDialog.showAndWait().ifPresent(parametersMap -> {
 			if (!parametersMap.isEmpty()) {
-				Session.USER_PARAMS.getComparison().setDeltaMoz((float) parametersMap.get("delta_moz"));
+				Session.USER_PARAMS.getComparison().setDeltaPrecMoz((float) parametersMap.get("delta_prec_moz"));
+				Session.USER_PARAMS.getComparison().setDeltaPeaksMoz((float) parametersMap.get("delta_peaks_moz"));
 				Session.USER_PARAMS.getComparison().setDeltaRT((int) parametersMap.get("delta_rt"));
 				Session.USER_PARAMS.getComparison().setNbPeaksMin((int) parametersMap.get("min_peaks_number"));
 				Session.USER_PARAMS.getComparison().setNbPeaks((int) parametersMap.get("peaks_number"));
@@ -485,14 +486,14 @@ public class ViewModel {
 	}
 
 	/**
-	 * add rows to the pdf table
+	 * Add rows to the pdf table
 	 * 
 	 * @param table
 	 *            the table to add rows in.
 	 */
 	private void addParamsRow(PdfPTable table) {
 		table.addCell("Comparison parameters");
-		table.addCell(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaMoz()));
+		table.addCell(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPrecMoz()));
 		table.addCell(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaRT()));
 		table.addCell(String.valueOf(Session.USER_PARAMS.getComparison().getNbPeaksMin()));
 		table.addCell(String.valueOf(Session.USER_PARAMS.getComparison().getThetaMin()));

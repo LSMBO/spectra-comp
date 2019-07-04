@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.compomics.util.gui.spectrum.ReferenceArea;
 import com.compomics.util.gui.spectrum.SpectrumPanel;
 
 import fr.lsmbo.msda.spectra.comp.model.Fragment;
@@ -36,8 +37,10 @@ public class SpectrumPane {
 	/**
 	 * *.
 	 *
-	 * @param spectrumToPlot            the spectrum to plot
-	 * @param isBeauty            show the notifications
+	 * @param spectrumToPlot
+	 *            the spectrum to plot
+	 * @param isBeauty
+	 *            show the notifications
 	 */
 	public SpectrumPane(Spectrum spectrumToPlot, Boolean isBeauty) {
 		drawSpectrum(spectrumToPlot);
@@ -65,12 +68,14 @@ public class SpectrumPane {
 		this.panel = new SpectrumPanel(convertToDouble(mozListTemp), convertToDouble(intListTemp),
 				spectrumToplot.getM_precursorMoz(), String.valueOf(spectrumToplot.getM_precursorCharge()),
 				spectrumToplot.getM_title());
+		
 	}
 
 	/**
 	 * Add a spectrum as a mirror.
 	 *
-	 * @param spectrumToplot            the spectrum to add in panel as mirror
+	 * @param spectrumToplot
+	 *            the spectrum to add in panel as mirror
 	 */
 	public void addMirroredSpectrum(Spectrum spectrumToplot) {
 		List<Double> mozListTemp = new ArrayList<>();
@@ -82,12 +87,14 @@ public class SpectrumPane {
 		this.panel.addMirroredSpectrum(convertToDouble(mozListTemp), convertToDouble(intensitiesListTemp),
 				spectrumToplot.getM_precursorMoz(), String.valueOf(spectrumToplot.getM_precursorCharge()),
 				spectrumToplot.getM_title(), false, Color.BLUE, Color.RED);
+
 	}
 
 	/**
 	 * Convert a list of objects to an array[double].
 	 *
-	 * @param List the list
+	 * @param List
+	 *            the list
 	 * @return the double[]
 	 */
 	private double[] convertToDouble(List<Double> List) {
@@ -111,7 +118,8 @@ public class SpectrumPane {
 	/**
 	 * Sets the spectrum.
 	 *
-	 * @param spectrum            the spectrum to set
+	 * @param spectrum
+	 *            the spectrum to set
 	 */
 	public final void setSpectrum(Spectrum spectrum) {
 		this.spectrum = spectrum;
@@ -129,7 +137,8 @@ public class SpectrumPane {
 	/**
 	 * Sets the fragments.
 	 *
-	 * @param fragments            the fragments to set
+	 * @param fragments
+	 *            the fragments to set
 	 */
 	public final void setFragments(ArrayList<Fragment> fragments) {
 		this.fragments = fragments;
@@ -147,7 +156,8 @@ public class SpectrumPane {
 	/**
 	 * Sets the panel.
 	 *
-	 * @param panel            the panel to set
+	 * @param panel
+	 *            the panel to set
 	 */
 	public final void setPanel(SpectrumPanel panel) {
 		this.panel = panel;

@@ -34,10 +34,16 @@ import javafx.stage.Stage;
 public class ParametersDialog extends Dialog<Map<String, Number>> {
 
 	/** The delta moz label. */
-	private Label deltaMozLabel;
+	private Label precDeltaMozLabel;
 
 	/** The delta moz TF. */
-	private TextField deltaMozTF;
+	private TextField precDeltaMozTF;
+
+	/** The peaks delta moz label. */
+	private Label peaksDeltaMozLabel;
+
+	/** The peaks delta moz TF. */
+	private TextField peaksDeltaMozTF;
 
 	/** The delta RT label. */
 	private Label deltaRTLabel;
@@ -76,12 +82,19 @@ public class ParametersDialog extends Dialog<Map<String, Number>> {
 		emptyParemetersLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
 		emptyParemetersLabel.setStyle(JavaFxUtils.RED_ITALIC);
 		warningDbPane.getChildren().addAll(emptyParemetersLabel);
-		deltaMozLabel = new Label("Delta moz: ");
-		deltaMozTF = new TextField();
-		deltaMozTF.setMinWidth(250);
-		if (!StringsUtils.isEmpty(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaMoz())))
-			deltaMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaMoz()));
-		deltaMozTF.setTooltip(new Tooltip("Enter the delta moz value"));
+		precDeltaMozLabel = new Label("Delta moz: ");
+		precDeltaMozTF = new TextField();
+		precDeltaMozTF.setMinWidth(250);
+		if (!StringsUtils.isEmpty(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPrecMoz())))
+			precDeltaMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPrecMoz()));
+		precDeltaMozTF.setTooltip(new Tooltip("Enter the precursor delta moz value"));
+
+		peaksDeltaMozLabel = new Label("Delta moz: ");
+		peaksDeltaMozTF = new TextField();
+		peaksDeltaMozTF.setMinWidth(250);
+		if (!StringsUtils.isEmpty(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPeaksMoz())))
+			peaksDeltaMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPeaksMoz()));
+		peaksDeltaMozTF.setTooltip(new Tooltip("Enter the peaks delta moz value"));
 
 		deltaRTLabel = new Label("Delta retention time: ");
 		deltaRTTF = new TextField();
@@ -109,7 +122,7 @@ public class ParametersDialog extends Dialog<Map<String, Number>> {
 			thetaMinTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getThetaMin()));
 
 		thetaMinTF.setTooltip(new Tooltip("Enter the minimum theta"));
-		addFloatValidation(deltaMozTF);
+		addFloatValidation(precDeltaMozTF);
 		addIntegerValidation(deltaRTTF);
 		addIntegerValidation(minNbrPeaksTF);
 		addIntegerValidation(peaksNbrTF);
@@ -122,16 +135,18 @@ public class ParametersDialog extends Dialog<Map<String, Number>> {
 		loginPane.setVgap(15);
 
 		loginPane.add(warningDbPane, 0, 1, 2, 1);
-		loginPane.add(deltaMozLabel, 0, 2, 1, 1);
-		loginPane.add(deltaMozTF, 1, 2, 1, 1);
-		loginPane.add(deltaRTLabel, 0, 3, 1, 1);
-		loginPane.add(deltaRTTF, 1, 3, 1, 1);
-		loginPane.add(minNbrPeaksLabel, 0, 4, 1, 1);
-		loginPane.add(minNbrPeaksTF, 1, 4, 1, 1);
-		loginPane.add(peaksNbrLabel, 0, 5, 1, 1);
-		loginPane.add(peaksNbrTF, 1, 5, 1, 1);
-		loginPane.add(thethaMinLabel, 0, 6, 1, 1);
-		loginPane.add(thetaMinTF, 1, 6, 1, 1);
+		loginPane.add(precDeltaMozLabel, 0, 2, 1, 1);
+		loginPane.add(precDeltaMozTF, 1, 2, 1, 1);
+		loginPane.add(peaksDeltaMozLabel, 0, 3, 1, 1);
+		loginPane.add(peaksDeltaMozTF, 1, 3, 1, 1);
+		loginPane.add(deltaRTLabel, 0, 4, 1, 1);
+		loginPane.add(deltaRTTF, 1, 4, 1, 1);
+		loginPane.add(minNbrPeaksLabel, 0, 5, 1, 1);
+		loginPane.add(minNbrPeaksTF, 1, 5, 1, 1);
+		loginPane.add(peaksNbrLabel, 0, 6, 1, 1);
+		loginPane.add(peaksNbrTF, 1, 6, 1, 1);
+		loginPane.add(thethaMinLabel, 0, 7, 1, 1);
+		loginPane.add(thetaMinTF, 1, 7, 1, 1);
 
 		/********************
 		 * Main dialog pane *
@@ -155,7 +170,7 @@ public class ParametersDialog extends Dialog<Map<String, Number>> {
 		this.setDialogPane(dialogPane);
 		// Control
 		emptyParemetersLabel.visibleProperty()
-				.bind(deltaMozTF.textProperty().isEmpty()
+				.bind(precDeltaMozTF.textProperty().isEmpty()
 						.or(deltaRTTF.textProperty().isEmpty().or(minNbrPeaksTF.textProperty().isEmpty()
 								.or(peaksNbrTF.textProperty().isEmpty().or(thetaMinTF.textProperty().isEmpty())))));
 		buttonOk.disableProperty().bind(emptyParemetersLabel.visibleProperty());
@@ -164,7 +179,8 @@ public class ParametersDialog extends Dialog<Map<String, Number>> {
 		this.setResultConverter(buttonType -> {
 			if (buttonType == ButtonType.OK) {
 				try {
-					parametersMap.put("delta_moz", Float.valueOf(deltaMozTF.getText()));
+					parametersMap.put("delta_prec_moz", Float.valueOf(precDeltaMozTF.getText()));
+					parametersMap.put("delta_peaks_moz", Float.valueOf(peaksDeltaMozTF.getText()));
 					parametersMap.put("delta_rt", Integer.valueOf(deltaRTTF.getText()));
 					parametersMap.put("min_peaks_number", Integer.valueOf(minNbrPeaksTF.getText()));
 					parametersMap.put("peaks_number", Integer.valueOf(peaksNbrTF.getText()));
