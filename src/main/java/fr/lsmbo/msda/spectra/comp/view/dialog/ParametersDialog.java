@@ -82,14 +82,14 @@ public class ParametersDialog extends Dialog<Map<String, Number>> {
 		emptyParemetersLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
 		emptyParemetersLabel.setStyle(JavaFxUtils.RED_ITALIC);
 		warningDbPane.getChildren().addAll(emptyParemetersLabel);
-		deltaPrecMozLabel = new Label("Delta moz: ");
+		deltaPrecMozLabel = new Label("Precursor delta moz: ");
 		deltaPrecMozTF = new TextField();
 		deltaPrecMozTF.setMinWidth(250);
 		if (!StringsUtils.isEmpty(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPrecMoz())))
 			deltaPrecMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPrecMoz()));
 		deltaPrecMozTF.setTooltip(new Tooltip("Enter the precursor delta moz value"));
 
-		deltaPeaksMozLabel = new Label("Delta moz: ");
+		deltaPeaksMozLabel = new Label("Peaks delta moz: ");
 		deltaPeaksMozTF = new TextField();
 		deltaPeaksMozTF.setMinWidth(250);
 		if (!StringsUtils.isEmpty(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPeaksMoz())))
