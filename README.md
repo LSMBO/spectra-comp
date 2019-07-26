@@ -20,7 +20,12 @@ The parameters of comparison are :
  
  <code>TS.peak = intensity of peaks TS(tested spectra)</code>  and <code> RS.peak = intensity of peaks RS(reference spectra)</code>
  
- Spectra-comp requires Java 8
+**Usage**
+
+Spectra-comp has been developped in Java and can be used on Windows and Linux.<br>
+Spectra-comp requires Java 8 at least.<br>
+To run Spectra-comp, you can double-click on the script <code>start_spectra_comp</code>
+
  <h3>Screenshot</h3>
 
 ![alt text](https://github.com/LSMBO/spectra-comp/blob/master/src/main/resources/images/screen-shot.png)
