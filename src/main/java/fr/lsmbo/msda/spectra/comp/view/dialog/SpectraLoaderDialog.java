@@ -196,7 +196,8 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 				});
 			});
 		});
-		// update the view
+		
+		// Update the view
 		userProjectsCBX.setOnAction(e -> {
 			refDbName = "msi_db_project_" + userProjectsCBX.getValue().getId();
 			rootItem.getChildren().clear();

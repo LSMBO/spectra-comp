@@ -20,7 +20,7 @@ import javafx.collections.ObservableList;
 
 // TODO: Auto-generated Javadoc
 /**
- * Handle spectra from database.
+ * Handle spectra from databases.
  */
 
 public class DBSpectraHandler {
