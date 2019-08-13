@@ -12,9 +12,11 @@ import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 public enum DriverType {
 
 	/** The h2. */
-	H2("org.h2.Driver", "h2"), /** The postgresql. */
- POSTGRESQL("org.postgresql.Driver", "postgresql"), /** The sqlite. */
- SQLITE("org.sqlite.JDBC", "sqlite");
+	H2("org.h2.Driver", "h2"),
+	/** The postgresql. */
+	POSTGRESQL("org.postgresql.Driver", "postgresql"),
+	/** The sqlite. */
+	SQLITE("org.sqlite.JDBC", "sqlite");
 
 	/** The m jdbc driver. */
 	private final String m_jdbcDriver;
@@ -25,8 +27,10 @@ public enum DriverType {
 	/**
 	 * Instantiates a new driver type.
 	 *
-	 * @param jdbcDriver the jdbc driver
-	 * @param jdbcURLProtocol the jdbc URL protocol
+	 * @param jdbcDriver
+	 *            the jdbc driver
+	 * @param jdbcURLProtocol
+	 *            the jdbc URL protocol
 	 */
 	private DriverType(final String jdbcDriver, final String jdbcURLProtocol) {
 		assert (StringsUtils.isEmpty(jdbcDriver)) : "DriverType() invalid jdbcDriver";
