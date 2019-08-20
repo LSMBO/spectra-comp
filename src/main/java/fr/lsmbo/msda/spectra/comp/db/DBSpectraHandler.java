@@ -61,6 +61,9 @@ public class DBSpectraHandler {
 	private static final String MSI_MSQ_QUERY = "SELECT msq.* FROM ms_query msq, spectrum sp, msi_search msi, peaklist pkl "
 			+ "WHERE msi.peaklist_id=pkl.id AND pkl.id=sp.peaklist_id AND sp.id=msq.spectrum_id AND msi.id=? AND msq.msi_search_id=?";
 
+	/** The constant of spectra */
+	private static final String MSI_SPECTRA = "SELECT spec.* FROM spectrum spec, ms_query msq WHERE spec.id=msq.spectrum_id AND msq.id IN(?)";
+
 	private static final String COUNT_PMS = "";
 
 	private static List<Long> msQueriesIds = new ArrayList<>();
@@ -76,12 +79,12 @@ public class DBSpectraHandler {
 	 * @return msi_search_id
 	 * @throws SQLException
 	 */
-	public static Long getMsiSearchId(final Long resultSetId) throws SQLException {
+	public static Long getMsiSearchId(final String dbName, final Long resultSetId) throws SQLException {
 		PreparedStatement msiSearchIdStmt = null;
 		ResultSet rs = null;
 		Long msiSearchId = -1L;
 		try {
-			msiSearchIdStmt = DBAccess.openUdsDBConnection().prepareStatement(MSI_SEARCH_ID_QUERY);
+			msiSearchIdStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(MSI_SEARCH_ID_QUERY);
 			msiSearchIdStmt.setLong(1, resultSetId);
 			rs = msiSearchIdStmt.executeQuery();
 			while (rs.next()) {
@@ -103,7 +106,7 @@ public class DBSpectraHandler {
 	 *            the msi search id
 	 * @throws SQLException
 	 */
-	public static void fetchData(final String dbName, final Long msiSearchId) throws SQLException {
+	public static List<Long> fetchData(final String dbName, final Long msiSearchId) throws SQLException {
 		PreparedStatement msQueryStmt = null;
 		ResultSet rs = null;
 		try {
@@ -126,12 +129,68 @@ public class DBSpectraHandler {
 				msQueriesIds.add(msqId);
 				msqQueryMap.put(msqId, msQuery);
 				nbPeptideMatchesByMsQueryIdMap.put(msqId, 0);
-				System.out.println("INFO | '" + listMsQueries.toString() + "'.");
 			}
+			System.out.println("INFO | msQueriesIds= #'" + msQueriesIds + "'.");
 		} finally {
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(msQueryStmt);
 		}
+		return msQueriesIds;
+	}
+
+	/**
+	 * Fetch Ms Queries data
+	 * 
+	 * @throws SQLException
+	 */
+	public static boolean fetchMSQueriesData(final String dbName, List<Long> msQueriesIdList) throws SQLException {
+		PreparedStatement querySpecStmt = null;
+		ResultSet rs = null;
+		try {
+			System.out.println("INFO | Load spectra from msQueries list= #'" + msQueriesIdList + "'.");
+			querySpecStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(MSI_SPECTRA);
+			for (Long msqId : msQueriesIdList) {
+				querySpecStmt.setLong(1, msqId);
+
+				rs = querySpecStmt.executeQuery();
+				while (rs.next()) {
+					Long id = rs.getLong("id");
+					Integer firstScan = rs.getInt("first_scan");
+					Float firstTime = rs.getFloat("first_time");
+					Float lastTime = rs.getFloat("last_time");
+					byte[] intensityList = rs.getBytes("intensity_list");
+					byte[] mozeList = rs.getBytes("moz_list");
+					Integer precursorCharge = rs.getInt("precursor_charge");
+					Float precursorIntensity = rs.getFloat("precursor_intensity");
+					Double precursorMoz = rs.getDouble("precursor_moz");
+					String title = rs.getString("title");
+					if (id > 0L && (!StringsUtils.isEmpty(title))) {
+						Spectrum spectrum = new Spectrum(id, firstScan, firstTime, lastTime, intensityList, mozeList,
+								precursorCharge, precursorIntensity, precursorMoz, title);
+						// Create the fragments
+						for (int i = 0; i < spectrum.getMasses().length; i++) {
+							double mz = spectrum.getMasses()[i];
+							float intensity = (float) spectrum.getIntensities()[i];
+							if (mz > 0) {
+								Fragment fragment = new Fragment(i, mz, intensity);
+								spectrum.addFragment(fragment);
+							} else {
+								System.err.println("INFO | Invalid fragment! moz must be greater than 0!");
+							}
+						}
+						// Update the current regex
+						spectra.addSpectrum(spectrum);
+					}
+				}
+			}
+			System.out.println("INFO | Retrieve spectra has finished. " + spectra.getSpectraAsObservable().size()
+					+ " spectra were found.");
+
+		} finally {
+			tryToCloseResultSet(rs);
+			tryToCloseStatement(querySpecStmt);
+		}
+		return true;
 	}
 
 	/** Initialize parameters */
@@ -142,6 +201,7 @@ public class DBSpectraHandler {
 		nbPeptideMatchesByMsQueryIdMap.clear();
 	}
 
+	//
 	/** The spectra. */
 	private static Spectra spectra = new Spectra();
 

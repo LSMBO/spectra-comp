@@ -296,6 +296,7 @@ public class ViewModel {
 	 */
 	private void loadRefSpectraProline(String dbName, Set<Long> rsmIds) {
 		try {
+			PeakListProvider.loadTest(dbName, (long) 50);
 			PeakListProvider.loadRefSpectraFrmProline(dbName, rsmIds);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

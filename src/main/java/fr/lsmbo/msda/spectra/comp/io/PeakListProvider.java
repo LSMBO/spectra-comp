@@ -2,6 +2,7 @@ package fr.lsmbo.msda.spectra.comp.io;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -23,16 +24,16 @@ import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
  *
  */
 public class PeakListProvider {
-	
+
 	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(PeakListProvider.class);
-	
+
 	/** The project name. */
 	private static String projectName;
-	
+
 	/** The first pkl list. */
 	private static String firstPklList;
-	
+
 	/** The second pkl list. */
 	private static String secondPklList;
 
@@ -66,10 +67,13 @@ public class PeakListProvider {
 	/**
 	 * Load reference peak list from a Proline project.
 	 *
-	 * @param dbName The database name to connect to. It's always in this form
-	 *               msi_db_project_ID
-	 * @param rsmIds the result_summary ids from where to compute the spectra.
-	 * @throws SQLException the SQL exception
+	 * @param dbName
+	 *            The database name to connect to. It's always in this form
+	 *            msi_db_project_ID
+	 * @param rsmIds
+	 *            the result_summary id from where to compute the spectra.
+	 * @throws SQLException
+	 *             the SQL exception
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadRefSpectraFrmProline(String dbName, Set<Long> rsmIds) throws SQLException {
@@ -88,11 +92,24 @@ public class PeakListProvider {
 		}
 	}
 
+	// test
+	public static void loadTest(String dbName, Long resultSetId) throws SQLException {
+		// TODO test
+		System.out.println("INFO |  start test");
+		Long msiSearchId = DBSpectraHandler.getMsiSearchId(dbName, resultSetId);
+		System.out.println("INFO | msiSearchId: " + msiSearchId);
+		List<Long> msquerriesIds = DBSpectraHandler.fetchData(dbName, msiSearchId);
+		DBSpectraHandler.fetchMSQueriesData(dbName, msquerriesIds);
+		System.out.println("INFO |  end test");
+	}
+
 	/**
 	 * Load the reference spectra from a peaklist file.
 	 *
-	 * @param refPklFilePath The path of the reference peaklist file.
-	 * @throws Exception the exception
+	 * @param refPklFilePath
+	 *            The path of the reference peaklist file.
+	 * @throws Exception
+	 *             the exception
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadRefSpectraFromFile(String refPklFilePath) throws Exception {
@@ -108,12 +125,15 @@ public class PeakListProvider {
 	}
 
 	/**
-	 * Load tested peaklist from a Proline project.
+	 * Load tested peak list from a Proline project.
 	 *
-	 * @param dbName The database name to connect to. It's always in this form
-	 *               msi_db_project_ID
-	 * @param rsmIds the result_summary ids from where to compute the spectra.
-	 * @throws Exception the exception
+	 * @param dbName
+	 *            The database name to connect to. It's always in this form
+	 *            msi_db_project_ID
+	 * @param rsmIds
+	 *            the result_summary ids from where to compute the spectra.
+	 * @throws Exception
+	 *             the exception
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadTestedSpectraFrmProline(String dbName, Set<Long> rsmIds) throws Exception {
@@ -133,8 +153,10 @@ public class PeakListProvider {
 	/**
 	 * Load the tested spectra from a peaklist file.
 	 *
-	 * @param testPklFilePath The path of the reference peaklist file.
-	 * @throws Exception the exception
+	 * @param testPklFilePath
+	 *            The path of the reference peaklist file.
+	 * @throws Exception
+	 *             the exception
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadTestedSpectraFromFile(String testPklFilePath) throws Exception {
@@ -169,7 +191,8 @@ public class PeakListProvider {
 	/**
 	 * Sets the first pkl list.
 	 *
-	 * @param firstPklList the first peak list to set
+	 * @param firstPklList
+	 *            the first peak list to set
 	 */
 	public static final void setFirstPklList(String firstPklList) {
 		PeakListProvider.firstPklList = firstPklList;
@@ -178,7 +201,8 @@ public class PeakListProvider {
 	/**
 	 * Sets the project name.
 	 *
-	 * @param projectName the project name to set
+	 * @param projectName
+	 *            the project name to set
 	 */
 	public static final void setProjectName(String projectName) {
 		PeakListProvider.projectName = projectName;
@@ -187,7 +211,8 @@ public class PeakListProvider {
 	/**
 	 * Sets the second pkl list.
 	 *
-	 * @param secondPklList the second peak list to set
+	 * @param secondPklList
+	 *            the second peak list to set
 	 */
 	public static final void setSecondPklList(String secondPklList) {
 		PeakListProvider.secondPklList = secondPklList;
