@@ -18,7 +18,7 @@ The parameters of comparison are :
 
  <code> Cos theta = ∑NB_PEAKS(√RS.peak * √TS.peak)/(√(∑NB_PEAKS(RS.peak))*√(∑NB_PEAKS(TS.peak)))</code> 
  
- <code>TS.peak = intensity of peaks TS(tested spectra)</code>  and <code> RS.peak = intensity of peaks RS(reference spectra)</code>
+ <code>TS.peak = intensity of peaks TS(tested spectra)</code>  <br> <code> RS.peak = intensity of peaks RS(reference spectra)</code>
  
 **Usage**
 
