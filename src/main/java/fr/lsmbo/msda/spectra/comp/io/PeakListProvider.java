@@ -2,7 +2,6 @@ package fr.lsmbo.msda.spectra.comp.io;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -93,13 +92,10 @@ public class PeakListProvider {
 	}
 
 	// test
-	public static void loadTest(String dbName, Long resultSetId) throws SQLException {
+	public static void loadTest(String dbName, Long resultSetId) throws Exception {
 		// TODO test
 		System.out.println("INFO |  start test");
-		Long msiSearchId = DBSpectraHandler.getMsiSearchId(dbName, resultSetId);
-		System.out.println("INFO | msiSearchId: " + msiSearchId);
-		List<Long> msquerriesIds = DBSpectraHandler.fetchData(dbName, msiSearchId);
-		DBSpectraHandler.fetchMSQueriesData(dbName, msquerriesIds);
+	    DBSpectraHandler.fetchMSQueriesData(dbName, resultSetId);
 		System.out.println("INFO |  end test");
 	}
 

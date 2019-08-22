@@ -46,7 +46,7 @@ public class DBSpectraHandler {
 	private static final String UDS_DATASET = "SELECT DISTINCT(ds.result_summary_id) AS rsm_id,ds.* ,proj.name proj_name FROM data_set ds,project proj WHERE  proj.id=ds.project_id AND ds.type IN ('AGGREGATE','IDENTIFICATION') AND ds.result_summary_id>0 AND ds.project_id=? order by ds.result_summary_id";
 
 	/** The Constant ALL_DATASET. */
-	private static final String ALL_DATASET = "select * from data_set where project_id =? order by parent_dataset_id desc";
+	private static final String ALL_DATASET = "SELECT * FROM data_set WHERE project_id =? ORDER BY parent_dataset_id DESC";
 	/** The Constant VALIDATED_MSI_SEARCH_IDS. */
 
 	private static final String VALIDATED_MSI_SEARCH_IDS = "SELECT distinct(msi.id) as msi_search_id FROM result_summary rsm, result_set rs, msi_search msi, peaklist pkl, protein_set ps WHERE rsm.result_set_id=rs.id AND rs.msi_search_id=msi.id AND msi.peaklist_id= pkl.id AND ps.result_summary_id=rsm.id AND ps.is_validated=true AND rs.type IN('SEARCH','USER') AND rsm.id=?";
@@ -61,15 +61,49 @@ public class DBSpectraHandler {
 	private static final String MSI_MSQ_QUERY = "SELECT msq.* FROM ms_query msq, spectrum sp, msi_search msi, peaklist pkl "
 			+ "WHERE msi.peaklist_id=pkl.id AND pkl.id=sp.peaklist_id AND sp.id=msq.spectrum_id AND msi.id=? AND msq.msi_search_id=?";
 
-	/** The constant of spectra */
+	/** The constant of msi spectra */
 	private static final String MSI_SPECTRA = "SELECT spec.* FROM spectrum spec, ms_query msq WHERE spec.id=msq.spectrum_id AND msq.id IN(?)";
 
-	private static final String COUNT_PMS = "";
+	/** The constant of protein match by ms queries */
+	private static final String QUERY_PSM = "SELECT pepm.ms_query_id ,pepm.* FROM peptide_match pepm WHERE pepm.result_set_id=? AND pepm.ms_query_id IN(?)  order by pepm.ms_query_id ";
 
+	/** The constant of result set id */
+	private static final String RESULTSET_ID = "SELECT id,decoy_result_set_id FROM result_set WHERE id=?";
+
+	/** Initial parameters */
+	private static List<Long> resultSetIds = new ArrayList<>();
 	private static List<Long> msQueriesIds = new ArrayList<>();
 	private static List<DMsQuery> listMsQueries = new ArrayList<>();
 	private static Map<Long, DMsQuery> msqQueryMap = new HashMap<>();
-	private static Map<Long, Integer> nbPeptideMatchesByMsQueryIdMap = new HashMap<>();
+	private static Map<Long, Integer> peptideMatchesByMsQueryIdMap = new HashMap<>();
+
+	/**
+	 * Fetch PSMs
+	 * 
+	 * @param dbName
+	 * @param msQueryList
+	 * @param rsIdList
+	 * @throws Exception
+	 */
+	private void fetchPSM(String dbName, List<Long> rsIdList, List<Long> msQueryList) throws Exception {
+		PreparedStatement psmStmt = null;
+		ResultSet rs = null;
+		try {
+			psmStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(QUERY_PSM);
+			for (Long rsId : rsIdList) {
+				for (Long msqId : msQueryList) {
+					psmStmt.setLong(1, rsId);
+					rs = psmStmt.executeQuery();
+					while (rs.next()) {
+
+					}
+				}
+			}
+		} finally {
+			tryToCloseResultSet(rs);
+			tryToCloseStatement(psmStmt);
+		}
+	}
 
 	/**
 	 * Return the msi_search_id
@@ -79,11 +113,13 @@ public class DBSpectraHandler {
 	 * @return msi_search_id
 	 * @throws SQLException
 	 */
-	public static Long getMsiSearchId(final String dbName, final Long resultSetId) throws SQLException {
+	public static void fetchMSQueriesData(final String dbName, final Long resultSetId) throws Exception {
 		PreparedStatement msiSearchIdStmt = null;
 		ResultSet rs = null;
 		Long msiSearchId = -1L;
 		try {
+			assert resultSetId > 0L : "Result set id must not be null nor empty!";
+			initialize();
 			msiSearchIdStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(MSI_SEARCH_ID_QUERY);
 			msiSearchIdStmt.setLong(1, resultSetId);
 			rs = msiSearchIdStmt.executeQuery();
@@ -94,7 +130,55 @@ public class DBSpectraHandler {
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(msiSearchIdStmt);
 		}
-		return msiSearchId;
+		// Fetch main data
+		if (msiSearchId > 0L) {
+			fetchData(dbName, msiSearchId);
+			// Fetch ms queries
+			if (!msQueriesIds.isEmpty() && fetchMSQueries(dbName, msQueriesIds)) {
+				// Get decoy result set id
+				addResultSetIds(dbName, resultSetId);
+				// Get all PSM
+			} else {
+				System.err.println("WARN | No ms queries were found!");
+			}
+		} else {
+			System.err.println("ERROR | msi_search id must not be empty nor null!");
+		}
+	}
+
+	/**
+	 * Add result set id to the list of result set ids and its decoy result set
+	 * id id
+	 * 
+	 * @param resultSetId
+	 *            the result set id to add
+	 * @throws SQLException
+	 */
+	private static void addResultSetIds(String dbName, Long resultSetId) throws Exception {
+		PreparedStatement resultSetIdsStmt = null;
+		ResultSet rs = null;
+		Long id = -1L;
+		Long decoyId = -1L;
+		try {
+			resultSetIdsStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(RESULTSET_ID);
+			resultSetIdsStmt.setLong(1, resultSetId);
+			rs = resultSetIdsStmt.executeQuery();
+			while (rs.next()) {
+				id = rs.getLong("id");
+				decoyId = rs.getLong("decoy_result_set_id");
+			}
+			if (id > 0) {
+				resultSetIds.add(id);
+			}
+			if (decoyId > 0) {
+				resultSetIds.add(decoyId);
+			}
+			System.out.println("INFO | Retrieve peptide match for the result set with id=# " + id
+					+ " and the decoy result set id=# " + decoyId + "");
+		} finally {
+			tryToCloseResultSet(rs);
+			tryToCloseStatement(resultSetIdsStmt);
+		}
 	}
 
 	/**
@@ -106,13 +190,11 @@ public class DBSpectraHandler {
 	 *            the msi search id
 	 * @throws SQLException
 	 */
-	public static List<Long> fetchData(final String dbName, final Long msiSearchId) throws SQLException {
+	private static void fetchData(final String dbName, final Long msiSearchId) throws SQLException {
 		PreparedStatement msQueryStmt = null;
 		ResultSet rs = null;
 		try {
-			assert (msiSearchId > 0L) : "msi_search id must not be null nor empty!";
-			System.out.println("INFO | Retrieve data from msi_search_id= #'" + msiSearchId + "'.");
-			initialize();
+			System.out.println("INFO | Retrieve data from msi_search_id= #" + msiSearchId);
 			msQueryStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(MSI_MSQ_QUERY);
 			msQueryStmt.setLong(1, msiSearchId);
 			msQueryStmt.setLong(2, msiSearchId);
@@ -128,14 +210,13 @@ public class DBSpectraHandler {
 				listMsQueries.add(msQuery);
 				msQueriesIds.add(msqId);
 				msqQueryMap.put(msqId, msQuery);
-				nbPeptideMatchesByMsQueryIdMap.put(msqId, 0);
+				peptideMatchesByMsQueryIdMap.put(msqId, 0);
 			}
-			System.out.println("INFO | msQueriesIds= #'" + msQueriesIds + "'.");
+			System.out.println("INFO | Retrieve ms queries has finished." + msQueriesIds.size() + " ms queries were found.");
 		} finally {
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(msQueryStmt);
 		}
-		return msQueriesIds;
 	}
 
 	/**
@@ -143,15 +224,14 @@ public class DBSpectraHandler {
 	 * 
 	 * @throws SQLException
 	 */
-	public static boolean fetchMSQueriesData(final String dbName, List<Long> msQueriesIdList) throws SQLException {
+	private static boolean fetchMSQueries(final String dbName, List<Long> msQueriesIdList) throws SQLException {
 		PreparedStatement querySpecStmt = null;
 		ResultSet rs = null;
+		Boolean isSuccess = false;
 		try {
-			System.out.println("INFO | Load spectra from msQueries list= #'" + msQueriesIdList + "'.");
 			querySpecStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(MSI_SPECTRA);
 			for (Long msqId : msQueriesIdList) {
 				querySpecStmt.setLong(1, msqId);
-
 				rs = querySpecStmt.executeQuery();
 				while (rs.next()) {
 					Long id = rs.getLong("id");
@@ -171,7 +251,7 @@ public class DBSpectraHandler {
 						for (int i = 0; i < spectrum.getMasses().length; i++) {
 							double mz = spectrum.getMasses()[i];
 							float intensity = (float) spectrum.getIntensities()[i];
-							if (mz > 0) {
+							if (mz >= 0) {
 								Fragment fragment = new Fragment(i, mz, intensity);
 								spectrum.addFragment(fragment);
 							} else {
@@ -183,14 +263,15 @@ public class DBSpectraHandler {
 					}
 				}
 			}
-			System.out.println("INFO | Retrieve spectra has finished. " + spectra.getSpectraAsObservable().size()
-					+ " spectra were found.");
+			System.out.println("INFO | Retrieve spectra from database has finished. "
+					+ spectra.getSpectraAsObservable().size() + " spectra were found.");
 
 		} finally {
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(querySpecStmt);
+			isSuccess = true;
 		}
-		return true;
+		return isSuccess;
 	}
 
 	/** Initialize parameters */
@@ -198,7 +279,7 @@ public class DBSpectraHandler {
 		msQueriesIds.clear();
 		listMsQueries.clear();
 		msqQueryMap.clear();
-		nbPeptideMatchesByMsQueryIdMap.clear();
+		peptideMatchesByMsQueryIdMap.clear();
 	}
 
 	//
@@ -382,7 +463,7 @@ public class DBSpectraHandler {
 					String title = rs.getString("title");
 					// Retrieve the used peak list software to determine the
 					// parsing
-					// rule
+					// rules
 					String pklSoftwareName = rs.getString("pkl_software");
 					if (id > 0L && (!StringsUtils.isEmpty(title))) {
 						Spectrum spectrum = new Spectrum(id, firstScan, firstTime, lastTime, intensityList, mozeList,
@@ -534,7 +615,6 @@ public class DBSpectraHandler {
 				rs.close();
 		} catch (Exception e) {
 			System.err.println("ERROR | Error while trying to close the resultset " + e);
-			// logger.error("Error while trying to close Statement", e)
 		}
 	}
 
@@ -544,6 +624,7 @@ public class DBSpectraHandler {
 	 * @param stmt
 	 *            the statement to close
 	 */
+
 	private static void tryToCloseStatement(Statement stmt) {
 		try {
 			if (stmt != null && !stmt.isClosed())
