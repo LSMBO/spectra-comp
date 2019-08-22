@@ -65,7 +65,7 @@ public class DBSpectraHandler {
 	private static final String MSI_SPECTRA = "SELECT spec.* FROM spectrum spec, ms_query msq WHERE spec.id=msq.spectrum_id AND msq.id IN(?)";
 
 	/** The constant of protein match by ms queries */
-	private static final String QUERY_PSM = "SELECT pepm.ms_query_id ,pepm.* FROM peptide_match pepm WHERE pepm.result_set_id=? AND pepm.ms_query_id IN(?)  order by pepm.ms_query_id ";
+	private static final String QUERY_PSM = "SELECT pepm.ms_query_id ,pepm.peptide_id  FROM peptide_match pepm WHERE pepm.result_set_id in(?) AND pepm.ms_query_id IN(?) order by pepm.ms_query_id ";
 
 	/** The constant of result set id */
 	private static final String RESULTSET_ID = "SELECT id,decoy_result_set_id FROM result_set WHERE id=?";
@@ -75,27 +75,33 @@ public class DBSpectraHandler {
 	private static List<Long> msQueriesIds = new ArrayList<>();
 	private static List<DMsQuery> listMsQueries = new ArrayList<>();
 	private static Map<Long, DMsQuery> msqQueryMap = new HashMap<>();
-	private static Map<Long, Integer> peptideMatchesByMsQueryIdMap = new HashMap<>();
+	private static Map<Long, Set<Long>> peptideMatchesByMsQueryIdMap = new HashMap<>();
 
 	/**
-	 * Fetch PSMs
+	 * Fetch PSMs grouped by ms query id
 	 * 
 	 * @param dbName
+	 *            the database name
 	 * @param msQueryList
+	 *            the list of ms queries id
 	 * @param rsIdList
+	 *            the list of result set id /decoy result set id
 	 * @throws Exception
 	 */
-	private void fetchPSM(String dbName, List<Long> rsIdList, List<Long> msQueryList) throws Exception {
+	private static void fetchPSM(String dbName, List<Long> rsIdList, List<Long> msQueryList) throws Exception {
 		PreparedStatement psmStmt = null;
 		ResultSet rs = null;
 		try {
 			psmStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(QUERY_PSM);
 			for (Long rsId : rsIdList) {
+				psmStmt.setLong(1, rsId);
 				for (Long msqId : msQueryList) {
-					psmStmt.setLong(1, rsId);
+					Set<Long> pepIdsSet = peptideMatchesByMsQueryIdMap.get(msqId);
+					psmStmt.setLong(2, msqId);
 					rs = psmStmt.executeQuery();
 					while (rs.next()) {
-
+						Long pepId = rs.getLong("peptide_id");
+						pepIdsSet.add(pepId);
 					}
 				}
 			}
@@ -118,6 +124,7 @@ public class DBSpectraHandler {
 		ResultSet rs = null;
 		Long msiSearchId = -1L;
 		try {
+			assert !StringsUtils.isEmpty(dbName) : "Database name must not be null nor empty!";
 			assert resultSetId > 0L : "Result set id must not be null nor empty!";
 			initialize();
 			msiSearchIdStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(MSI_SEARCH_ID_QUERY);
@@ -131,23 +138,21 @@ public class DBSpectraHandler {
 			tryToCloseStatement(msiSearchIdStmt);
 		}
 		// Fetch main data
-		if (msiSearchId > 0L) {
-			fetchData(dbName, msiSearchId);
-			// Fetch ms queries
-			if (!msQueriesIds.isEmpty() && fetchMSQueries(dbName, msQueriesIds)) {
-				// Get decoy result set id
-				addResultSetIds(dbName, resultSetId);
-				// Get all PSM
-			} else {
-				System.err.println("WARN | No ms queries were found!");
-			}
+		assert (msiSearchId > 0L) : "msi_search id must not be empty nor null!";
+		fetchData(dbName, msiSearchId);
+		// Fetch ms queries
+		if (!msQueriesIds.isEmpty() && fetchMSQueries(dbName, msQueriesIds)) {
+			// Get decoy result set id
+			addResultSetIds(dbName, resultSetId);
+			// fetch PSMs grouped by ms query id
+			fetchPSM(dbName, resultSetIds, msQueriesIds);
 		} else {
-			System.err.println("ERROR | msi_search id must not be empty nor null!");
+			System.err.println("WARN | No ms queries were found!");
 		}
 	}
 
 	/**
-	 * Add result set id to the list of result set ids and its decoy result set
+	 * Add result set id to the list of Result set ids and its decoy result set
 	 * id id
 	 * 
 	 * @param resultSetId
@@ -205,14 +210,16 @@ public class DBSpectraHandler {
 				Integer charge = rs.getInt("charge");
 				Double moz = rs.getDouble("moz");
 				DMsQuery msQuery = new DMsQuery(-1, msqId, msqInitialId, null);
+				Set<Long> peptideMatcheIds = new HashSet<>();
 				msQuery.setCharge(charge);
 				msQuery.setMoz(moz);
 				listMsQueries.add(msQuery);
 				msQueriesIds.add(msqId);
 				msqQueryMap.put(msqId, msQuery);
-				peptideMatchesByMsQueryIdMap.put(msqId, 0);
+				peptideMatchesByMsQueryIdMap.put(msqId, peptideMatcheIds);
 			}
-			System.out.println("INFO | Retrieve ms queries has finished." + msQueriesIds.size() + " ms queries were found.");
+			System.out.println(
+					"INFO | Retrieve ms queries has finished." + msQueriesIds.size() + " ms queries were found.");
 		} finally {
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(msQueryStmt);
