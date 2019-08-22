@@ -15,7 +15,6 @@ import fr.lsmbo.msda.spectra.comp.db.DBConfig;
 import fr.lsmbo.msda.spectra.comp.settings.UserParams;
 import fr.lsmbo.msda.spectra.comp.settings.Version;
 
-// TODO: Auto-generated Javadoc
 /**
  * Initialize spectra-comp configurations values.
  *
