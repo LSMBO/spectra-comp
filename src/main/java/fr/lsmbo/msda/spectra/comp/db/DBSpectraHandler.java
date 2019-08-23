@@ -24,7 +24,6 @@ import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-// TODO: Auto-generated Javadoc
 /**
  * Handle spectra from databases.
  */
@@ -75,21 +74,23 @@ public class DBSpectraHandler {
 	private static final String PEPTIDE_QUERY = "SELECT id, sequence, ptm_string, calculated_mass FROM peptide WHERE id=?";
 
 	/** Initial parameters */
+	// the resultsets id (include decoy result set id) to compute
 	private static List<Long> resultSetIds = new ArrayList<>();
+	// The ms queries ids
 	private static List<Long> msQueriesIds = new ArrayList<>();
+	// The ms queries
 	private static List<DMsQuery> listMsQueries = new ArrayList<>();
+	// The ms queries map
 	private static Map<Long, DMsQuery> msqQueryMap = new HashMap<>();
+	// the PSMs by ms queries ids
 	private static Map<Long, Set<Long>> peptideMatchesByMsQueryIdMap = new HashMap<>();
 
 	/**
 	 * Fetch PSMs grouped by ms query id
 	 * 
-	 * @param dbName
-	 *            the database name
-	 * @param msQueryList
-	 *            the list of ms queries id
-	 * @param rsIdList
-	 *            the list of result set id /decoy result set id
+	 * @param dbName      the database name
+	 * @param msQueryList the list of ms queries id
+	 * @param rsIdList    the list of result set id /decoy result set id
 	 * @throws Exception
 	 */
 	private static void fetchPSM(String dbName, List<Long> rsIdList, List<Long> msQueryList) throws Exception {
@@ -118,10 +119,8 @@ public class DBSpectraHandler {
 	/**
 	 * Search peptides by ms query id
 	 * 
-	 * @param dbName
-	 *            the database name
-	 * @param mqId
-	 *            the ms query id to search
+	 * @param dbName the database name
+	 * @param mqId   the ms query id to search
 	 * @return a list of peptide
 	 * @throws SQLException
 	 */
@@ -159,8 +158,7 @@ public class DBSpectraHandler {
 	/**
 	 * Return the msi_search_id
 	 * 
-	 * @param resultSetId
-	 *            the resultSetId
+	 * @param resultSetId the resultSetId
 	 * @return msi_search_id
 	 * @throws SQLException
 	 */
@@ -197,11 +195,10 @@ public class DBSpectraHandler {
 	}
 
 	/**
-	 * Add result set id to the list of Result set ids and its decoy result set
-	 * id id
+	 * Add result set id to the list of Result set ids and its decoy result set id
+	 * id
 	 * 
-	 * @param resultSetId
-	 *            the result set id to add
+	 * @param resultSetId the result set id to add
 	 * @throws SQLException
 	 */
 	private static void addResultSetIds(String dbName, Long resultSetId) throws Exception {
@@ -234,10 +231,8 @@ public class DBSpectraHandler {
 	/**
 	 * Fetch data for a ms_search_id
 	 * 
-	 * @param dbName
-	 *            the database name
-	 * @param msiSearchId
-	 *            the msi search id
+	 * @param dbName      the database name
+	 * @param msiSearchId the msi search id
 	 * @throws SQLException
 	 */
 	private static void fetchData(final String dbName, final Long msiSearchId) throws SQLException {
@@ -341,8 +336,7 @@ public class DBSpectraHandler {
 	/**
 	 * Find PeakList.
 	 *
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static void allPeakList() throws SQLException {
 		PreparedStatement allPklistStmt = null;
@@ -360,11 +354,9 @@ public class DBSpectraHandler {
 	/**
 	 * Find uds dataset by project.
 	 *
-	 * @param projectId
-	 *            the project id
+	 * @param projectId the project id
 	 * @return the observable list
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static ObservableList<Dataset> fillDataSetByProject(Long projectId) throws SQLException {
 		PreparedStatement datasetStmt = null;
@@ -403,11 +395,9 @@ public class DBSpectraHandler {
 	/**
 	 * Find all dataset by project.
 	 *
-	 * @param projectId
-	 *            the project id
+	 * @param projectId the project id
 	 * @return the observable list
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static ObservableList<Dataset> fillAllDataSetByProject(Long projectId) throws SQLException {
 		PreparedStatement datasetStmt = null;
@@ -450,13 +440,10 @@ public class DBSpectraHandler {
 	/**
 	 * Find all msi_search _ids by set of rsm ids.
 	 *
-	 * @param msiName
-	 *            the database name
-	 * @param rsmIds
-	 *            the rsm ids
+	 * @param msiName the database name
+	 * @param rsmIds  the rsm ids
 	 * @return the sets the
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static Set<Long> fillMsiSerachIds(String msiName, Set<Long> rsmIds) throws SQLException {
 		PreparedStatement peakListStmt = null;
@@ -486,12 +473,9 @@ public class DBSpectraHandler {
 	/**
 	 * Find all spectra set by project.
 	 *
-	 * @param msiName
-	 *            the msi name
-	 * @param msiIds
-	 *            the msi ids
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param msiName the msi name
+	 * @param msiIds  the msi ids
+	 * @throws SQLException the SQL exception
 	 */
 	public static void fillSpecByPeakList(String msiName, Set<Long> msiIds) throws SQLException {
 		PreparedStatement peakListStmt = null;
@@ -553,10 +537,8 @@ public class DBSpectraHandler {
 	/**
 	 * Find a project by name.
 	 *
-	 * @param name
-	 *            the name
-	 * @throws Exception
-	 *             the exception
+	 * @param name the name
+	 * @throws Exception the exception
 	 */
 	public static void findProject(String name) throws Exception {
 		PreparedStatement findProjectStmt = null;
@@ -576,10 +558,8 @@ public class DBSpectraHandler {
 	/**
 	 * Find an user by login.
 	 *
-	 * @param login
-	 *            the login
-	 * @throws Exception
-	 *             the exception
+	 * @param login the login
+	 * @throws Exception the exception
 	 */
 	public static void findUser(String login) throws Exception {
 		PreparedStatement findUserStmt = null;
@@ -604,11 +584,9 @@ public class DBSpectraHandler {
 	/**
 	 * Find an user by login.
 	 *
-	 * @param login
-	 *            the login
+	 * @param login the login
 	 * @return the observable list
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
 	public static ObservableList<Project> findProjects(String login) throws Exception {
 		PreparedStatement findUserStmt = null;
@@ -647,8 +625,7 @@ public class DBSpectraHandler {
 	/**
 	 * Sets the spectra.
 	 *
-	 * @param spectra
-	 *            the spectra to set
+	 * @param spectra the spectra to set
 	 */
 	public static void setSpectra(Spectra spectra) {
 		DBSpectraHandler.spectra = spectra;
@@ -657,8 +634,7 @@ public class DBSpectraHandler {
 	/**
 	 * Close statement.
 	 *
-	 * @param rs
-	 *            the resultset to close
+	 * @param rs the resultset to close
 	 * 
 	 */
 	private static void tryToCloseResultSet(ResultSet rs) {
@@ -673,8 +649,7 @@ public class DBSpectraHandler {
 	/**
 	 * Close statement.
 	 *
-	 * @param stmt
-	 *            the statement to close
+	 * @param stmt the statement to close
 	 */
 
 	private static void tryToCloseStatement(Statement stmt) {
