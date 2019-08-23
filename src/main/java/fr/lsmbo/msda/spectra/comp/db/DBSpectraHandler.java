@@ -14,6 +14,7 @@ import java.util.Set;
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
 import fr.lsmbo.msda.spectra.comp.model.DMsQuery;
+import fr.lsmbo.msda.spectra.comp.model.DPeptide;
 import fr.lsmbo.msda.spectra.comp.model.Dataset;
 import fr.lsmbo.msda.spectra.comp.model.Dataset.DatasetType;
 import fr.lsmbo.msda.spectra.comp.model.Fragment;
@@ -70,6 +71,9 @@ public class DBSpectraHandler {
 	/** The constant of result set id */
 	private static final String RESULTSET_ID = "SELECT id,decoy_result_set_id FROM result_set WHERE id=?";
 
+	/** The constant of peptide query */
+	private static final String PEPTIDE_QUERY = "SELECT id, sequence, ptm_string, calculated_mass FROM peptide WHERE id=?";
+
 	/** Initial parameters */
 	private static List<Long> resultSetIds = new ArrayList<>();
 	private static List<Long> msQueriesIds = new ArrayList<>();
@@ -109,6 +113,47 @@ public class DBSpectraHandler {
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(psmStmt);
 		}
+	}
+
+	/**
+	 * Search peptides by ms query id
+	 * 
+	 * @param dbName
+	 *            the database name
+	 * @param mqId
+	 *            the ms query id to search
+	 * @return a list of peptide
+	 * @throws SQLException
+	 */
+	public static List<DPeptide> getPeptideByMsqId(String dbName, Long msqId) throws SQLException {
+		PreparedStatement peptidesByMsqIdStmt = null;
+		ResultSet rs = null;
+		List<DPeptide> peptideList = new ArrayList<>();
+		try {
+			peptidesByMsqIdStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(PEPTIDE_QUERY);
+			peptidesByMsqIdStmt.setLong(2, msqId);
+			rs = peptidesByMsqIdStmt.executeQuery();
+			while (rs.next()) {
+				Long pepId = rs.getLong("id");
+				String sequence = rs.getString("sequence");
+				String ptmAsString = rs.getString("ptm_string");
+				Double calcMass = rs.getDouble("calculated_mass");
+				if (pepId > 0L) {
+					DPeptide pep = new DPeptide(pepId);
+					if (!StringsUtils.isEmpty(sequence))
+						pep.setM_sequence(sequence);
+					if (!StringsUtils.isEmpty(ptmAsString))
+						pep.setM_ptm(ptmAsString);
+					if (calcMass != null && calcMass > 0D)
+						pep.setM_calculatedMass(calcMass);
+					peptideList.add(pep);
+				}
+			}
+		} finally {
+			tryToCloseResultSet(rs);
+			tryToCloseStatement(peptidesByMsqIdStmt);
+		}
+		return peptideList;
 	}
 
 	/**
