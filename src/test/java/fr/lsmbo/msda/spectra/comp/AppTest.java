@@ -1,17 +1,11 @@
 package fr.lsmbo.msda.spectra.comp;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.File;
 
 import org.junit.Assert;
 
-import fr.lsmbo.msda.spectra.comp.io.PeakListProvider;
 import fr.lsmbo.msda.spectra.comp.io.PeaklistReader;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
-import fr.lsmbo.msda.spectra.comp.model.Spectrum;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
