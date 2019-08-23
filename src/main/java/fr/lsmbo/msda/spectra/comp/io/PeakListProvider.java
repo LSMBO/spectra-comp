@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
-import fr.lsmbo.msda.spectra.comp.db.DataSource;
+import fr.lsmbo.msda.spectra.comp.db.SpectraSource;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
 import fr.lsmbo.msda.spectra.comp.model.SpectraComparator;
 import fr.lsmbo.msda.spectra.comp.settings.SpectraComparatorParams;
@@ -76,7 +76,7 @@ public class PeakListProvider {
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadRefSpectraFrmProline(String dbName, Set<Long> rsmIds) throws SQLException {
-		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
+		if (SpectraSource.getType(Session.USER_PARAMS.getDataSource()) == SpectraSource.DATABASE) {
 			assert !StringsUtils.isEmpty(dbName) : "Project name must not be null nor empty!";
 			assert !rsmIds.isEmpty() : "Rsm Ids must not be empty!";
 			logger.info("--- Start to retrieve spectra from reference peaklist from Proline project. Please wait ...");
@@ -109,7 +109,7 @@ public class PeakListProvider {
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadRefSpectraFromFile(String refPklFilePath) throws Exception {
-		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.FILE) {
+		if (SpectraSource.getType(Session.USER_PARAMS.getDataSource()) == SpectraSource.FILE) {
 			assert (!StringsUtils.isEmpty(refPklFilePath)
 					&& (new File(refPklFilePath).exists())) : "Invalid file path!";
 			logger.info("Load reference spectra from the file : {} . Please wait ...", refPklFilePath);
@@ -133,7 +133,7 @@ public class PeakListProvider {
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadTestedSpectraFrmProline(String dbName, Set<Long> rsmIds) throws Exception {
-		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.DATABASE) {
+		if (SpectraSource.getType(Session.USER_PARAMS.getDataSource()) == SpectraSource.DATABASE) {
 			assert !StringsUtils.isEmpty(dbName) : "Project name must not be null nor empty!";
 			logger.info("--- Start to retrieve spectra from test peaklist from Proline project. Please wait ...");
 			System.out.println(
@@ -156,7 +156,7 @@ public class PeakListProvider {
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadTestedSpectraFromFile(String testPklFilePath) throws Exception {
-		if (DataSource.getType(Session.USER_PARAMS.getDataSource()) == DataSource.FILE) {
+		if (SpectraSource.getType(Session.USER_PARAMS.getDataSource()) == SpectraSource.FILE) {
 			assert (!StringsUtils.isEmpty(testPklFilePath)
 					&& (new File(testPklFilePath).exists())) : "Invalid file path !";
 			logger.info("Load spectra to test from the file : {} . Please wait ...", testPklFilePath);

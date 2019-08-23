@@ -19,7 +19,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
-import fr.lsmbo.msda.spectra.comp.db.DataSource;
+import fr.lsmbo.msda.spectra.comp.db.SpectraSource;
 import fr.lsmbo.msda.spectra.comp.io.PeakListProvider;
 import fr.lsmbo.msda.spectra.comp.io.PeaklistReader;
 import fr.lsmbo.msda.spectra.comp.list.ListOfSpectra;
@@ -110,7 +110,7 @@ public class ViewModel {
 				// Step 1 : load reference spectra
 				if (!params.getRefPklByDataSourceMap().isEmpty()) {
 					params.getRefPklByDataSourceMap().forEach((k, v) -> {
-						if (k.equals(DataSource.FILE)) {
+						if (k.equals(SpectraSource.FILE)) {
 							// Reference spectra loaded from a file
 							String refFilePath = (String) v;
 							loadRefPklFile(refFilePath);
@@ -129,7 +129,7 @@ public class ViewModel {
 				if (!params.getTestedPklByDataSourceMap().isEmpty()) {
 					params.getTestedPklByDataSourceMap().forEach((k, v) -> {
 						// Test spectra loaded from a file
-						if (k.equals(DataSource.FILE)) {
+						if (k.equals(SpectraSource.FILE)) {
 							String testFilePath = (String) v;
 							loadTestedPklFile(testFilePath);
 							testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());

@@ -10,7 +10,7 @@ import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
-import fr.lsmbo.msda.spectra.comp.db.DataSource;
+import fr.lsmbo.msda.spectra.comp.db.SpectraSource;
 import fr.lsmbo.msda.spectra.comp.model.Dataset;
 import fr.lsmbo.msda.spectra.comp.model.Dataset.DatasetType;
 import fr.lsmbo.msda.spectra.comp.model.Project;
@@ -106,10 +106,10 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 	private String testDbName;
 
 	/** The ref pkl by data source map. */
-	private Map<DataSource, Object> refPklByDataSourceMap = new HashMap<>();
+	private Map<SpectraSource, Object> refPklByDataSourceMap = new HashMap<>();
 
 	/** The test pkl by data source map. */
-	private Map<DataSource, Object> testPklByDataSourceMap = new HashMap<>();
+	private Map<SpectraSource, Object> testPklByDataSourceMap = new HashMap<>();
 
 	/** The ref rsm ids. */
 	private HashSet<Long> refRsmIds = new HashSet<>();
@@ -441,22 +441,22 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 			if (buttonType == ButtonType.OK) {
 				if (pklListRefFileRB.isSelected()) {
 					Session.USER_PARAMS.setDataSource("file");
-					refPklByDataSourceMap.put(DataSource.FILE, refPklListTF.getText());
+					refPklByDataSourceMap.put(SpectraSource.FILE, refPklListTF.getText());
 				} else {
 					assert !StringsUtils.isEmpty(refDbName) : "reference database name must not be null nor empty";
 					Session.USER_PARAMS.setDataSource("database");
 					refRsmIds.add(treeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
-					refPklByDataSourceMap.put(DataSource.DATABASE, refRsmIds);
+					refPklByDataSourceMap.put(SpectraSource.DATABASE, refRsmIds);
 				}
 				if (secondPklListRefFileRB.isSelected()) {
 					Session.USER_PARAMS.setDataSource("file");
-					testPklByDataSourceMap.put(DataSource.FILE, secondPklListTF.getText());
+					testPklByDataSourceMap.put(SpectraSource.FILE, secondPklListTF.getText());
 				} else {
 					assert !StringsUtils.isEmpty(testDbName) : "test database name must not be null nor empty";
 					Session.USER_PARAMS.setDataSource("database");
 					testRsmIds
 							.add(secondTreeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
-					testPklByDataSourceMap.put(DataSource.DATABASE, testRsmIds);
+					testPklByDataSourceMap.put(SpectraSource.DATABASE, testRsmIds);
 				}
 				this.params = new SpectraParams(refPklByDataSourceMap, testPklByDataSourceMap, refDbName, testDbName);
 				return params;

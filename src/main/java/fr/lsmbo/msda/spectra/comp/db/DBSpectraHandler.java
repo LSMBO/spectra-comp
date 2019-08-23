@@ -90,7 +90,7 @@ public class DBSpectraHandler {
 	 * 
 	 * @param dbName      the database name
 	 * @param msQueryList the list of ms queries id
-	 * @param rsIdList    the list of result set id /decoy result set id
+	 * @param rsIdList    the list of result set id ( include decoy result set id )
 	 * @throws Exception
 	 */
 	private static void fetchPSM(String dbName, List<Long> rsIdList, List<Long> msQueryList) throws Exception {
