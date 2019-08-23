@@ -16,7 +16,7 @@ import fr.lsmbo.msda.spectra.comp.settings.UserParams;
 import fr.lsmbo.msda.spectra.comp.settings.Version;
 
 /**
- * Initialize spectra-comp configurations values.
+ * Initialize Spectra-comp configuration values.
  *
  * @author Aromdhani
  */
