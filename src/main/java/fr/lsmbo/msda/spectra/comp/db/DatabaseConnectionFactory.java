@@ -2,6 +2,9 @@ package fr.lsmbo.msda.spectra.comp.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -17,6 +20,8 @@ import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 public final class DatabaseConnectionFactory {
 
 	private static DBConfig dbConfig = DBConfig.getInstance();
+
+	private static List<Optional<Connection>> connList = new ArrayList<>();
 
 	/**
 	 * @return the dbConfig
@@ -45,10 +50,10 @@ public final class DatabaseConnectionFactory {
 	 * @param projectId the project id
 	 * @return Optional connection
 	 */
-	public static Optional<Connection> createMSIDatabaseConnection(Long projectId) {
-		System.out.println("INFO | Create connection to the project=#" + projectId);
+	public static void createMSIDbConnection(Long projectId) {
+		System.out.println("INFO | Create connection to the project with id=#" + projectId);
 		if (!isInitialized())
-			return null;
+			System.out.println("WARNING | Database configuration is required!");
 		StringBuilder str = new StringBuilder();
 		Properties connProperties = new Properties();
 		assert !StringsUtils.isEmpty(dbConfig.getUser()) : "User name must not be null nor empty!";
@@ -63,10 +68,10 @@ public final class DatabaseConnectionFactory {
 		try {
 			str.append("jdbc:postgresql://").append(dbConfig.getHost()).append(":").append(dbConfig.getPort())
 					.append("/").append(msiDbName);
-			return Optional.of(DriverManager.getConnection(str.toString(), connProperties));
+			connList.add(Optional.of(DriverManager.getConnection(str.toString(), connProperties)));
+
 		} catch (Exception e) {
-			System.err.println("ERROR | Can't connect to " + msiDbName + " !" + e);
-			return null;
+			System.err.println("ERROR | Can't connect to " + msiDbName + ": " + e);
 		}
 	}
 
@@ -76,10 +81,10 @@ public final class DatabaseConnectionFactory {
 	 * @param projectId the project id
 	 * @return Optional connection
 	 */
-	public static Optional<Connection> createUDSDatabaseConnection() {
+	public static void createUDSDbConnection() {
 		System.out.println("INFO | Create connection to UDS_DB");
 		if (!isInitialized())
-			return null;
+			System.out.println("WARNING | Database configuration is required!");
 		StringBuilder str = new StringBuilder();
 		Properties connProperties = new Properties();
 		assert !StringsUtils.isEmpty(dbConfig.getUser()) : "User name must not be null nor empty!";
@@ -94,10 +99,25 @@ public final class DatabaseConnectionFactory {
 		try {
 			str.append("jdbc:postgresql://").append(dbConfig.getHost()).append(":").append(dbConfig.getPort())
 					.append("/").append(udsDbName);
-			return Optional.of(DriverManager.getConnection(str.toString(), connProperties));
+			connList.add(Optional.of(DriverManager.getConnection(str.toString(), connProperties)));
 		} catch (Exception e) {
-			System.err.println("ERROR | Can't connect to " + udsDbName + "! " + e);
-			return null;
+			System.err.println("ERROR | Can't connect to " + udsDbName + ": " + e);
 		}
+	}
+
+	/**
+	 * Close all active database connections
+	 */
+	public static void closeAll() {
+		connList.forEach(connOptional -> {
+			connOptional.ifPresent(conn -> {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			});
+		});
 	}
 }

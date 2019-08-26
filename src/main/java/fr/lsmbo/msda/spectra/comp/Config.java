@@ -31,6 +31,7 @@ public class Config {
 
 	/** The instance. */
 	private static Config instance = null;
+	private static final Object INITIALIZATION_LOCK = new Object();
 
 	/**
 	 * Force to load configuration properties.
@@ -62,8 +63,7 @@ public class Config {
 	/**
 	 * Return the file path.
 	 *
-	 * @param fileName
-	 *            the file name to get its path
+	 * @param fileName the file name to get its path
 	 * @return the file path
 	 */
 	public String getConfigFilePath(String fileName) {
@@ -100,16 +100,18 @@ public class Config {
 	/**
 	 * Load spectra-comp version properties.
 	 */
-	private synchronized void loadSpectraCompProps() {
+	private void loadSpectraCompProps() {
 		try {
-			Gson gson = new Gson();
-			JsonReader reader = new JsonReader(new FileReader(new File(getConfigFilePath(spectraCompFileName))));
-			Session.SPECTRACOMP_VERSION = gson.fromJson(reader, Version.class);
-			System.out.println(Session.SPECTRACOMP_VERSION.toString());
-			Session.SPECTRACOMP_RELEASE_NAME = Session.SPECTRACOMP_VERSION.getName();
-			Session.SPECTRACOMP_RELEASE_DESCRIPTION = Session.SPECTRACOMP_VERSION.getDescription();
-			Session.SPECTRACOMP_RELEASE_VERSION = Session.SPECTRACOMP_VERSION.getVersion();
-			Session.SPECTRACOMP_RELEASE_DATE = Session.SPECTRACOMP_VERSION.getBuildDate();
+			synchronized (INITIALIZATION_LOCK) {
+				Gson gson = new Gson();
+				JsonReader reader = new JsonReader(new FileReader(new File(getConfigFilePath(spectraCompFileName))));
+				Session.SPECTRACOMP_VERSION = gson.fromJson(reader, Version.class);
+				System.out.println(Session.SPECTRACOMP_VERSION.toString());
+				Session.SPECTRACOMP_RELEASE_NAME = Session.SPECTRACOMP_VERSION.getName();
+				Session.SPECTRACOMP_RELEASE_DESCRIPTION = Session.SPECTRACOMP_VERSION.getDescription();
+				Session.SPECTRACOMP_RELEASE_VERSION = Session.SPECTRACOMP_VERSION.getVersion();
+				Session.SPECTRACOMP_RELEASE_DATE = Session.SPECTRACOMP_VERSION.getBuildDate();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -119,15 +121,17 @@ public class Config {
 	 * Load user parameters. Read and parse parameters file.
 	 * 
 	 */
-	public synchronized void loadUserParams() {
+	public void loadUserParams() {
 		try {
-			Gson gson = new Gson();
-			JsonReader reader = new JsonReader(new FileReader(getConfigFilePath(defaultParamsFileName)));
-			// Update default user parameters
-			Session.USER_PARAMS = gson.fromJson(reader, UserParams.class);
-			// Update Regex
-			Session.CURRENT_REGEX_RT = Session.USER_PARAMS.getParsingRules().getParsingRuleName();
-			System.out.println(Session.USER_PARAMS.toString());
+			synchronized (INITIALIZATION_LOCK) {
+				Gson gson = new Gson();
+				JsonReader reader = new JsonReader(new FileReader(getConfigFilePath(defaultParamsFileName)));
+				// Update default user parameters
+				Session.USER_PARAMS = gson.fromJson(reader, UserParams.class);
+				// Update Regex
+				Session.CURRENT_REGEX_RT = Session.USER_PARAMS.getParsingRules().getParsingRuleName();
+				System.out.println(Session.USER_PARAMS.toString());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
