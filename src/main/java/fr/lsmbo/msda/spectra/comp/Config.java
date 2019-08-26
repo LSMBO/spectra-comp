@@ -31,6 +31,8 @@ public class Config {
 
 	/** The instance. */
 	private static Config instance = null;
+	
+	/** The initialization_lock */
 	private static final Object INITIALIZATION_LOCK = new Object();
 
 	/**
