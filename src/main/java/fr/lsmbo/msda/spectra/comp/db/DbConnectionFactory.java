@@ -17,7 +17,7 @@ import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
  *
  */
 
-public final class DatabaseConnectionFactory {
+public final class DbConnectionFactory {
 
 	private static DBConfig dbConfig = DBConfig.getInstance();
 
@@ -34,7 +34,7 @@ public final class DatabaseConnectionFactory {
 	 * @param dbConfig the dbConfig to set
 	 */
 	public static final void setDbConfig(DBConfig dbConfig) {
-		DatabaseConnectionFactory.dbConfig = dbConfig;
+		DbConnectionFactory.dbConfig = dbConfig;
 	}
 
 	public static Boolean isInitialized() {
