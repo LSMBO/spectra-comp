@@ -84,23 +84,21 @@ public class SpectraComparator {
 	/**
 	 * Add a new value in the array.
 	 *
-	 * @param intensityFragmentReferenceSpectrum
-	 *            the intensity fragment reference spectrum
-	 * @param index
-	 *            the index
+	 * @param intensityFragmentReferenceSpectrum the intensity fragment reference
+	 *                                           spectrum
+	 * @param index                              the index
 	 */
 	private static void addPeakReferenceSpectrum(float intensityFragmentReferenceSpectrum, int index) {
 		listPeaksReferenceSpectrum[index] = intensityFragmentReferenceSpectrum;
 	}
 
 	/**
-	 * Add a new value in the array of TS, if a value is present for the same
-	 * peak of RS, keep the most intense value of intensity.
+	 * Add a new value in the array of TS, if a value is present for the same peak
+	 * of RS, keep the most intense value of intensity.
 	 *
-	 * @param intensityFragmentSubListSpectrum
-	 *            the intensity fragment sub list spectrum
-	 * @param index
-	 *            the index
+	 * @param intensityFragmentSubListSpectrum the intensity fragment sub list
+	 *                                         spectrum
+	 * @param index                            the index
 	 */
 	private static void addPeakTestedSpectrum(float intensityFragmentSubListSpectrum, int index) {
 		if (listPeaksTestedSpectrum[index] == 0) {
@@ -160,9 +158,9 @@ public class SpectraComparator {
 	}
 
 	/**
-	 * Find the non 0 values in the array of reference spectrum, get back the
-	 * square root of this value and return a new array (size equals to number
-	 * of peaks identical between TS and RS).
+	 * Find the non 0 values in the array of reference spectrum, get back the square
+	 * root of this value and return a new array (size equals to number of peaks
+	 * identical between TS and RS).
 	 */
 	private static void computeListSquareRootpeaksReferenceSpectrum() {
 		listSquareRootpeaksReferenceSpectrum = new Double[nbPeaksEquals];
@@ -193,8 +191,8 @@ public class SpectraComparator {
 	}
 
 	/**
-	 * Compute subList of spectra with spectra near to reference spectrum (same
-	 * moz +/- deltamoz and same RT +/- deltaRT).
+	 * Compute subList of spectra with spectra near to reference spectrum (same moz
+	 * +/- deltamoz and same RT +/- deltaRT).
 	 */
 	private static void computeSubListSecondSpectra() {
 		double referenceSpectrumMoz = referenceSpectrum.getM_precursorMoz();
@@ -236,8 +234,7 @@ public class SpectraComparator {
 	 * Determines whether the number of peaks of the reference spectrum can have
 	 * their equivalent in a spectrum of sublist (same moz +/- deltaMoz).
 	 *
-	 * @param spectrumOfSecSpectraSubList
-	 *            the spectrum of sec spectra sub list
+	 * @param spectrumOfSecSpectraSubList the spectrum of sec spectra sub list
 	 */
 	private static void findFragment(Spectrum spectrumOfSecSpectraSubList) {
 		// Recover the nbpeaks most intense of the reference spectrum
@@ -326,9 +323,8 @@ public class SpectraComparator {
 	}
 
 	/**
-	 * Reset the value of sublist and the valid spectra every time the algorithm
-	 * was used (for different reference spectrum) and initialize second peak
-	 * list.
+	 * Reset the value of sublist and the valid spectra every time the algorithm was
+	 * used (for different reference spectrum) and initialize second peak list.
 	 */
 	private static void initialize() {
 		secondSpectra = ListOfSpectra.getSecondSpectra();
@@ -347,8 +343,7 @@ public class SpectraComparator {
 	/**
 	 * Run spectra comparison.
 	 *
-	 * @param spectrumRef
-	 *            the spectrum to set as reference.
+	 * @param spectrumRef the spectrum to set as reference.
 	 */
 	public static void run(Spectrum spectrumRef) {
 		referenceSpectrum = spectrumRef;
@@ -390,8 +385,7 @@ public class SpectraComparator {
 	/**
 	 * Set as reference spectrum.
 	 *
-	 * @param _referenceSpectrum
-	 *            the reference spectrum to set.
+	 * @param _referenceSpectrum the reference spectrum to set.
 	 */
 	public static void setReferenceSpectrum(Spectrum _referenceSpectrum) {
 		referenceSpectrum = _referenceSpectrum;

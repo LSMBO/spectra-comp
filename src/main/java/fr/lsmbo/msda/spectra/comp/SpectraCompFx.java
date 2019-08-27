@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.db.DBAccess;
-import fr.lsmbo.msda.spectra.comp.db.DbConnectionFactory;
+import fr.lsmbo.msda.spectra.comp.db.DBConnectionFactory;
 import fr.lsmbo.msda.spectra.comp.model.ViewModel;
 import fr.lsmbo.msda.spectra.comp.view.MainPane;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ShowPopupDialog;
@@ -83,7 +83,7 @@ public class SpectraCompFx extends Application {
 	public void stop() throws Exception {
 		// TODO Auto-generated method stub
 		DBAccess.closeAll();
-		DbConnectionFactory.closeAll();
+		DBConnectionFactory.closeAll();
 		super.stop();
 	}
 

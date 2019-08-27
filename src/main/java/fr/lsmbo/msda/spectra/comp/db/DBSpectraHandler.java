@@ -593,6 +593,13 @@ public class DBSpectraHandler {
 		ResultSet rs = null;
 		ObservableList<Project> list = FXCollections.observableArrayList();
 		try {
+			DBConnectionFactory.createUDSDbConnection().ifPresent(connection -> {
+			try {System.out.println("getUds");
+				connection.prepareStatement(PROJECTS_BY_OWNER);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}});
 			assert DBAccess.openUdsDBConnection() != null : "Can't connect to uds_db!";
 			findUserStmt = DBAccess.openUdsDBConnection().prepareStatement(PROJECTS_BY_OWNER);
 			findUserStmt.setString(1, login);
