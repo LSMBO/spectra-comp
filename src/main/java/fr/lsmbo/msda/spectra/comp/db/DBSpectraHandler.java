@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import fr.lsmbo.msda.spectra.comp.Session;
 import fr.lsmbo.msda.spectra.comp.list.Spectra;
 import fr.lsmbo.msda.spectra.comp.model.DMsQuery;
@@ -29,6 +32,8 @@ import javafx.collections.ObservableList;
  */
 
 public class DBSpectraHandler {
+	/** The Constant logger. */
+	private static final Logger logger = LogManager.getLogger(DBSpectraHandler.class);
 
 	/** The Constant USER. */
 	private static final String USER = "SELECT login FROM user_account WHERE login=?";
@@ -591,15 +596,8 @@ public class DBSpectraHandler {
 	public static ObservableList<Project> findProjects(String login) throws Exception {
 		PreparedStatement findUserStmt = null;
 		ResultSet rs = null;
-		ObservableList<Project> list = FXCollections.observableArrayList();
+		ObservableList<Project> projectList = FXCollections.observableArrayList();
 		try {
-			DBConnectionFactory.createUDSDbConnection().ifPresent(connection -> {
-			try {System.out.println("getUds");
-				connection.prepareStatement(PROJECTS_BY_OWNER);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}});
 			assert DBAccess.openUdsDBConnection() != null : "Can't connect to uds_db!";
 			findUserStmt = DBAccess.openUdsDBConnection().prepareStatement(PROJECTS_BY_OWNER);
 			findUserStmt.setString(1, login);
@@ -610,14 +608,14 @@ public class DBSpectraHandler {
 				String desc = rs.getString("description");
 				if (id > 0L && !StringsUtils.isEmpty(name)) {
 					Project proj = new Project(id, name, desc);
-					list.add(proj);
+					projectList.add(proj);
 				}
 			}
 		} finally {
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(findUserStmt);
 		}
-		return list;
+		return projectList;
 	}
 
 	/**
@@ -650,6 +648,7 @@ public class DBSpectraHandler {
 				rs.close();
 		} catch (Exception e) {
 			System.err.println("ERROR | Error while trying to close the resultset " + e);
+			logger.error("Error while trying to close the resultset", e);
 		}
 	}
 
@@ -665,6 +664,7 @@ public class DBSpectraHandler {
 				stmt.close();
 		} catch (Exception e) {
 			System.err.println("ERROR | Error while trying to close the statement " + e);
+			logger.error("Error while trying to close the statement ", e);
 		}
 	}
 

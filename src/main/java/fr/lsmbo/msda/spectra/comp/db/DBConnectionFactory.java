@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 /**
@@ -19,9 +22,13 @@ import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
  */
 
 public final class DBConnectionFactory {
+	/** The Constant logger. */
+	private static final Logger logger = LogManager.getLogger(DBConnectionFactory.class);
 
+	/** The database configuration */
 	private static DBConfig dbConfig = DBConfig.getInstance();
 
+	/** The list of databases connections */
 	private static List<Optional<Connection>> connList = new ArrayList<>();
 
 	/**
@@ -54,6 +61,7 @@ public final class DBConnectionFactory {
 	public static Optional<Connection> createMSIDbConnection(Long projectId) throws Exception {
 		try {
 			System.out.println("INFO | Create connection to the project with id=#" + projectId);
+			logger.info("INFO | Create connection to the project with id=#", projectId);
 			if (!isInitialized())
 				throw new Exception("Error | Database configuration is not setup!");
 			StringBuilder str = new StringBuilder();
@@ -89,6 +97,7 @@ public final class DBConnectionFactory {
 	public static Optional<Connection> createUDSDbConnection() {
 		try {
 			System.out.println("INFO | Create connection to UDS_DB");
+			logger.info("INFO | Create connection to UDS_DB");
 			if (!isInitialized())
 				throw new Exception("Error | Database configuration is not setup!");
 			StringBuilder str = new StringBuilder();
@@ -112,6 +121,7 @@ public final class DBConnectionFactory {
 			connList.add(Optional.ofNullable(DriverManager.getConnection(str.toString(), connProperties)));
 			return dbConn;
 		} catch (Exception e) {
+			logger.error("Can't connect to UDS_DB", e);
 			System.err.println("ERROR | Can't connect to UDS_DB: " + e);
 			return Optional.ofNullable(null);
 		}
@@ -123,6 +133,7 @@ public final class DBConnectionFactory {
 	 * 
 	 */
 	public static void closeAll() {
+		logger.info("INFO | Close all database copnnections");
 		connList.forEach(connOptional -> {
 			connOptional.ifPresent(conn -> {
 				try {
@@ -130,6 +141,7 @@ public final class DBConnectionFactory {
 						conn.close();
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
+					logger.error(e);
 					e.printStackTrace();
 				}
 			});
