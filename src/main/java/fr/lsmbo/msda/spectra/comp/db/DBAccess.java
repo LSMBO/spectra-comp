@@ -31,11 +31,10 @@ public class DBAccess {
 	 * 
 	 */
 	public static void closeAllMsiDb() {
-		logger.debug("Close all msi_db database connections");
 		connectionByProjectIdMap.forEach((k, v) -> {
 			try {
 				if (v != null && !v.isClosed()) {
-					logger.debug("Close database connection for project with id= #{}", k);
+					logger.info("Close msi_db_project_{} connection", k);
 					v.close();
 					v = null;
 				}
@@ -62,21 +61,21 @@ public class DBAccess {
 	 */
 	public static void closeUdsDb() {
 		try {
-			logger.debug("Close uds_db connection");
+			logger.info("Close uds_db database connection");
 			if (udsDbConnection != null && !udsDbConnection.isClosed()) {
 				udsDbConnection.close();
 				udsDbConnection = null;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			logger.error("Error while trying to close uds_db database");
+			logger.error("Error while trying to close uds_db database connection {}", e);
 			e.printStackTrace();
 
 		}
 	}
 
 	/**
-	 * Initialize msi_db and uds_db connections.
+	 * Initialize msi_db and uds_db database connections.
 	 */
 	public static void initialize() {
 		if (!connectionByProjectIdMap.isEmpty()) {
