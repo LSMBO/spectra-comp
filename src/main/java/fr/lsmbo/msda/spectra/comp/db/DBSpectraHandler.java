@@ -98,11 +98,11 @@ public class DBSpectraHandler {
 	 * @param rsIdList    the list of result set id ( include decoy result set id )
 	 * @throws Exception
 	 */
-	private static void fetchPSM(String dbName, List<Long> rsIdList, List<Long> msQueryList) throws Exception {
+	private static void fetchPSM(final Long projectId, List<Long> rsIdList, List<Long> msQueryList) throws Exception {
 		PreparedStatement psmStmt = null;
 		ResultSet rs = null;
 		try {
-			psmStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(QUERY_PSM);
+			psmStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(QUERY_PSM);
 			for (Long rsId : rsIdList) {
 				psmStmt.setLong(1, rsId);
 				for (Long msqId : msQueryList) {
@@ -129,12 +129,12 @@ public class DBSpectraHandler {
 	 * @return a list of peptide
 	 * @throws SQLException
 	 */
-	public static List<DPeptide> getPeptideByMsqId(String dbName, Long msqId) throws SQLException {
+	public static List<DPeptide> getPeptideByMsqId(final Long projectId, Long msqId) throws Exception {
 		PreparedStatement peptidesByMsqIdStmt = null;
 		ResultSet rs = null;
 		List<DPeptide> peptideList = new ArrayList<>();
 		try {
-			peptidesByMsqIdStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(PEPTIDE_QUERY);
+			peptidesByMsqIdStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(PEPTIDE_QUERY);
 			peptidesByMsqIdStmt.setLong(2, msqId);
 			rs = peptidesByMsqIdStmt.executeQuery();
 			while (rs.next()) {
@@ -167,15 +167,15 @@ public class DBSpectraHandler {
 	 * @return msi_search_id
 	 * @throws SQLException
 	 */
-	public static void fetchMSQueriesData(final String dbName, final Long resultSetId) throws Exception {
+	public static void fetchMSQueriesData(final Long projectId, final Long resultSetId) throws Exception {
 		PreparedStatement msiSearchIdStmt = null;
 		ResultSet rs = null;
 		Long msiSearchId = -1L;
 		try {
-			assert !StringsUtils.isEmpty(dbName) : "Database name must not be null nor empty!";
+			assert projectId > 0L : "Project id name must not be null nor empty!";
 			assert resultSetId > 0L : "Result set id must not be null nor empty!";
 			initialize();
-			msiSearchIdStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(MSI_SEARCH_ID_QUERY);
+			msiSearchIdStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(MSI_SEARCH_ID_QUERY);
 			msiSearchIdStmt.setLong(1, resultSetId);
 			rs = msiSearchIdStmt.executeQuery();
 			while (rs.next()) {
@@ -187,14 +187,15 @@ public class DBSpectraHandler {
 		}
 		// Fetch main data
 		assert (msiSearchId > 0L) : "msi_search id must not be empty nor null!";
-		fetchData(dbName, msiSearchId);
+		fetchData(projectId, msiSearchId);
 		// Fetch ms queries
-		if (!msQueriesIds.isEmpty() && fetchMSQueries(dbName, msQueriesIds)) {
+		if (!msQueriesIds.isEmpty() && fetchMSQueries(projectId, msQueriesIds)) {
 			// Get decoy result set id
-			addResultSetIds(dbName, resultSetId);
+			addResultSetIds(projectId, resultSetId);
 			// fetch PSMs grouped by ms query id
-			fetchPSM(dbName, resultSetIds, msQueriesIds);
+			fetchPSM(projectId, resultSetIds, msQueriesIds);
 		} else {
+			logger.warn("No ms queries were found!");
 			System.err.println("WARN | No ms queries were found!");
 		}
 	}
@@ -206,13 +207,13 @@ public class DBSpectraHandler {
 	 * @param resultSetId the result set id to add
 	 * @throws SQLException
 	 */
-	private static void addResultSetIds(String dbName, Long resultSetId) throws Exception {
+	private static void addResultSetIds(final Long projectId, Long resultSetId) throws Exception {
 		PreparedStatement resultSetIdsStmt = null;
 		ResultSet rs = null;
 		Long id = -1L;
 		Long decoyId = -1L;
 		try {
-			resultSetIdsStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(RESULTSET_ID);
+			resultSetIdsStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(RESULTSET_ID);
 			resultSetIdsStmt.setLong(1, resultSetId);
 			rs = resultSetIdsStmt.executeQuery();
 			while (rs.next()) {
@@ -227,6 +228,7 @@ public class DBSpectraHandler {
 			}
 			System.out.println("INFO | Retrieve peptide match for the result set with id=# " + id
 					+ " and the decoy result set id=# " + decoyId + "");
+
 		} finally {
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(resultSetIdsStmt);
@@ -240,12 +242,12 @@ public class DBSpectraHandler {
 	 * @param msiSearchId the msi search id
 	 * @throws SQLException
 	 */
-	private static void fetchData(final String dbName, final Long msiSearchId) throws SQLException {
+	private static void fetchData(final Long projectId, final Long msiSearchId) throws Exception {
 		PreparedStatement msQueryStmt = null;
 		ResultSet rs = null;
 		try {
 			System.out.println("INFO | Retrieve data from msi_search_id= #" + msiSearchId);
-			msQueryStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(MSI_MSQ_QUERY);
+			msQueryStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(MSI_MSQ_QUERY);
 			msQueryStmt.setLong(1, msiSearchId);
 			msQueryStmt.setLong(2, msiSearchId);
 			rs = msQueryStmt.executeQuery();
@@ -263,6 +265,7 @@ public class DBSpectraHandler {
 				msqQueryMap.put(msqId, msQuery);
 				peptideMatchesByMsQueryIdMap.put(msqId, peptideMatcheIds);
 			}
+			logger.info("Retrieve ms queries has finished. {} ms queries were found.", msQueriesIds.size());
 			System.out.println(
 					"INFO | Retrieve ms queries has finished." + msQueriesIds.size() + " ms queries were found.");
 		} finally {
@@ -276,12 +279,12 @@ public class DBSpectraHandler {
 	 * 
 	 * @throws SQLException
 	 */
-	private static boolean fetchMSQueries(final String dbName, List<Long> msQueriesIdList) throws SQLException {
+	private static boolean fetchMSQueries(final Long projectId, List<Long> msQueriesIdList) throws Exception {
 		PreparedStatement querySpecStmt = null;
 		ResultSet rs = null;
 		Boolean isSuccess = false;
 		try {
-			querySpecStmt = DBAccess.openFirstMsiDBConnection(dbName).prepareStatement(MSI_SPECTRA);
+			querySpecStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(MSI_SPECTRA);
 			for (Long msqId : msQueriesIdList) {
 				querySpecStmt.setLong(1, msqId);
 				rs = querySpecStmt.executeQuery();
@@ -343,11 +346,11 @@ public class DBSpectraHandler {
 	 *
 	 * @throws SQLException the SQL exception
 	 */
-	public static void allPeakList() throws SQLException {
+	public static void allPeakList() throws Exception {
 		PreparedStatement allPklistStmt = null;
 		ResultSet rs = null;
 		try {
-			allPklistStmt = DBAccess.openUdsDBConnection().prepareStatement(PEAKLIST);
+			allPklistStmt = DBAccess.getUdsDBConnection().prepareStatement(PEAKLIST);
 			rs = allPklistStmt.executeQuery();
 
 		} finally {
@@ -363,12 +366,12 @@ public class DBSpectraHandler {
 	 * @return the observable list
 	 * @throws SQLException the SQL exception
 	 */
-	public static ObservableList<Dataset> fillDataSetByProject(Long projectId) throws SQLException {
+	public static ObservableList<Dataset> fillDataSetByProject(Long projectId) throws Exception {
 		PreparedStatement datasetStmt = null;
 		ResultSet rs = null;
 		ObservableList<Dataset> list = FXCollections.observableArrayList();
 		try {
-			datasetStmt = DBAccess.openUdsDBConnection().prepareStatement(UDS_DATASET);
+			datasetStmt = DBAccess.getUdsDBConnection().prepareStatement(UDS_DATASET);
 			System.out.println("INFO | Load datasets from project=" + projectId + ".");
 			datasetStmt.setLong(1, projectId);
 			rs = datasetStmt.executeQuery();
@@ -404,12 +407,12 @@ public class DBSpectraHandler {
 	 * @return the observable list
 	 * @throws SQLException the SQL exception
 	 */
-	public static ObservableList<Dataset> fillAllDataSetByProject(Long projectId) throws SQLException {
+	public static ObservableList<Dataset> fillAllDataSetByProject(Long projectId) throws Exception {
 		PreparedStatement datasetStmt = null;
 		ResultSet rs = null;
 		ObservableList<Dataset> list = FXCollections.observableArrayList();
 		try {
-			datasetStmt = DBAccess.openUdsDBConnection().prepareStatement(ALL_DATASET);
+			datasetStmt = DBAccess.getUdsDBConnection().prepareStatement(ALL_DATASET);
 			System.out.println("INFO | Load datasets from project=" + projectId + ".");
 			datasetStmt.setLong(1, projectId);
 			rs = datasetStmt.executeQuery();
@@ -450,14 +453,14 @@ public class DBSpectraHandler {
 	 * @return the sets the
 	 * @throws SQLException the SQL exception
 	 */
-	public static Set<Long> fillMsiSerachIds(String msiName, Set<Long> rsmIds) throws SQLException {
+	public static Set<Long> fillMsiSerachIds(final Long projectId, Set<Long> rsmIds) throws Exception {
 		PreparedStatement peakListStmt = null;
 		ResultSet rs = null;
 		Set<Long> msiIds = new HashSet<Long>();
 		spectra.initialize();
 		try {
 			for (Long rsmId : rsmIds) {
-				peakListStmt = DBAccess.openFirstMsiDBConnection(msiName).prepareStatement(VALIDATED_MSI_SEARCH_IDS);
+				peakListStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(VALIDATED_MSI_SEARCH_IDS);
 				System.out.println("INFO | Retrieve msi_search ids from rsmId= #'" + rsmId + "'.");
 				peakListStmt.setLong(1, rsmId);
 				rs = peakListStmt.executeQuery();
@@ -482,12 +485,12 @@ public class DBSpectraHandler {
 	 * @param msiIds  the msi ids
 	 * @throws SQLException the SQL exception
 	 */
-	public static void fillSpecByPeakList(String msiName, Set<Long> msiIds) throws SQLException {
+	public static void fillSpecByPeakList(final Long projectId, Set<Long> msiIds) throws Exception {
 		PreparedStatement peakListStmt = null;
 		ResultSet rs = null;
 		try {
 			for (Long msiSearchId : msiIds) {
-				peakListStmt = DBAccess.openFirstMsiDBConnection(msiName).prepareStatement(SPECTRA_BY_MSI_SEARCH);
+				peakListStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(SPECTRA_BY_MSI_SEARCH);
 				System.out.println("INFO | Load spectra from msi_search= #'" + msiSearchId + "'.");
 				peakListStmt.setLong(1, msiSearchId);
 				rs = peakListStmt.executeQuery();
@@ -549,8 +552,8 @@ public class DBSpectraHandler {
 		PreparedStatement findProjectStmt = null;
 		ResultSet rs = null;
 		try {
-			assert DBAccess.openUdsDBConnection() != null : "Can't connect to uds_db!";
-			findProjectStmt = DBAccess.openUdsDBConnection().prepareStatement(PROJECT);
+			assert DBAccess.getUdsDBConnection() != null : "Can't connect to uds_db!";
+			findProjectStmt = DBAccess.getUdsDBConnection().prepareStatement(PROJECT);
 			findProjectStmt.setString(1, name);
 			rs = findProjectStmt.executeQuery();
 			assert !rs.next() : "Project not found! Make sure that you have entered the right project name.";
@@ -571,8 +574,8 @@ public class DBSpectraHandler {
 		ResultSet rs = null;
 		String userLogin = null;
 		try {
-			assert DBAccess.openUdsDBConnection() != null : "Can't connect to uds_db!";
-			findUserStmt = DBAccess.openUdsDBConnection().prepareStatement(USER);
+			assert DBAccess.getUdsDBConnection() != null : "Can't connect to uds_db!";
+			findUserStmt = DBAccess.getUdsDBConnection().prepareStatement(USER);
 			findUserStmt.setString(1, login);
 			rs = findUserStmt.executeQuery();
 			while (rs.next()) {
@@ -598,8 +601,8 @@ public class DBSpectraHandler {
 		ResultSet rs = null;
 		ObservableList<Project> projectList = FXCollections.observableArrayList();
 		try {
-			assert DBAccess.openUdsDBConnection() != null : "Can't connect to uds_db!";
-			findUserStmt = DBAccess.openUdsDBConnection().prepareStatement(PROJECTS_BY_OWNER);
+			assert DBAccess.getUdsDBConnection() != null : "Can't connect to uds_db!";
+			findUserStmt = DBAccess.getUdsDBConnection().prepareStatement(PROJECTS_BY_OWNER);
 			findUserStmt.setString(1, login);
 			rs = findUserStmt.executeQuery();
 			while (rs.next()) {

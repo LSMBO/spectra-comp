@@ -1,66 +1,59 @@
 package fr.lsmbo.msda.spectra.comp.db;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
-import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
- * Handle databases connection for spectra-comp.
+ * Handle databases connection for Proline database connections.
  *
  * @author Aromdhani
  */
 public class DBAccess {
-	
-	/** The uds db connection. */
+
+	/** The Constant logger. */
+	private static final Logger logger = LogManager.getLogger(DBAccess.class);
+
+	/** The uds_db connection. */
 	static Connection udsDbConnection = null;
-	
-	/** The first msi db connection. */
-	static Connection firstMsiDbConnection = null;
-	
-	/** The second msi db connection. */
-	static Connection secondMsiDbConnection = null;
+
+	/** The map of msi_db connections */
+	static Map<Long, Connection> connectionByProjectIdMap = new HashMap<>();
 
 	/**
-	 * Close all active connection.
+	 * Close all active msi_db database connections
+	 * 
 	 */
-	public static void closeAll() {
-		closeFirstMsiDb();
-		closeSecondMsiDb();
+	public static void closeAllMsiDb() {
+		logger.info("Close all msi_db connections");
+		connectionByProjectIdMap.forEach((k, v) -> {
+			try {
+				if (v != null && !v.isClosed()) {
+					logger.debug("Close database connection for project with id= #{}", k);
+					v.close();
+					v = null;
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				logger.error(e);
+				e.printStackTrace();
+			}
+		});
+	}
+
+	/**
+	 * Close all active database connections
+	 * 
+	 */
+	public static void closeAllDb() {
+		logger.info("Close all database connections");
+		closeAllMsiDb();
 		closeUdsDb();
-	}
-
-	/**
-	 * Close first msi_db connection.
-	 */
-	public static void closeFirstMsiDb() {
-		try {
-			if (firstMsiDbConnection != null && !firstMsiDbConnection.isClosed()) {
-				firstMsiDbConnection.close();
-				firstMsiDbConnection = null;
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Close second msi_db connection.
-	 */
-	public static void closeSecondMsiDb() {
-		try {
-			if (secondMsiDbConnection != null && !secondMsiDbConnection.isClosed()) {
-				secondMsiDbConnection.close();
-				secondMsiDbConnection = null;
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -79,54 +72,20 @@ public class DBAccess {
 	}
 
 	/**
-	 * initialize msi_db and uds_db connection.
+	 * Initialize msi_db and uds_db connections.
 	 */
 	public static void initialize() {
-		try {
-			if (firstMsiDbConnection != null || udsDbConnection != null) {
-				firstMsiDbConnection.close();
-				firstMsiDbConnection = null;
-				udsDbConnection.close();
-				udsDbConnection = null;
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (!connectionByProjectIdMap.isEmpty()) {
+			closeAllMsiDb();
+			connectionByProjectIdMap.clear();
+		}
+		if (udsDbConnection != null) {
+			initializeUdsDb();
 		}
 	}
 
 	/**
-	 * initialize first msi_db.
-	 */
-	public static void initializeFirstMsiDb() {
-		try {
-			if (firstMsiDbConnection != null) {
-				firstMsiDbConnection.close();
-				firstMsiDbConnection = null;
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * initialize second msi_db.
-	 */
-	public static void initializeSecondMsiDb() {
-		try {
-			if (secondMsiDbConnection != null) {
-				secondMsiDbConnection.close();
-				secondMsiDbConnection = null;
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * initialize uds_db.
+	 * Initialize uds_db.
 	 */
 	public static void initializeUdsDb() {
 		try {
@@ -141,110 +100,38 @@ public class DBAccess {
 	}
 
 	/**
-	 * Create connection to uds_db database.
+	 * Get a connection to msi_db_project_x database.
 	 *
-	 * @param msiDbName the msi db name
-	 * @return the connection to the first database connection
+	 * @param projectId the project id
+	 * @return the connection to the msi_db_project_x database connection
+	 * @throws Exception
 	 */
 
-	public static Connection openFirstMsiDBConnection(final String msiDbName) {
-		if (firstMsiDbConnection == null) {
-			DBConfig dbConfig = DBConfig.getInstance();
-			System.out.println("INFO | --- Connection config: " + dbConfig.toString() + "");
-			System.out.println("INFO | Open connection to " + msiDbName + "");
-			StringBuilder str = new StringBuilder();
-			Properties connProperties = new Properties();
-			assert !StringsUtils.isEmpty(dbConfig.getUser()) : "User name must not be null nor empty!";
-			assert !StringsUtils.isEmpty(dbConfig.getPassword()) : "Password must not be null nor empty!";
-			assert !StringsUtils
-					.isEmpty(dbConfig.getDriverType().getJdbcDriver()) : "Driver must not be null nor empty!";
-			assert !StringsUtils.isEmpty(dbConfig.getHost()) : "Host must not be null nor empty!";
-			assert dbConfig.getPort() > 0 : "Port number is not valid!";
-			connProperties.setProperty("user", dbConfig.getUser());
-			connProperties.setProperty("password", dbConfig.getPassword());
-			connProperties.setProperty("driver", dbConfig.getDriverType().getJdbcDriver());
-			try {
-				str.append("jdbc:postgresql://").append(dbConfig.getHost()).append(":").append(dbConfig.getPort())
-						.append("/").append(msiDbName);
-				firstMsiDbConnection = DriverManager.getConnection(str.toString(), connProperties);
-				return firstMsiDbConnection;
-			} catch (Exception e) {
-				System.out.println("ERROR | Can't connect to " + msiDbName + " !" + e);
-				return firstMsiDbConnection;
-			}
+	public static Connection getMsiDBConnection(final Long projectId) throws Exception {
+		Connection msiDbConnection = null;
+		if (!connectionByProjectIdMap.containsKey(projectId)) {
+			msiDbConnection = DBConnectionFactory.createMSIDbConnection(projectId)
+					.orElseThrow(() -> new Exception("Failed to connect to msi_db_project_" + projectId));
+			connectionByProjectIdMap.put(projectId, msiDbConnection);
+			return msiDbConnection;
 		} else {
-			return firstMsiDbConnection;
+			msiDbConnection = connectionByProjectIdMap.get(projectId);
+			return msiDbConnection;
 		}
 	}
 
 	/**
-	 * Create connection to uds_db database.
-	 *
-	 * @param msiDbName the msi db name
-	 * @return the connection to the first database connection
-	 */
-
-	public static Connection openSecondMsiDBConnection(final String msiDbName) {
-		if (secondMsiDbConnection == null) {
-			DBConfig dbConfig = DBConfig.getInstance();
-			System.out.println("INFO | --- Connection config: " + dbConfig.toString() + "");
-			System.out.println("INFO | Open connection to " + msiDbName + "");
-			StringBuilder str = new StringBuilder();
-			Properties connProperties = new Properties();
-			assert !StringsUtils.isEmpty(dbConfig.getUser()) : "User name must not be null nor empty!";
-			assert !StringsUtils.isEmpty(dbConfig.getPassword()) : "Password must not be null nor empty!";
-			assert !StringsUtils
-					.isEmpty(dbConfig.getDriverType().getJdbcDriver()) : "Driver must not be null nor empty!";
-			assert !StringsUtils.isEmpty(dbConfig.getHost()) : "Host must not be null nor empty!";
-			assert dbConfig.getPort() > 0 : "Port number is not valid!";
-			connProperties.setProperty("user", dbConfig.getUser());
-			connProperties.setProperty("password", dbConfig.getPassword());
-			connProperties.setProperty("driver", dbConfig.getDriverType().getJdbcDriver());
-			try {
-				str.append("jdbc:postgresql://").append(dbConfig.getHost()).append(":").append(dbConfig.getPort())
-						.append("/").append(msiDbName);
-				secondMsiDbConnection = DriverManager.getConnection(str.toString(), connProperties);
-				return secondMsiDbConnection;
-			} catch (Exception e) {
-				System.out.println("ERROR |Can't connect to " + msiDbName + " !" + e);
-				return secondMsiDbConnection;
-			}
-		} else {
-			return secondMsiDbConnection;
-		}
-	}
-
-	/**
-	 * Create connection to uds_db database.
+	 * Get a connection to uds_db database.
 	 *
 	 * @return the connection to uds_db
+	 * @throws Exception
 	 */
 
-	public static Connection openUdsDBConnection() {
+	public static Connection getUdsDBConnection() throws Exception {
 		if (udsDbConnection == null) {
-			DBConfig dbConfig = DBConfig.getInstance();
-			System.out.println("INFO | --- Connection config: " + dbConfig.toString() + "");
-			System.out.println("INFO | Open connection to uds_db");
-			StringBuilder str = new StringBuilder();
-			Properties connProperties = new Properties();
-			assert !StringsUtils.isEmpty(dbConfig.getUser()) : "User name must not be null nor empty!";
-			assert !StringsUtils.isEmpty(dbConfig.getPassword()) : "Password must not be null nor empty!";
-			assert !StringsUtils
-					.isEmpty(dbConfig.getDriverType().getJdbcDriver()) : "Driver must not be null nor empty!";
-			assert !StringsUtils.isEmpty(dbConfig.getHost()) : "Host must not be null nor empty!";
-			assert dbConfig.getPort() > 0 : "Port number is not valid!";
-			connProperties.setProperty("user", dbConfig.getUser());
-			connProperties.setProperty("password", dbConfig.getPassword());
-			connProperties.setProperty("driver", dbConfig.getDriverType().getJdbcDriver());
-			try {
-				str.append("jdbc:postgresql://").append(dbConfig.getHost()).append(":").append(dbConfig.getPort())
-						.append("/").append(dbConfig.getDbName());
-				udsDbConnection = DriverManager.getConnection(str.toString(), connProperties);
-				return udsDbConnection;
-			} catch (Exception e) {
-				System.out.println("ERROR | Can't connect to UDS DB!" + e);
-				return udsDbConnection;
-			}
+			udsDbConnection = DBConnectionFactory.createUDSDbConnection()
+					.orElseThrow(() -> new Exception("Failed to connect to uds_db!"));
+			return udsDbConnection;
 		} else {
 			return udsDbConnection;
 		}

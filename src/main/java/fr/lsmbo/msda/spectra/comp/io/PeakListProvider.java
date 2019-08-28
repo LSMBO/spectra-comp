@@ -66,25 +66,22 @@ public class PeakListProvider {
 	/**
 	 * Load reference peak list from a Proline project.
 	 *
-	 * @param dbName
-	 *            The database name to connect to. It's always in this form
-	 *            msi_db_project_ID
-	 * @param rsmIds
-	 *            the result_summary id from where to compute the spectra.
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param dbName The database name to connect to. It's always in this form
+	 *               msi_db_project_ID
+	 * @param rsmIds the result_summary id from where to compute the spectra.
+	 * @throws SQLException the SQL exception
 	 */
 	@SuppressWarnings("restriction")
-	public static void loadRefSpectraFrmProline(String dbName, Set<Long> rsmIds) throws SQLException {
+	public static void loadRefSpectraFrmProline(final Long projectId, final Set<Long> rsmIds) throws Exception {
 		if (SpectraSource.getType(Session.USER_PARAMS.getDataSource()) == SpectraSource.DATABASE) {
-			assert !StringsUtils.isEmpty(dbName) : "Project name must not be null nor empty!";
+			assert projectId > 0L : "Project name must not be null nor empty!";
 			assert !rsmIds.isEmpty() : "Rsm Ids must not be empty!";
 			logger.info("--- Start to retrieve spectra from reference peaklist from Proline project. Please wait ...");
 			System.out.println(
 					"INFO | Start to retrieve spectra from reference peaklist from Proline project. Please wait ...");
 			// Find the msi_search_ids
-			Set<Long> msiSearchIds = DBSpectraHandler.fillMsiSerachIds(dbName, rsmIds);
-			DBSpectraHandler.fillSpecByPeakList(dbName, msiSearchIds);
+			Set<Long> msiSearchIds = DBSpectraHandler.fillMsiSerachIds(projectId, rsmIds);
+			DBSpectraHandler.fillSpecByPeakList(projectId, msiSearchIds);
 			ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 
@@ -92,20 +89,18 @@ public class PeakListProvider {
 	}
 
 	// test
-	public static void loadTest(String dbName, Long resultSetId) throws Exception {
+	public static void loadTest(final Long projectId, final Long resultSetId) throws Exception {
 		// TODO test
 		System.out.println("INFO |  start test");
-	    DBSpectraHandler.fetchMSQueriesData(dbName, resultSetId);
+		DBSpectraHandler.fetchMSQueriesData(projectId, resultSetId);
 		System.out.println("INFO |  end test");
 	}
 
 	/**
 	 * Load the reference spectra from a peaklist file.
 	 *
-	 * @param refPklFilePath
-	 *            The path of the reference peaklist file.
-	 * @throws Exception
-	 *             the exception
+	 * @param refPklFilePath The path of the reference peaklist file.
+	 * @throws Exception the exception
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadRefSpectraFromFile(String refPklFilePath) throws Exception {
@@ -123,24 +118,21 @@ public class PeakListProvider {
 	/**
 	 * Load tested peak list from a Proline project.
 	 *
-	 * @param dbName
-	 *            The database name to connect to. It's always in this form
-	 *            msi_db_project_ID
-	 * @param rsmIds
-	 *            the result_summary ids from where to compute the spectra.
-	 * @throws Exception
-	 *             the exception
+	 * @param dbName The database name to connect to. It's always in this form
+	 *               msi_db_project_ID
+	 * @param rsmIds the result_summary ids from where to compute the spectra.
+	 * @throws Exception the exception
 	 */
 	@SuppressWarnings("restriction")
-	public static void loadTestedSpectraFrmProline(String dbName, Set<Long> rsmIds) throws Exception {
+	public static void loadTestedSpectraFrmProline(final Long projectId, Set<Long> rsmIds) throws Exception {
 		if (SpectraSource.getType(Session.USER_PARAMS.getDataSource()) == SpectraSource.DATABASE) {
-			assert !StringsUtils.isEmpty(dbName) : "Project name must not be null nor empty!";
+			assert (projectId > 0L) : "Project name must not be null nor empty!";
 			logger.info("--- Start to retrieve spectra from test peaklist from Proline project. Please wait ...");
 			System.out.println(
 					"INFO | Start to retrieve spectra from test peaklist from Proline project. Please wait ...");
 			// Find the msi_search_ids
-			Set<Long> msiSearchIds = DBSpectraHandler.fillMsiSerachIds(dbName, rsmIds);
-			DBSpectraHandler.fillSpecByPeakList(dbName, msiSearchIds);
+			Set<Long> msiSearchIds = DBSpectraHandler.fillMsiSerachIds(projectId, rsmIds);
+			DBSpectraHandler.fillSpecByPeakList(projectId, msiSearchIds);
 			ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 		}
@@ -149,10 +141,8 @@ public class PeakListProvider {
 	/**
 	 * Load the tested spectra from a peaklist file.
 	 *
-	 * @param testPklFilePath
-	 *            The path of the reference peaklist file.
-	 * @throws Exception
-	 *             the exception
+	 * @param testPklFilePath The path of the reference peaklist file.
+	 * @throws Exception the exception
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadTestedSpectraFromFile(String testPklFilePath) throws Exception {
@@ -187,8 +177,7 @@ public class PeakListProvider {
 	/**
 	 * Sets the first pkl list.
 	 *
-	 * @param firstPklList
-	 *            the first peak list to set
+	 * @param firstPklList the first peak list to set
 	 */
 	public static final void setFirstPklList(String firstPklList) {
 		PeakListProvider.firstPklList = firstPklList;
@@ -197,8 +186,7 @@ public class PeakListProvider {
 	/**
 	 * Sets the project name.
 	 *
-	 * @param projectName
-	 *            the project name to set
+	 * @param projectName the project name to set
 	 */
 	public static final void setProjectName(String projectName) {
 		PeakListProvider.projectName = projectName;
@@ -207,8 +195,7 @@ public class PeakListProvider {
 	/**
 	 * Sets the second pkl list.
 	 *
-	 * @param secondPklList
-	 *            the second peak list to set
+	 * @param secondPklList the second peak list to set
 	 */
 	public static final void setSecondPklList(String secondPklList) {
 		PeakListProvider.secondPklList = secondPklList;

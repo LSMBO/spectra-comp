@@ -66,8 +66,7 @@ public class ViewModel {
 	/**
 	 * Sets the ref items.
 	 *
-	 * @param refItems
-	 *            the refItems to set
+	 * @param refItems the refItems to set
 	 */
 	public final void setRefItems(ObservableList<Spectrum> refItems) {
 		this.refItems = refItems;
@@ -85,8 +84,7 @@ public class ViewModel {
 	/**
 	 * Sets the test items.
 	 *
-	 * @param testItems
-	 *            the testItems to set
+	 * @param testItems the testItems to set
 	 */
 	public final void setTestItems(ObservableList<Spectrum> testItems) {
 		this.testItems = testItems;
@@ -117,7 +115,7 @@ public class ViewModel {
 							refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
 						} else {
 							// Reference spectra loaded from a Proline project
-							String msiDbname = params.getRefDbName();
+							Long msiDbname = params.getRefDbName();
 							Set rsmIds = (Set) v;
 							loadRefSpectraProline(msiDbname, rsmIds);
 							refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
@@ -135,7 +133,7 @@ public class ViewModel {
 							testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
 						} else {
 							// Test spectra loaded from a Proline project
-							String msiDbname = params.getRefDbName();
+							Long msiDbname = params.getRefDbName();
 							Set rsmIds = (Set) v;
 							loadTestedSpectraProline(msiDbname, rsmIds);
 							testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
@@ -230,8 +228,8 @@ public class ViewModel {
 	}
 
 	/**
-	 * Create and displays comparison spectra editor dialog. It will update
-	 * session comparison parameters.
+	 * Create and displays comparison spectra editor dialog. It will update session
+	 * comparison parameters.
 	 * 
 	 */
 	public void onEditCompParameters() {
@@ -252,8 +250,8 @@ public class ViewModel {
 	/**
 	 * * Load the reference spectra from a peaklist file.
 	 *
-	 * @param refPklFilePath
-	 *            the peaklist file path from where the spectra will be loaded.
+	 * @param refPklFilePath the peaklist file path from where the spectra will be
+	 *                       loaded.
 	 */
 	private void loadRefPklFile(String refPklFilePath) {
 		try {
@@ -270,8 +268,8 @@ public class ViewModel {
 	/**
 	 * * Load the spectra to test from a peaklist file.
 	 *
-	 * @param testPklFilePath
-	 *            the peaklist file path from where the spectra will be loaded.
+	 * @param testPklFilePath the peaklist file path from where the spectra will be
+	 *                        loaded.
 	 */
 	private void loadTestedPklFile(String testPklFilePath) {
 		try {
@@ -288,16 +286,13 @@ public class ViewModel {
 	/**
 	 * Load reference spectra from a Proline project.
 	 * 
-	 * @param dbName
-	 *            The database name to connect to. Usually it's
-	 *            msi_db_project_ID
-	 * @param rsmIds
-	 *            the result_summary ids from where to compute the spectra.
+	 * @param dbName The database name to connect to. Usually it's msi_db_project_ID
+	 * @param rsmIds the result_summary ids from where to compute the spectra.
 	 */
-	private void loadRefSpectraProline(String dbName, Set<Long> rsmIds) {
+	private void loadRefSpectraProline(final long projectId, final Set<Long> rsmIds) {
 		try {
-			PeakListProvider.loadTest(dbName, (long) 50);
-			PeakListProvider.loadRefSpectraFrmProline(dbName, rsmIds);
+			PeakListProvider.loadTest(projectId, (long) 50);
+			PeakListProvider.loadRefSpectraFrmProline(projectId, rsmIds);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -307,15 +302,12 @@ public class ViewModel {
 	/**
 	 * Load tested spectra from a Proline project.
 	 * 
-	 * @param dbName
-	 *            the database name to connect to. Usually it's
-	 *            msi_db_project_ID
-	 * @param rsmIds
-	 *            the result_summary ids from where to compute the spectra.
+	 * @param dbName the database name to connect to. Usually it's msi_db_project_ID
+	 * @param rsmIds the result_summary ids from where to compute the spectra.
 	 */
-	private void loadTestedSpectraProline(String dbName, Set<Long> rsmIds) {
+	private void loadTestedSpectraProline(final Long projectId, final Set<Long> rsmIds) {
 		try {
-			PeakListProvider.loadTestedSpectraFrmProline(dbName, rsmIds);
+			PeakListProvider.loadTestedSpectraFrmProline(projectId, rsmIds);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -439,8 +431,7 @@ public class ViewModel {
 	/**
 	 * Create pdf table
 	 * 
-	 * @param table
-	 *            the table to add
+	 * @param table the table to add
 	 */
 	private void addTableHeader(PdfPTable table) {
 		Stream.of(" ", "Spectra number", "Matched spectra number").forEach(columnTitle -> {
@@ -455,8 +446,7 @@ public class ViewModel {
 	/**
 	 * add rows to the pdf table
 	 * 
-	 * @param table
-	 *            the table to add rows in.
+	 * @param table the table to add rows in.
 	 */
 	private void addRows(PdfPTable table) {
 		Long refItemsSize = refItems.stream().filter(spec -> !spec.getM_matchedSpectra().isEmpty()).count();
@@ -472,8 +462,7 @@ public class ViewModel {
 	/**
 	 * Create pdf table
 	 * 
-	 * @param table
-	 *            the table to add
+	 * @param table the table to add
 	 */
 	private void addTableHeaderContent(PdfPTable table) {
 		Stream.of("", "Delta Moz(da) ", "Delta retention time(s)", "Min peaks number", "Min theta", "Peaks number")
@@ -489,8 +478,7 @@ public class ViewModel {
 	/**
 	 * Add rows to the pdf table
 	 * 
-	 * @param table
-	 *            the table to add rows in.
+	 * @param table the table to add rows in.
 	 */
 	private void addParamsRow(PdfPTable table) {
 		table.addCell("Comparison parameters");

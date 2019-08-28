@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.db.DBAccess;
-import fr.lsmbo.msda.spectra.comp.db.DBConnectionFactory;
 import fr.lsmbo.msda.spectra.comp.model.ViewModel;
 import fr.lsmbo.msda.spectra.comp.view.MainPane;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ShowPopupDialog;
@@ -22,11 +21,13 @@ import javafx.stage.Stage;
  * The Class SpectraCompFx.
  */
 public class SpectraCompFx extends Application {
-	
+
 	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(SpectraCompFx.class);
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javafx.application.Application#start(javafx.stage.Stage)
 	 */
 	@Override
@@ -82,8 +83,7 @@ public class SpectraCompFx extends Application {
 	@Override
 	public void stop() throws Exception {
 		// TODO Auto-generated method stub
-		DBAccess.closeAll();
-		DBConnectionFactory.closeAll();
+		DBAccess.closeAllDb();
 		super.stop();
 	}
 

@@ -21,10 +21,10 @@ public class SpectraParams {
 	
 	/** The ref db name. */
 	// Database name
-	private String refDbName = null;
+	private Long refProjectId = -1L;
 	
 	/** The test db name. */
-	private String testDbName = null;
+	private Long testProjectId = -1L;
 
 	/**
 	 * Default constructor.
@@ -41,12 +41,12 @@ public class SpectraParams {
 	 * @param testDbName the test db name
 	 */
 	public SpectraParams(Map<SpectraSource, Object> refPklByDataSourceMap,
-			Map<SpectraSource, Object> testedPklByDataSourceMap, String refDbName, String testDbName) {
+			Map<SpectraSource, Object> testedPklByDataSourceMap, Long refProjectId, Long testProjectId ) {
 		super();
 		this.refPklByDataSourceMap = refPklByDataSourceMap;
 		this.testedPklByDataSourceMap = testedPklByDataSourceMap;
-		this.refDbName = refDbName;
-		this.testDbName = testDbName;
+		this.refProjectId = refProjectId;
+		this.testProjectId = testProjectId;
 	}
 
 	/**
@@ -90,8 +90,8 @@ public class SpectraParams {
 	 *
 	 * @return the refDbName
 	 */
-	public final String getRefDbName() {
-		return refDbName;
+	public final Long getRefDbName() {
+		return refProjectId;
 	}
 
 	/**
@@ -99,8 +99,8 @@ public class SpectraParams {
 	 *
 	 * @param refDbName            the refDbName to set
 	 */
-	public final void setRefDbName(String refDbName) {
-		this.refDbName = refDbName;
+	public final void setRefDbName(Long refProjectId) {
+		this.refProjectId = refProjectId;
 	}
 
 	/**
@@ -108,8 +108,8 @@ public class SpectraParams {
 	 *
 	 * @return the testDbName
 	 */
-	public final String getTestDbName() {
-		return testDbName;
+	public final Long getTestDbName() {
+		return testProjectId;
 	}
 
 	/**
@@ -117,8 +117,8 @@ public class SpectraParams {
 	 *
 	 * @param testDbName            the testDbName to set
 	 */
-	public final void setTestDbName(String testDbName) {
-		this.testDbName = testDbName;
+	public final void setTestDbName(Long testProjectId) {
+		this.testProjectId = testProjectId;
 	}
 
 	/*
@@ -129,8 +129,8 @@ public class SpectraParams {
 	@Override
 	public String toString() {
 		return "Spectra Params [reference pkl by data source=" + refPklByDataSourceMap
-				+ ", tested Pkl by data source =" + testedPklByDataSourceMap + ", reference db name=" + refDbName
-				+ ", test db name=" + testDbName + "]";
+				+ ", tested Pkl by data source =" + testedPklByDataSourceMap + ", reference db name=" + refProjectId
+				+ ", test db name=" + testProjectId + "]";
 	}
 
 }

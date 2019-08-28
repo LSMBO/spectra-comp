@@ -1,6 +1,5 @@
 package fr.lsmbo.msda.spectra.comp.view.dialog;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,7 +16,6 @@ import fr.lsmbo.msda.spectra.comp.model.Project;
 import fr.lsmbo.msda.spectra.comp.model.SpectraParams;
 import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
-import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -100,10 +98,10 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 
 	/** The ref db name. */
 	//
-	private String refDbName;
+	private Long refProjectId;
 
 	/** The test db name. */
-	private String testDbName;
+	private Long testProjectId;
 
 	/** The ref pkl by data source map. */
 	private Map<SpectraSource, Object> refPklByDataSourceMap = new HashMap<>();
@@ -196,10 +194,10 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 				});
 			});
 		});
-		
+
 		// Update the view
 		userProjectsCBX.setOnAction(e -> {
-			refDbName = "msi_db_project_" + userProjectsCBX.getValue().getId();
+			refProjectId = userProjectsCBX.getValue().getId();
 			rootItem.getChildren().clear();
 			rootItem.getChildren().addAll(createDatasets(userProjectsCBX.getValue().getId()));
 			treeView = new TreeView(rootItem);
@@ -332,7 +330,7 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 		});
 		// Update the view
 		secondUserProjectsCBX.setOnAction(e -> {
-			testDbName = "msi_db_project_" + secondUserProjectsCBX.getValue().getId();
+			testProjectId = secondUserProjectsCBX.getValue().getId();
 			secondRootItem.getChildren().clear();
 			secondRootItem.getChildren().addAll(createDatasets(secondUserProjectsCBX.getValue().getId()));
 			secondTreeView = new TreeView(secondRootItem);
@@ -443,7 +441,7 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 					Session.USER_PARAMS.setDataSource("file");
 					refPklByDataSourceMap.put(SpectraSource.FILE, refPklListTF.getText());
 				} else {
-					assert !StringsUtils.isEmpty(refDbName) : "reference database name must not be null nor empty";
+					assert (refProjectId > 0L) : "reference database name must not be null nor empty";
 					Session.USER_PARAMS.setDataSource("database");
 					refRsmIds.add(treeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
 					refPklByDataSourceMap.put(SpectraSource.DATABASE, refRsmIds);
@@ -452,13 +450,14 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 					Session.USER_PARAMS.setDataSource("file");
 					testPklByDataSourceMap.put(SpectraSource.FILE, secondPklListTF.getText());
 				} else {
-					assert !StringsUtils.isEmpty(testDbName) : "test database name must not be null nor empty";
+					assert (testProjectId > 0L) : "test database name must not be null nor empty";
 					Session.USER_PARAMS.setDataSource("database");
 					testRsmIds
 							.add(secondTreeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
 					testPklByDataSourceMap.put(SpectraSource.DATABASE, testRsmIds);
 				}
-				this.params = new SpectraParams(refPklByDataSourceMap, testPklByDataSourceMap, refDbName, testDbName);
+				this.params = new SpectraParams(refPklByDataSourceMap, testPklByDataSourceMap, refProjectId,
+						testProjectId);
 				return params;
 			} else {
 				return null;
@@ -469,8 +468,7 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 	/**
 	 * Load file.
 	 *
-	 * @param text
-	 *            the text
+	 * @param text the text
 	 */
 
 	private void load(TextField text) {
@@ -482,13 +480,13 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 	/**
 	 * Create dataset nodes.
 	 *
-	 * @param projectId
-	 *            the selected project id
+	 * @param projectId the selected project id
 	 * @return the dataset nodes of the chosen project.
 	 */
 	// TODO Handle by better way the datasets
 	private ArrayList<TreeItem> createDatasets(Long projectId) {
 		ArrayList<TreeItem> datasets = new ArrayList<>();
+
 		try {
 			DBSpectraHandler.fillDataSetByProject(projectId).forEach(ds -> {
 				if (ds.getType() == DatasetType.IDENTIFICATION) {
@@ -501,7 +499,7 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 					datasets.add(dsName);
 				}
 			});
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
