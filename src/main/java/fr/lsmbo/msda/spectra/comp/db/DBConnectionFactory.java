@@ -12,7 +12,7 @@ import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 /**
  * This class represents a database connectorFactory. It provides methods to
- * create connections.
+ * create database connections.
  * 
  * @author Aromdhani
  *
@@ -55,7 +55,7 @@ public final class DBConnectionFactory {
 	public static Optional<Connection> createMSIDbConnection(Long projectId) throws Exception {
 		try {
 			System.out.println("INFO | Create connection to the project with id=#" + projectId);
-			logger.info("INFO | Create connection to the project with id=#", projectId);
+			logger.info("Create connection to the project with id=#{}", projectId);
 			if (!isInitialized())
 				throw new Exception("Error | Database configuration is not setup!");
 			StringBuilder str = new StringBuilder();
@@ -89,8 +89,8 @@ public final class DBConnectionFactory {
 	 */
 	public static Optional<Connection> createUDSDbConnection() {
 		try {
-			System.out.println("INFO | Create connection to UDS_DB");
-			logger.info("INFO | Create connection to UDS_DB");
+			System.out.println("INFO | Create connection to uds_db database");
+			logger.info("Create connection to uds_db database");
 			if (!isInitialized())
 				throw new Exception("Error | Database configuration is not setup!");
 			StringBuilder str = new StringBuilder();
@@ -105,15 +105,14 @@ public final class DBConnectionFactory {
 			connProperties.setProperty("password", dbConfig.getPassword());
 			connProperties.setProperty("driver", dbConfig.getDriverType().getJdbcDriver());
 			final String udsDbName = "uds_db";
-
 			str.append("jdbc:postgresql://").append(dbConfig.getHost()).append(":").append(dbConfig.getPort())
 					.append("/").append(udsDbName);
 			Optional<Connection> dbConn = Optional
 					.ofNullable(DriverManager.getConnection(str.toString(), connProperties));
 			return dbConn;
 		} catch (Exception e) {
-			logger.error("Can't connect to UDS_DB", e);
-			System.err.println("ERROR | Can't connect to UDS_DB: " + e);
+			logger.error("Can't connect to uds_db {}", e);
+			System.err.println("ERROR | Can't connect to uds_db database " + e);
 			return Optional.ofNullable(null);
 		}
 

@@ -93,7 +93,7 @@ public class DBSpectraHandler {
 	/**
 	 * Fetch PSMs grouped by ms query id
 	 * 
-	 * @param dbName      the database name
+	 * @param projectId   the project id
 	 * @param msQueryList the list of ms queries id
 	 * @param rsIdList    the list of result set id ( include decoy result set id )
 	 * @throws Exception
@@ -124,10 +124,10 @@ public class DBSpectraHandler {
 	/**
 	 * Search peptides by ms query id
 	 * 
-	 * @param dbName the database name
-	 * @param mqId   the ms query id to search
+	 * @param projectId the project id
+	 * @param mqId      the ms query id to search
 	 * @return a list of peptide
-	 * @throws SQLException
+	 * @throws Exception
 	 */
 	public static List<DPeptide> getPeptideByMsqId(final Long projectId, Long msqId) throws Exception {
 		PreparedStatement peptidesByMsqIdStmt = null;
@@ -163,9 +163,10 @@ public class DBSpectraHandler {
 	/**
 	 * Return the msi_search_id
 	 * 
+	 * @param projectId   the project id
 	 * @param resultSetId the resultSetId
 	 * @return msi_search_id
-	 * @throws SQLException
+	 * @throws Exception
 	 */
 	public static void fetchMSQueriesData(final Long projectId, final Long resultSetId) throws Exception {
 		PreparedStatement msiSearchIdStmt = null;
@@ -204,8 +205,9 @@ public class DBSpectraHandler {
 	 * Add result set id to the list of Result set ids and its decoy result set id
 	 * id
 	 * 
+	 * @param projectId   the project id
 	 * @param resultSetId the result set id to add
-	 * @throws SQLException
+	 * @throws Exception
 	 */
 	private static void addResultSetIds(final Long projectId, Long resultSetId) throws Exception {
 		PreparedStatement resultSetIdsStmt = null;
@@ -226,6 +228,8 @@ public class DBSpectraHandler {
 			if (decoyId > 0) {
 				resultSetIds.add(decoyId);
 			}
+			logger.info("Retrieve peptide match for the result set with id=#{} and the decoy result set id=#{} ", id,
+					decoyId);
 			System.out.println("INFO | Retrieve peptide match for the result set with id=# " + id
 					+ " and the decoy result set id=# " + decoyId + "");
 
@@ -238,15 +242,17 @@ public class DBSpectraHandler {
 	/**
 	 * Fetch data for a ms_search_id
 	 * 
+	 * @param projectId   the project id
 	 * @param dbName      the database name
 	 * @param msiSearchId the msi search id
-	 * @throws SQLException
+	 * @throws Exception
 	 */
 	private static void fetchData(final Long projectId, final Long msiSearchId) throws Exception {
 		PreparedStatement msQueryStmt = null;
 		ResultSet rs = null;
 		try {
 			System.out.println("INFO | Retrieve data from msi_search_id= #" + msiSearchId);
+			logger.info("Retrieve data from msi_search_id= #{}", msiSearchId);
 			msQueryStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(MSI_MSQ_QUERY);
 			msQueryStmt.setLong(1, msiSearchId);
 			msQueryStmt.setLong(2, msiSearchId);
@@ -274,10 +280,13 @@ public class DBSpectraHandler {
 		}
 	}
 
-	/**
-	 * Fetch Ms Queries data
+	/***
 	 * 
-	 * @throws SQLException
+	 * @param projectId       the project id
+	 * @param msQueriesIdList the list of ms queries id
+	 * @return Boolean <code>true</code> when it's succeeded otherwise
+	 *         <code>false</code>
+	 * @throws Exception
 	 */
 	private static boolean fetchMSQueries(final Long projectId, List<Long> msQueriesIdList) throws Exception {
 		PreparedStatement querySpecStmt = null;
@@ -310,7 +319,8 @@ public class DBSpectraHandler {
 								Fragment fragment = new Fragment(i, mz, intensity);
 								spectrum.addFragment(fragment);
 							} else {
-								System.err.println("INFO | Invalid fragment! moz must be greater than 0!");
+								logger.error("Invalid fragment! moz must be greater than 0!");
+								System.err.println("Error | Invalid fragment! moz must be greater than 0!");
 							}
 						}
 						// Update the current regex
@@ -318,6 +328,8 @@ public class DBSpectraHandler {
 					}
 				}
 			}
+			logger.error("Retrieve spectra from database has finished. {} spectra were found.",
+					spectra.getSpectraAsObservable().size());
 			System.out.println("INFO | Retrieve spectra from database has finished. "
 					+ spectra.getSpectraAsObservable().size() + " spectra were found.");
 
@@ -337,12 +349,11 @@ public class DBSpectraHandler {
 		peptideMatchesByMsQueryIdMap.clear();
 	}
 
-	//
 	/** The spectra. */
 	private static Spectra spectra = new Spectra();
 
 	/**
-	 * Find PeakList.
+	 * Find all peakList.
 	 *
 	 * @throws SQLException the SQL exception
 	 */
@@ -363,8 +374,8 @@ public class DBSpectraHandler {
 	 * Find uds dataset by project.
 	 *
 	 * @param projectId the project id
-	 * @return the observable list
-	 * @throws SQLException the SQL exception
+	 * @return the observable list of dataset
+	 * @throws Exception
 	 */
 	public static ObservableList<Dataset> fillDataSetByProject(Long projectId) throws Exception {
 		PreparedStatement datasetStmt = null;
@@ -372,7 +383,8 @@ public class DBSpectraHandler {
 		ObservableList<Dataset> list = FXCollections.observableArrayList();
 		try {
 			datasetStmt = DBAccess.getUdsDBConnection().prepareStatement(UDS_DATASET);
-			System.out.println("INFO | Load datasets from project=" + projectId + ".");
+			System.out.println("INFO | Load datasets from project with id=#" + projectId);
+			logger.info("Load datasets from project with id=#{}", projectId);
 			datasetStmt.setLong(1, projectId);
 			rs = datasetStmt.executeQuery();
 			while (rs.next()) {
@@ -413,7 +425,8 @@ public class DBSpectraHandler {
 		ObservableList<Dataset> list = FXCollections.observableArrayList();
 		try {
 			datasetStmt = DBAccess.getUdsDBConnection().prepareStatement(ALL_DATASET);
-			System.out.println("INFO | Load datasets from project=" + projectId + ".");
+			System.out.println("INFO | Load datasets from project with id=#" + projectId + ".");
+			logger.info("Load datasets from project with id=#{}", projectId);
 			datasetStmt.setLong(1, projectId);
 			rs = datasetStmt.executeQuery();
 			int i = 0;
@@ -446,12 +459,12 @@ public class DBSpectraHandler {
 	}
 
 	/**
-	 * Find all msi_search _ids by set of rsm ids.
+	 * Find all msi_search ids by set of rsm ids.
 	 *
-	 * @param msiName the database name
-	 * @param rsmIds  the rsm ids
+	 * @param projectId the project id
+	 * @param rsmIds    the set of rsms id
 	 * @return the sets the
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the exception to throw
 	 */
 	public static Set<Long> fillMsiSerachIds(final Long projectId, Set<Long> rsmIds) throws Exception {
 		PreparedStatement peakListStmt = null;
@@ -460,14 +473,16 @@ public class DBSpectraHandler {
 		spectra.initialize();
 		try {
 			for (Long rsmId : rsmIds) {
+				System.out.println("INFO | Retrieve msi_search ids from rsmId= #" + rsmId);
+				logger.info("Retrieve msi_search ids from rsmId=#{}", rsmId);
 				peakListStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(VALIDATED_MSI_SEARCH_IDS);
-				System.out.println("INFO | Retrieve msi_search ids from rsmId= #'" + rsmId + "'.");
 				peakListStmt.setLong(1, rsmId);
 				rs = peakListStmt.executeQuery();
 				while (rs.next()) {
 					Long id = rs.getLong("msi_search_id");
 					msiIds.add(id);
 				}
+				logger.info("Retrieve msi_search ids has finished. {} msi_search were found", msiIds.size());
 				System.out.println(
 						"INFO | Retrieve msi_search ids has finished. " + msiIds.size() + " msi_search were found.");
 			}
@@ -481,9 +496,9 @@ public class DBSpectraHandler {
 	/**
 	 * Find all spectra set by project.
 	 *
-	 * @param msiName the msi name
-	 * @param msiIds  the msi ids
-	 * @throws SQLException the SQL exception
+	 * @param projectId the project id
+	 * @param msiIds    the set of msi_id
+	 * @throws @throws Exception the exception to throw
 	 */
 	public static void fillSpecByPeakList(final Long projectId, Set<Long> msiIds) throws Exception {
 		PreparedStatement peakListStmt = null;
@@ -491,7 +506,8 @@ public class DBSpectraHandler {
 		try {
 			for (Long msiSearchId : msiIds) {
 				peakListStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(SPECTRA_BY_MSI_SEARCH);
-				System.out.println("INFO | Load spectra from msi_search= #'" + msiSearchId + "'.");
+				System.out.println("INFO | Load spectra from msi_search= #" + msiSearchId);
+				logger.info("Load spectra from msi_search=#{}", msiSearchId);
 				peakListStmt.setLong(1, msiSearchId);
 				rs = peakListStmt.executeQuery();
 				while (rs.next()) {
@@ -520,7 +536,8 @@ public class DBSpectraHandler {
 								Fragment fragment = new Fragment(i, mz, intensity);
 								spectrum.addFragment(fragment);
 							} else {
-								System.err.println("INFO | Invalid fragment! moz must be greater than 0!");
+								logger.error("Invalid fragment! moz must be greater than 0!");
+								System.err.println("ERROR | Invalid fragment! moz must be greater than 0!");
 							}
 						}
 						// Update the current regex
@@ -530,6 +547,8 @@ public class DBSpectraHandler {
 					}
 
 				}
+				logger.info("Retrieve spectra has finished. {} spectra were found",
+						spectra.getSpectraAsObservable().size());
 				System.out.println("INFO | Retrieve spectra has finished. " + spectra.getSpectraAsObservable().size()
 						+ " spectra were found.");
 			}
@@ -545,8 +564,8 @@ public class DBSpectraHandler {
 	/**
 	 * Find a project by name.
 	 *
-	 * @param name the name
-	 * @throws Exception the exception
+	 * @param name the name of the project
+	 * @throws Exception the exception to throw
 	 */
 	public static void findProject(String name) throws Exception {
 		PreparedStatement findProjectStmt = null;
@@ -567,7 +586,7 @@ public class DBSpectraHandler {
 	 * Find an user by login.
 	 *
 	 * @param login the login
-	 * @throws Exception the exception
+	 * @throws Exception the exception to throw
 	 */
 	public static void findUser(String login) throws Exception {
 		PreparedStatement findUserStmt = null;
@@ -594,7 +613,7 @@ public class DBSpectraHandler {
 	 *
 	 * @param login the login
 	 * @return the observable list
-	 * @throws Exception the exception
+	 * @throws Exception the exception to throw
 	 */
 	public static ObservableList<Project> findProjects(String login) throws Exception {
 		PreparedStatement findUserStmt = null;
@@ -640,7 +659,7 @@ public class DBSpectraHandler {
 	}
 
 	/**
-	 * Close statement.
+	 * Close resultset.
 	 *
 	 * @param rs the resultset to close
 	 * 
@@ -651,7 +670,7 @@ public class DBSpectraHandler {
 				rs.close();
 		} catch (Exception e) {
 			System.err.println("ERROR | Error while trying to close the resultset " + e);
-			logger.error("Error while trying to close the resultset", e);
+			logger.error("Error while trying to close the resultset {}", e);
 		}
 	}
 
@@ -667,7 +686,7 @@ public class DBSpectraHandler {
 				stmt.close();
 		} catch (Exception e) {
 			System.err.println("ERROR | Error while trying to close the statement " + e);
-			logger.error("Error while trying to close the statement ", e);
+			logger.error("Error while trying to close the statement {}", e);
 		}
 	}
 

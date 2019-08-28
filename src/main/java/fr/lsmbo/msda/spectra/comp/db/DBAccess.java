@@ -10,10 +10,11 @@ import org.apache.logging.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
- * Handle databases connection for Proline database connections.
+ * Handle databases connection for Proline database.
  *
  * @author Aromdhani
  */
+
 public class DBAccess {
 
 	/** The Constant logger. */
@@ -30,7 +31,7 @@ public class DBAccess {
 	 * 
 	 */
 	public static void closeAllMsiDb() {
-		logger.info("Close all msi_db connections");
+		logger.debug("Close all msi_db database connections");
 		connectionByProjectIdMap.forEach((k, v) -> {
 			try {
 				if (v != null && !v.isClosed()) {
@@ -40,7 +41,7 @@ public class DBAccess {
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
-				logger.error(e);
+				logger.error("Error while trying to close msi_db database connections");
 				e.printStackTrace();
 			}
 		});
@@ -61,13 +62,16 @@ public class DBAccess {
 	 */
 	public static void closeUdsDb() {
 		try {
+			logger.debug("Close uds_db connection");
 			if (udsDbConnection != null && !udsDbConnection.isClosed()) {
 				udsDbConnection.close();
 				udsDbConnection = null;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+			logger.error("Error while trying to close uds_db database");
 			e.printStackTrace();
+
 		}
 	}
 
@@ -102,7 +106,7 @@ public class DBAccess {
 	/**
 	 * Get a connection to msi_db_project_x database.
 	 *
-	 * @param projectId the project id
+	 * @param projectId the project id to connect to
 	 * @return the connection to the msi_db_project_x database connection
 	 * @throws Exception
 	 */
