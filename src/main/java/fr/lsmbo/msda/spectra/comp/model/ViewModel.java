@@ -7,6 +7,9 @@ import java.net.URI;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -19,6 +22,8 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
+import fr.lsmbo.msda.spectra.comp.SpectraCompFx;
+import fr.lsmbo.msda.spectra.comp.db.DBAccess;
 import fr.lsmbo.msda.spectra.comp.db.SpectraSource;
 import fr.lsmbo.msda.spectra.comp.io.PeakListProvider;
 import fr.lsmbo.msda.spectra.comp.io.PeaklistReader;
@@ -42,6 +47,8 @@ import javafx.stage.Stage;
  */
 public class ViewModel {
 
+	/** The Constant logger. */
+	private static final Logger logger = LogManager.getLogger(ViewModel.class);
 	/** The stage. */
 	public static Stage stage;
 
@@ -104,6 +111,7 @@ public class ViewModel {
 		SpectraLoaderDialog spectraLoaderDialog = new SpectraLoaderDialog();
 		spectraLoaderDialog.showAndWait().ifPresent(params -> {
 			System.out.println("INFO | " + params.toString());
+			logger.info(params.toString());
 			TaskRunner.doAsyncWork("Loading spectra", () -> {
 				// Step 1 : load reference spectra
 				if (!params.getRefPklByDataSourceMap().isEmpty()) {
@@ -143,11 +151,13 @@ public class ViewModel {
 				}
 				return true;
 			}, (isSuccess) -> {
+				logger.info("Task has finished sucessfully!");
 				System.out.println("INFO | Task has finished sucessfully!");
 				if (!PeaklistReader.isRetentionTimesMissing()) {
 					onEditParsingRules();
 				}
 			}, (failure) -> {
+				logger.error("Task has failed {}", failure);
 				System.err.println("INFO | Task has failed! " + failure);
 			}, false, stage);
 		});
@@ -185,8 +195,10 @@ public class ViewModel {
 			}, (isSuccess) -> {
 				refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
 				testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
+				logger.info("Task has finished sucessfully!");
 				System.out.println("INFO | Task has finished sucessfully!");
 			}, (failure) -> {
+				logger.error("Task has failed {}", failure);
 				System.err.println("INFO | Task has failed! " + failure);
 			}, false, stage);
 		} else {
@@ -210,8 +222,10 @@ public class ViewModel {
 				}, (isSuccess) -> {
 					refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
 					testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
+					logger.info("Task has finished sucessfully!");
 					System.out.println("INFO | Task has finished sucessfully!");
 				}, (failure) -> {
+					logger.error("Task has failed {}", failure);
 					System.err.println("INFO | Task has failed! " + failure);
 				}, false, stage);
 			});
@@ -275,6 +289,8 @@ public class ViewModel {
 		try {
 			PeaklistReader.isSecondPeakList = true;
 			PeakListProvider.loadTestedSpectraFromFile(testPklFilePath);
+			logger.info("{} spectrum was found from the tested spectra",
+					ListOfSpectra.getSecondSpectra().getSpectraAsObservable().size());
 			System.out.println("INFO | " + ListOfSpectra.getSecondSpectra().getSpectraAsObservable().size()
 					+ " spectrum was found from the tested spectra.");
 		} catch (Exception e) {
@@ -319,8 +335,11 @@ public class ViewModel {
 	 */
 	public void onExit() {
 		System.out.println("WARN | Exit spectra-comp");
+		logger.warn("Exit spectra-comp");
 		new ConfirmDialog<Object>(ICON.EXIT, "Exit spectra-comp", "Are you sure you want to exit spectra-comp ?",
 				() -> {
+					// Close all active connections
+					DBAccess.closeAllDb();
 					Platform.exit();
 					System.exit(0);
 					return null;
@@ -345,6 +364,7 @@ public class ViewModel {
 		AboutDialog aboutDialog = new AboutDialog();
 		aboutDialog.showAndWait().ifPresent(spectraComp -> {
 			System.out.println("INFO | About spectra-comp software: " + spectraComp);
+			logger.info("About spectra-comp software: {}", spectraComp);
 		});
 	}
 
@@ -354,6 +374,7 @@ public class ViewModel {
 	 */
 	public void onOpenUserGuide() {
 		try {
+			logger.info("Open user guide file: spectra_comp_user_guide.pdf");
 			System.out.println("INFO | Open user guide file: spectra_comp_user_guide.pdf.");
 			URI srcPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
 			String path = new File(srcPath).getParent().replaceAll("\\\\", "/") + File.separator + "config"
@@ -422,6 +443,7 @@ public class ViewModel {
 			}, (isSuccess) -> {
 				System.out.println("INFO | Task has finished sucessfully!");
 			}, (failure) -> {
+				logger.error("Task has failed {}", failure);
 				System.err.println("INFO | Task has failed! " + failure);
 			}, false, stage);
 		}, stage);
