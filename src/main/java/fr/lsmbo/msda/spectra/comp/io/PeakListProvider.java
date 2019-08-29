@@ -1,8 +1,6 @@
 package fr.lsmbo.msda.spectra.comp.io;
 
 import java.io.File;
-import java.sql.SQLException;
-import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,39 +62,45 @@ public class PeakListProvider {
 	}
 
 	/**
-	 * Load reference peak list from a Proline project.
-	 *
-	 * @param dbName The database name to connect to. It's always in this form
-	 *               msi_db_project_ID
-	 * @param rsmIds the result_summary id from where to compute the spectra.
-	 * @throws SQLException the SQL exception
+	 * Load reference spectra
+	 * 
+	 * @param projectId   the project id
+	 * @param resultSetId the result set id
+	 * @throws Exception the exception to throw
 	 */
-	@SuppressWarnings("restriction")
-	public static void loadRefSpectraFrmProline(final Long projectId, final Set<Long> rsmIds) throws Exception {
+	public static void loadRefSpectra(final Long projectId, final Long resultSetId) throws Exception {
 		if (SpectraSource.getType(Session.USER_PARAMS.getDataSource()) == SpectraSource.DATABASE) {
-			assert projectId > 0L : "Project name must not be null nor empty!";
-			assert !rsmIds.isEmpty() : "Rsm Ids must not be empty!";
-			logger.info("--- Start to retrieve spectra from reference peaklist from Proline project. Please wait ...");
-			System.out.println(
-					"INFO | Start to retrieve spectra from reference peaklist from Proline project. Please wait ...");
-			// Find the msi_search_ids
-			Set<Long> msiSearchIds = DBSpectraHandler.fillMsiSerachIds(projectId, rsmIds);
-			DBSpectraHandler.fillSpecByPeakList(projectId, msiSearchIds);
+			logger.info("Start to retrieve reference spectra from a proline project with id=#{}. Please wait ...",
+					projectId);
+			System.out.println("INFO | Start to retrieve reference spectra from a proline project with id=#" + projectId
+					+ ". Please wait ...");
+			DBSpectraHandler.fetchMSQueriesData(projectId, resultSetId);
 			ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 		}
 	}
 
-	// test
-	public static void loadTest(final Long projectId, final Long resultSetId) throws Exception {
-		// TODO test
-		System.out.println("INFO |  start test");
-		DBSpectraHandler.fetchMSQueriesData(projectId, resultSetId);
-		System.out.println("INFO |  end test");
+	/**
+	 * Load test spectra
+	 * 
+	 * @param projectId   the project id
+	 * @param resultSetId the result set id
+	 * @throws Exception the exception to throw
+	 */
+	public static void loadTestSpectra(final Long projectId, final Long resultSetId) throws Exception {
+		if (SpectraSource.getType(Session.USER_PARAMS.getDataSource()) == SpectraSource.DATABASE) {
+			logger.info("Start to retrieve test spectra from a proline project with id=#{}. Please wait ...",
+					projectId);
+			System.out.println("INFO | Start to retrieve test spectra from a proline project with id=#" + projectId
+					+ ". Please wait ...");
+			DBSpectraHandler.fetchMSQueriesData(projectId, resultSetId);
+			ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
+					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
+		}
 	}
 
 	/**
-	 * Load the reference spectra from a peaklist file.
+	 * Load the reference spectra from a peaklist file (.mgf or .pkl).
 	 *
 	 * @param refPklFilePath The path of the reference peaklist file.
 	 * @throws Exception the exception
@@ -106,34 +110,10 @@ public class PeakListProvider {
 		if (SpectraSource.getType(Session.USER_PARAMS.getDataSource()) == SpectraSource.FILE) {
 			assert (!StringsUtils.isEmpty(refPklFilePath)
 					&& (new File(refPklFilePath).exists())) : "Invalid file path!";
-			logger.info("Load reference spectra from the file : {} . Please wait ...", refPklFilePath);
-			System.out.println(
-					"INFO | --- Load reference spectra from the file  : " + refPklFilePath + " . Please wait ...");
+			logger.info("Load reference spectra from file: {} . Please wait ...", refPklFilePath);
+			System.out.println("INFO | --- Load reference spectra from file: " + refPklFilePath + ". Please wait ...");
 			File firstPklListFile = new File(refPklFilePath);
 			PeaklistReader.load(firstPklListFile);
-		}
-	}
-
-	/**
-	 * Load tested peak list from a Proline project.
-	 *
-	 * @param dbName The database name to connect to. It's always in this form
-	 *               msi_db_project_ID
-	 * @param rsmIds the result_summary ids from where to compute the spectra.
-	 * @throws Exception the exception
-	 */
-	@SuppressWarnings("restriction")
-	public static void loadTestedSpectraFrmProline(final Long projectId, Set<Long> rsmIds) throws Exception {
-		if (SpectraSource.getType(Session.USER_PARAMS.getDataSource()) == SpectraSource.DATABASE) {
-			assert (projectId > 0L) : "Project name must not be null nor empty!";
-			logger.info("--- Start to retrieve spectra from test peaklist from Proline project. Please wait ...");
-			System.out.println(
-					"INFO | Start to retrieve spectra from test peaklist from Proline project. Please wait ...");
-			// Find the msi_search_ids
-			Set<Long> msiSearchIds = DBSpectraHandler.fillMsiSerachIds(projectId, rsmIds);
-			DBSpectraHandler.fillSpecByPeakList(projectId, msiSearchIds);
-			ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
-					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
 		}
 	}
 
@@ -148,9 +128,8 @@ public class PeakListProvider {
 		if (SpectraSource.getType(Session.USER_PARAMS.getDataSource()) == SpectraSource.FILE) {
 			assert (!StringsUtils.isEmpty(testPklFilePath)
 					&& (new File(testPklFilePath).exists())) : "Invalid file path !";
-			logger.info("Load spectra to test from the file : {} . Please wait ...", testPklFilePath);
-			System.out.println(
-					"INFO | --- Load spectra to test from the file  : " + testPklFilePath + " . Please wait ...");
+			logger.info("Load spectra to test from the file: {} . Please wait ...", testPklFilePath);
+			System.out.println("INFO | --- Load test spectra from file: " + testPklFilePath + ". Please wait ...");
 			File testPklFile = new File(testPklFilePath);
 			PeaklistReader.load(testPklFile);
 		}

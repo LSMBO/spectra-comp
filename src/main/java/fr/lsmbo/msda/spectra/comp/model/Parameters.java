@@ -9,7 +9,7 @@ import fr.lsmbo.msda.spectra.comp.db.SpectraSource;
 /**
  * The Class SpectraParams.
  */
-public class SpectraParams {
+public class Parameters {
 
 	/** The ref pkl by data source map. */
 	// Return reference Pkl in map
@@ -29,7 +29,7 @@ public class SpectraParams {
 	/**
 	 * Default constructor.
 	 */
-	public SpectraParams() {
+	public Parameters() {
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class SpectraParams {
 	 * @param refDbName                the ref db name
 	 * @param testDbName               the test db name
 	 */
-	public SpectraParams(Map<SpectraSource, Object> refPklByDataSourceMap,
+	public Parameters(Map<SpectraSource, Object> refPklByDataSourceMap,
 			Map<SpectraSource, Object> testedPklByDataSourceMap, Long refProjectId, Long testProjectId) {
 		super();
 		this.refPklByDataSourceMap = refPklByDataSourceMap;
@@ -128,9 +128,9 @@ public class SpectraParams {
 	 */
 	@Override
 	public String toString() {
-		return "Spectra Params [reference pkl by data source=" + refPklByDataSourceMap + ", tested Pkl by data source ="
-				+ testedPklByDataSourceMap + ", reference project id=" + refProjectId + ", test project id="
-				+ testProjectId + "]";
+		return "Spectra parameters: [reference peaklist by data source=" + refPklByDataSourceMap
+				+ ", tested peaklist by data source =" + testedPklByDataSourceMap + ", reference project id=#"
+				+ refProjectId + ", test project id=#" + testProjectId + "]";
 	}
 
 }

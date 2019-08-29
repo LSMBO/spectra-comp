@@ -8,9 +8,8 @@ import java.io.File;
 import fr.lsmbo.msda.spectra.comp.settings.UserParams;
 import fr.lsmbo.msda.spectra.comp.settings.Version;
 
-// TODO: Auto-generated Javadoc
 /**
- * Holds session parameters .
+ * Holds session parameters.
  * 
  * @author Aromdhani
  *

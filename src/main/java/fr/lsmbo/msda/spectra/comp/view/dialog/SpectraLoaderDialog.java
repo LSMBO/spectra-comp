@@ -12,8 +12,8 @@ import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.db.SpectraSource;
 import fr.lsmbo.msda.spectra.comp.model.Dataset;
 import fr.lsmbo.msda.spectra.comp.model.Dataset.DatasetType;
+import fr.lsmbo.msda.spectra.comp.model.Parameters;
 import fr.lsmbo.msda.spectra.comp.model.Project;
-import fr.lsmbo.msda.spectra.comp.model.SpectraParams;
 import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
 import javafx.collections.FXCollections;
@@ -51,7 +51,7 @@ import javafx.util.StringConverter;
  * @author Aromdhani
  *
  */
-public class SpectraLoaderDialog extends Dialog<SpectraParams> {
+public class SpectraLoaderDialog extends Dialog<Parameters> {
 
 	/** The connection label. */
 	// Components
@@ -73,7 +73,7 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 	private ObservableList<Project> testUserProjects = FXCollections.observableArrayList();
 
 	/** The params. */
-	private SpectraParams params;
+	private Parameters params;
 
 	/** The first root. */
 	private StackPane firstRoot;
@@ -110,10 +110,10 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 	private Map<SpectraSource, Object> testPklByDataSourceMap = new HashMap<>();
 
 	/** The ref rsm ids. */
-	private HashSet<Long> refRsmIds = new HashSet<>();
+	private HashSet<Long> refRsIds = new HashSet<>();
 
 	/** The test rsm ids. */
-	private HashSet<Long> testRsmIds = new HashSet<>();
+	private HashSet<Long> testRsIds = new HashSet<>();
 
 	/**
 	 * Default constructor.
@@ -441,22 +441,21 @@ public class SpectraLoaderDialog extends Dialog<SpectraParams> {
 					Session.USER_PARAMS.setDataSource("file");
 					refPklByDataSourceMap.put(SpectraSource.FILE, refPklListTF.getText());
 				} else {
-					assert (refProjectId > 0L) : "reference database name must not be null nor empty";
 					Session.USER_PARAMS.setDataSource("database");
-					refRsmIds.add(treeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
-					refPklByDataSourceMap.put(SpectraSource.DATABASE, refRsmIds);
+					Long refResultSetId = treeView.getSelectionModel().getSelectedItem().getValue().getResultSetId();
+					refRsIds.add(refResultSetId);
+					refPklByDataSourceMap.put(SpectraSource.DATABASE, refRsIds);
 				}
 				if (secondPklListRefFileRB.isSelected()) {
 					Session.USER_PARAMS.setDataSource("file");
 					testPklByDataSourceMap.put(SpectraSource.FILE, secondPklListTF.getText());
 				} else {
-					assert (testProjectId > 0L) : "test database name must not be null nor empty";
 					Session.USER_PARAMS.setDataSource("database");
-					testRsmIds
-							.add(secondTreeView.getSelectionModel().getSelectedItem().getValue().getResultSummaryId());
-					testPklByDataSourceMap.put(SpectraSource.DATABASE, testRsmIds);
+					Long testResultSetId = treeView.getSelectionModel().getSelectedItem().getValue().getResultSetId();
+					testRsIds.add(testResultSetId);
+					testPklByDataSourceMap.put(SpectraSource.DATABASE, testRsIds);
 				}
-				this.params = new SpectraParams(refPklByDataSourceMap, testPklByDataSourceMap, refProjectId,
+				this.params = new Parameters(refPklByDataSourceMap, testPklByDataSourceMap, refProjectId,
 						testProjectId);
 				return params;
 			} else {

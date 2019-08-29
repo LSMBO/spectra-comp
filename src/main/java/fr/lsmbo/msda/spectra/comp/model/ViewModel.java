@@ -105,6 +105,7 @@ public class ViewModel {
 
 	/**
 	 * Create and displays spectra loader dialog.
+	 * 
 	 */
 	public void onLoadSpectra() {
 		SpectraLoaderDialog spectraLoaderDialog = new SpectraLoaderDialog();
@@ -116,37 +117,40 @@ public class ViewModel {
 				if (!params.getRefPklByDataSourceMap().isEmpty()) {
 					params.getRefPklByDataSourceMap().forEach((k, v) -> {
 						if (k.equals(SpectraSource.FILE)) {
-							// Reference spectra loaded from a file
+							// Reference will be loaded from a peaklist file(.mgf or .pkl)
 							String refFilePath = (String) v;
 							loadRefPklFile(refFilePath);
 							refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
 						} else {
-							Long projectId = params.getRefProjectId();
-							logger.info("Reference spectra loaded from a Proline project with id=#{}", projectId);
-							Set rsmIds = (Set) v;
-							loadRefSpectraProline(projectId, rsmIds);
+							Long refProjectId = params.getRefProjectId();
+							Set rsIds = (Set) v;
+							logger.info(
+									"Reference spectra will be loaded from a proline project with id=#{} and resultset id=#{}",
+									refProjectId, rsIds);
+							loadRefSpectraProline(refProjectId, rsIds);
 							refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
-							Session.USER_PARAMS.setFirstPklList(projectId + " Rsm id= " + rsmIds);
+							Session.USER_PARAMS.setFirstPklList(refProjectId + " rs id=#" + rsIds);
 						}
 					});
 				}
 				// Step 2: load test spectra
 				if (!params.getTestedPklByDataSourceMap().isEmpty()) {
 					params.getTestedPklByDataSourceMap().forEach((k, v) -> {
-						// Test spectra loaded from a file
+						// Test spectra will be loaded from a peaklist file(.mgf or .pkl)
 						if (k.equals(SpectraSource.FILE)) {
 							String testFilePath = (String) v;
 							loadTestedPklFile(testFilePath);
 							testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
 						} else {
 							// Test spectra loaded from a Proline project
-							Long testProjectId = params.getRefProjectId();
-							logger.info("Test spectra will be loaded from a Proline project with id=#{}",
-									testProjectId);
-							Set rsmIds = (Set) v;
-							loadTestedSpectraProline(testProjectId, rsmIds);
+							Long testProjectId = params.getTestProjectId();
+							Set rsIds = (Set) v;
+							logger.info(
+									"Test spectra will be loaded from a proline project with id=#{} and resultset id=#{}",
+									testProjectId, rsIds);
+							loadTestSpectraProline(testProjectId, rsIds);
 							testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
-							Session.USER_PARAMS.setSecondPklList(testProjectId + " Rsm id= " + rsmIds);
+							Session.USER_PARAMS.setSecondPklList(testProjectId + " rs id=#" + rsIds);
 						}
 					});
 				}
@@ -301,15 +305,16 @@ public class ViewModel {
 	}
 
 	/**
-	 * Load reference spectra from a Proline project.
+	 * Load reference spectra from a proline project.
 	 * 
-	 * @param dbName The database name to connect to. Usually it's msi_db_project_ID
-	 * @param rsmIds the result_summary ids from where to compute the spectra.
+	 * @param projectId the project id.
+	 * @param rsIds     the result set id from where to load the spectra.
 	 */
-	private void loadRefSpectraProline(final long projectId, final Set<Long> rsmIds) {
+	private void loadRefSpectraProline(final long projectId, final Set<Long> rsIds) {
 		try {
-			PeakListProvider.loadTest(projectId, (long) 50);
-			PeakListProvider.loadRefSpectraFrmProline(projectId, rsmIds);
+			for (Long rsId : rsIds) {
+				PeakListProvider.loadRefSpectra(projectId, rsId);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -317,14 +322,16 @@ public class ViewModel {
 	}
 
 	/**
-	 * Load tested spectra from a Proline project.
+	 * Load test spectra from a proline project.
 	 * 
-	 * @param dbName the database name to connect to. Usually it's msi_db_project_ID
-	 * @param rsmIds the result_summary ids from where to compute the spectra.
+	 * @param projectId the project id.
+	 * @param rsIds     the result set id from where to load the spectra.
 	 */
-	private void loadTestedSpectraProline(final Long projectId, final Set<Long> rsmIds) {
+	private void loadTestSpectraProline(final long projectId, final Set<Long> rsIds) {
 		try {
-			PeakListProvider.loadTestedSpectraFrmProline(projectId, rsmIds);
+			for (Long rsId : rsIds) {
+				PeakListProvider.loadTestSpectra(projectId, rsId);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

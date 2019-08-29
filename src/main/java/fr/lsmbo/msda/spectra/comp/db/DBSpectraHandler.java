@@ -99,6 +99,9 @@ public class DBSpectraHandler {
 		listMsQueries.clear();
 		msqQueryMap.clear();
 		peptideMatchesByMsQueryIdMap.clear();
+		// TODO : Initialize spectra in another level to compute many selected result
+		// set
+		spectra.initialize();
 	}
 
 	/**
@@ -141,12 +144,11 @@ public class DBSpectraHandler {
 	}
 
 	/**
-	 * Return the msi_search_id
+	 * Fetch ms queries data
 	 * 
 	 * @param projectId   the project id
 	 * @param resultSetId the resultSetId
-	 * @return msi_search_id
-	 * @throws Exception
+	 * @throws Exception the exception to throw.
 	 */
 	public static void fetchMSQueriesData(final Long projectId, final Long resultSetId) throws Exception {
 		PreparedStatement msiSearchIdStmt = null;
