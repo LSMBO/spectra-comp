@@ -84,7 +84,6 @@ public class PeakListProvider {
 			DBSpectraHandler.fillSpecByPeakList(projectId, msiSearchIds);
 			ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
-
 		}
 	}
 

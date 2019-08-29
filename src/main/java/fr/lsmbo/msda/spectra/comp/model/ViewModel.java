@@ -121,12 +121,12 @@ public class ViewModel {
 							loadRefPklFile(refFilePath);
 							refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
 						} else {
-							// Reference spectra loaded from a Proline project
-							Long msiDbname = params.getRefDbName();
+							Long projectId = params.getRefProjectId();
+							logger.info("Reference spectra loaded from a Proline project with id=#{}", projectId);
 							Set rsmIds = (Set) v;
-							loadRefSpectraProline(msiDbname, rsmIds);
+							loadRefSpectraProline(projectId, rsmIds);
 							refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
-							Session.USER_PARAMS.setFirstPklList(msiDbname + " Rsm id= " + rsmIds);
+							Session.USER_PARAMS.setFirstPklList(projectId + " Rsm id= " + rsmIds);
 						}
 					});
 				}
@@ -140,11 +140,13 @@ public class ViewModel {
 							testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
 						} else {
 							// Test spectra loaded from a Proline project
-							Long msiDbname = params.getRefDbName();
+							Long testProjectId = params.getRefProjectId();
+							logger.info("Test spectra will be loaded from a Proline project with id=#{}",
+									testProjectId);
 							Set rsmIds = (Set) v;
-							loadTestedSpectraProline(msiDbname, rsmIds);
+							loadTestedSpectraProline(testProjectId, rsmIds);
 							testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
-							Session.USER_PARAMS.setSecondPklList(msiDbname + " Rsm id= " + rsmIds);
+							Session.USER_PARAMS.setSecondPklList(testProjectId + " Rsm id= " + rsmIds);
 						}
 					});
 				}
@@ -157,7 +159,7 @@ public class ViewModel {
 				}
 			}, (failure) -> {
 				logger.error("Task has failed {}", failure);
-				System.err.println("INFO | Task has failed! " + failure);
+				System.err.println("INFO | Task has failed: " + failure);
 			}, false, stage);
 		});
 	}

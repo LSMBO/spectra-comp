@@ -10,19 +10,19 @@ import fr.lsmbo.msda.spectra.comp.db.SpectraSource;
  * The Class SpectraParams.
  */
 public class SpectraParams {
-	
+
 	/** The ref pkl by data source map. */
 	// Return reference Pkl in map
 	private Map<SpectraSource, Object> refPklByDataSourceMap = new HashMap<>();
-	
+
 	/** The tested pkl by data source map. */
 	// Return tested Pkl in map
 	private Map<SpectraSource, Object> testedPklByDataSourceMap = new HashMap<>();
-	
+
 	/** The ref db name. */
 	// Database name
 	private Long refProjectId = -1L;
-	
+
 	/** The test db name. */
 	private Long testProjectId = -1L;
 
@@ -35,13 +35,13 @@ public class SpectraParams {
 	/**
 	 * Instantiates a new spectra params.
 	 *
-	 * @param refPklByDataSourceMap the ref pkl by data source map
+	 * @param refPklByDataSourceMap    the ref pkl by data source map
 	 * @param testedPklByDataSourceMap the tested pkl by data source map
-	 * @param refDbName the ref db name
-	 * @param testDbName the test db name
+	 * @param refDbName                the ref db name
+	 * @param testDbName               the test db name
 	 */
 	public SpectraParams(Map<SpectraSource, Object> refPklByDataSourceMap,
-			Map<SpectraSource, Object> testedPklByDataSourceMap, Long refProjectId, Long testProjectId ) {
+			Map<SpectraSource, Object> testedPklByDataSourceMap, Long refProjectId, Long testProjectId) {
 		super();
 		this.refPklByDataSourceMap = refPklByDataSourceMap;
 		this.testedPklByDataSourceMap = testedPklByDataSourceMap;
@@ -61,7 +61,7 @@ public class SpectraParams {
 	/**
 	 * Sets the ref pkl by data source map.
 	 *
-	 * @param refPklByDataSourceMap            the refPklByDataSourceMap to set
+	 * @param refPklByDataSourceMap the refPklByDataSourceMap to set
 	 */
 	public final void setRefPklByDataSourceMap(Map<SpectraSource, Object> refPklByDataSourceMap) {
 		this.refPklByDataSourceMap = refPklByDataSourceMap;
@@ -79,43 +79,43 @@ public class SpectraParams {
 	/**
 	 * Sets the tested pkl by data source map.
 	 *
-	 * @param testedPklByDataSourceMap            the testedPklByDataSourceMap to set
+	 * @param testedPklByDataSourceMap the testedPklByDataSourceMap to set
 	 */
 	public final void setTestedPklByDataSourceMap(Map<SpectraSource, Object> testedPklByDataSourceMap) {
 		this.testedPklByDataSourceMap = testedPklByDataSourceMap;
 	}
 
 	/**
-	 * Gets the ref db name.
+	 * Gets the ref project id.
 	 *
-	 * @return the refDbName
+	 * @return the reference project id
 	 */
-	public final Long getRefDbName() {
+	public final Long getRefProjectId() {
 		return refProjectId;
 	}
 
 	/**
-	 * Sets the ref db name.
+	 * Sets the ref project id.
 	 *
-	 * @param refDbName            the refDbName to set
+	 * @param refDbName he reference project id
 	 */
-	public final void setRefDbName(Long refProjectId) {
+	public final void setRefProjectId(Long refProjectId) {
 		this.refProjectId = refProjectId;
 	}
 
 	/**
-	 * Gets the test db name.
+	 * Gets the test project id.
 	 *
-	 * @return the testDbName
+	 * @return the test project id
 	 */
-	public final Long getTestDbName() {
+	public final Long getTestProjectId() {
 		return testProjectId;
 	}
 
 	/**
-	 * Sets the test db name.
+	 * Sets the test test project id.
 	 *
-	 * @param testDbName            the testDbName to set
+	 * @param testProjectId the test project id
 	 */
 	public final void setTestDbName(Long testProjectId) {
 		this.testProjectId = testProjectId;
@@ -128,9 +128,9 @@ public class SpectraParams {
 	 */
 	@Override
 	public String toString() {
-		return "Spectra Params [reference pkl by data source=" + refPklByDataSourceMap
-				+ ", tested Pkl by data source =" + testedPklByDataSourceMap + ", reference db name=" + refProjectId
-				+ ", test db name=" + testProjectId + "]";
+		return "Spectra Params [reference pkl by data source=" + refPklByDataSourceMap + ", tested Pkl by data source ="
+				+ testedPklByDataSourceMap + ", reference project id=" + refProjectId + ", test project id="
+				+ testProjectId + "]";
 	}
 
 }
