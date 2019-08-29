@@ -28,7 +28,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- * Handle spectra from databases.
+ * Handle databases request. It retrieves the data from Proline databases.
+ * Example : Retrieve the projects , the ms queries ...
+ * 
+ * @author Aromdhani
  */
 
 public class DBSpectraHandler {
@@ -90,35 +93,12 @@ public class DBSpectraHandler {
 	// the PSMs by ms queries ids
 	private static Map<Long, Set<Long>> peptideMatchesByMsQueryIdMap = new HashMap<>();
 
-	/**
-	 * Fetch PSMs grouped by ms query id
-	 * 
-	 * @param projectId   the project id
-	 * @param msQueryList the list of ms queries id
-	 * @param rsIdList    the list of result set id ( include decoy result set id )
-	 * @throws Exception
-	 */
-	private static void fetchPSM(final Long projectId, List<Long> rsIdList, List<Long> msQueryList) throws Exception {
-		PreparedStatement psmStmt = null;
-		ResultSet rs = null;
-		try {
-			psmStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(QUERY_PSM);
-			for (Long rsId : rsIdList) {
-				psmStmt.setLong(1, rsId);
-				for (Long msqId : msQueryList) {
-					Set<Long> pepIdsSet = peptideMatchesByMsQueryIdMap.get(msqId);
-					psmStmt.setLong(2, msqId);
-					rs = psmStmt.executeQuery();
-					while (rs.next()) {
-						Long pepId = rs.getLong("peptide_id");
-						pepIdsSet.add(pepId);
-					}
-				}
-			}
-		} finally {
-			tryToCloseResultSet(rs);
-			tryToCloseStatement(psmStmt);
-		}
+	/** Initialize parameters */
+	private static void initialize() {
+		msQueriesIds.clear();
+		listMsQueries.clear();
+		msqQueryMap.clear();
+		peptideMatchesByMsQueryIdMap.clear();
 	}
 
 	/**
@@ -173,8 +153,8 @@ public class DBSpectraHandler {
 		ResultSet rs = null;
 		Long msiSearchId = -1L;
 		try {
-			assert projectId > 0L : "Project id name must not be null nor empty!";
-			assert resultSetId > 0L : "Result set id must not be null nor empty!";
+			assert projectId > 0L : "Project id must be exists!";
+			assert resultSetId > 0L : "Result set id must be exists!";
 			initialize();
 			msiSearchIdStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(MSI_SEARCH_ID_QUERY);
 			msiSearchIdStmt.setLong(1, resultSetId);
@@ -187,7 +167,7 @@ public class DBSpectraHandler {
 			tryToCloseStatement(msiSearchIdStmt);
 		}
 		// Fetch main data
-		assert (msiSearchId > 0L) : "msi_search id must not be empty nor null!";
+		assert (msiSearchId > 0L) : "msi_search id must be exists!";
 		fetchData(projectId, msiSearchId);
 		// Fetch ms queries
 		if (!msQueriesIds.isEmpty() && fetchMSQueries(projectId, msQueriesIds)) {
@@ -198,44 +178,6 @@ public class DBSpectraHandler {
 		} else {
 			logger.warn("No ms queries were found!");
 			System.err.println("WARN | No ms queries were found!");
-		}
-	}
-
-	/**
-	 * Add result set id to the list of Result set ids and its decoy result set id
-	 * id
-	 * 
-	 * @param projectId   the project id
-	 * @param resultSetId the result set id to add
-	 * @throws Exception
-	 */
-	private static void addResultSetIds(final Long projectId, Long resultSetId) throws Exception {
-		PreparedStatement resultSetIdsStmt = null;
-		ResultSet rs = null;
-		Long id = -1L;
-		Long decoyId = -1L;
-		try {
-			resultSetIdsStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(RESULTSET_ID);
-			resultSetIdsStmt.setLong(1, resultSetId);
-			rs = resultSetIdsStmt.executeQuery();
-			while (rs.next()) {
-				id = rs.getLong("id");
-				decoyId = rs.getLong("decoy_result_set_id");
-			}
-			if (id > 0) {
-				resultSetIds.add(id);
-			}
-			if (decoyId > 0) {
-				resultSetIds.add(decoyId);
-			}
-			logger.info("Retrieve peptide match for the result set with id=#{} and the decoy result set id=#{} ", id,
-					decoyId);
-			System.out.println("INFO | Retrieve peptide match for the result set with id=# " + id
-					+ " and the decoy result set id=# " + decoyId + "");
-
-		} finally {
-			tryToCloseResultSet(rs);
-			tryToCloseStatement(resultSetIdsStmt);
 		}
 	}
 
@@ -341,12 +283,73 @@ public class DBSpectraHandler {
 		return isSuccess;
 	}
 
-	/** Initialize parameters */
-	private static void initialize() {
-		msQueriesIds.clear();
-		listMsQueries.clear();
-		msqQueryMap.clear();
-		peptideMatchesByMsQueryIdMap.clear();
+	/**
+	 * Add result set id to the list of Result set ids and its decoy result set id
+	 * id
+	 * 
+	 * @param projectId   the project id
+	 * @param resultSetId the result set id to add
+	 * @throws Exception
+	 */
+	private static void addResultSetIds(final Long projectId, Long resultSetId) throws Exception {
+		PreparedStatement resultSetIdsStmt = null;
+		ResultSet rs = null;
+		Long id = -1L;
+		Long decoyId = -1L;
+		try {
+			resultSetIdsStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(RESULTSET_ID);
+			resultSetIdsStmt.setLong(1, resultSetId);
+			rs = resultSetIdsStmt.executeQuery();
+			while (rs.next()) {
+				id = rs.getLong("id");
+				decoyId = rs.getLong("decoy_result_set_id");
+			}
+			if (id > 0) {
+				resultSetIds.add(id);
+			}
+			if (decoyId > 0) {
+				resultSetIds.add(decoyId);
+			}
+			logger.info("Retrieve peptide match for the result set with id=#{} and the decoy result set id=#{} ", id,
+					decoyId);
+			System.out.println("INFO | Retrieve peptide match for the result set with id=# " + id
+					+ " and the decoy result set id=# " + decoyId + "");
+
+		} finally {
+			tryToCloseResultSet(rs);
+			tryToCloseStatement(resultSetIdsStmt);
+		}
+	}
+
+	/**
+	 * Fetch PSMs grouped by ms query id
+	 * 
+	 * @param projectId   the project id
+	 * @param msQueryList the list of ms queries id
+	 * @param rsIdList    the list of result set id ( include decoy result set id )
+	 * @throws Exception
+	 */
+	private static void fetchPSM(final Long projectId, List<Long> rsIdList, List<Long> msQueryList) throws Exception {
+		PreparedStatement psmStmt = null;
+		ResultSet rs = null;
+		try {
+			psmStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(QUERY_PSM);
+			for (Long rsId : rsIdList) {
+				psmStmt.setLong(1, rsId);
+				for (Long msqId : msQueryList) {
+					Set<Long> pepIdsSet = peptideMatchesByMsQueryIdMap.get(msqId);
+					psmStmt.setLong(2, msqId);
+					rs = psmStmt.executeQuery();
+					while (rs.next()) {
+						Long pepId = rs.getLong("peptide_id");
+						pepIdsSet.add(pepId);
+					}
+				}
+			}
+		} finally {
+			tryToCloseResultSet(rs);
+			tryToCloseStatement(psmStmt);
+		}
 	}
 
 	/** The spectra. */

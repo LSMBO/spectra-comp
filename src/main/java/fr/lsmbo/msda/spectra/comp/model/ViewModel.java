@@ -22,7 +22,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
-import fr.lsmbo.msda.spectra.comp.SpectraCompFx;
 import fr.lsmbo.msda.spectra.comp.db.DBAccess;
 import fr.lsmbo.msda.spectra.comp.db.SpectraSource;
 import fr.lsmbo.msda.spectra.comp.io.PeakListProvider;
