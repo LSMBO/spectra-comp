@@ -1,5 +1,6 @@
 package fr.lsmbo.msda.spectra.comp.db;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -81,6 +83,12 @@ public class DBSpectraHandler {
 	/** The constant of peptide query */
 	private static final String PEPTIDE_QUERY = "SELECT id, sequence, ptm_string, calculated_mass FROM peptide WHERE id=?";
 
+	/** The constant of msi spectra to retreive peaklist */
+	private static final String MSI_SPECTRA_PKL = "SELECT spec.* FROM spectrum spec, ms_query msq WHERE spec.id=msq.spectrum_id AND msq.id IN(?) limit 5";
+
+	/** The constant of peaklist software */
+	private static final String PKL_SOFTWARE = "SELECT software.name, software.version FROM peaklist pkl, peaklist_software software WHERE pkl.peaklist_software_id=software.id AND pkl.id=?";
+
 	/** Initial parameters */
 	// the resultsets id (include decoy result set id) to compute
 	private static List<Long> resultSetIds = new ArrayList<>();
@@ -95,13 +103,14 @@ public class DBSpectraHandler {
 
 	/** Initialize parameters */
 	private static void initialize() {
+		// TODO : Initialize spectra in another level to compute many selected result
+		// set
+		spectra.initialize();
 		msQueriesIds.clear();
 		listMsQueries.clear();
 		msqQueryMap.clear();
 		peptideMatchesByMsQueryIdMap.clear();
-		// TODO : Initialize spectra in another level to compute many selected result
-		// set
-		spectra.initialize();
+
 	}
 
 	/**
@@ -151,36 +160,46 @@ public class DBSpectraHandler {
 	 * @throws Exception the exception to throw.
 	 */
 	public static void fetchMSQueriesData(final Long projectId, final Long resultSetId) throws Exception {
+		Optional<Connection> msiDbConnectionOpt = Optional.ofNullable(DBAccess.getMsiDBConnection(projectId));
 		PreparedStatement msiSearchIdStmt = null;
 		ResultSet rs = null;
 		Long msiSearchId = -1L;
 		try {
 			assert projectId > 0L : "Project id must be exists!";
 			assert resultSetId > 0L : "Result set id must be exists!";
+			assert msiDbConnectionOpt.isPresent() : "Database connection must not be null nor empty!";
+			final Connection msiDbConnection = msiDbConnectionOpt.get();
 			initialize();
-			msiSearchIdStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(MSI_SEARCH_ID_QUERY);
+			msiSearchIdStmt = msiDbConnection.prepareStatement(MSI_SEARCH_ID_QUERY);
 			msiSearchIdStmt.setLong(1, resultSetId);
 			rs = msiSearchIdStmt.executeQuery();
 			while (rs.next()) {
 				msiSearchId = rs.getLong("msi_search_id");
 			}
+			// Fetch main data
+			if (msiSearchId > 0L) {
+				fetchData(msiDbConnection, msiSearchId);
+				// Fetch ms queries
+				if (!msQueriesIds.isEmpty()) {
+					// fetchPklSoftware(msiDbConnection, msQueriesIds);
+					fetchMSQueries(msiDbConnection, msQueriesIds);
+					// Get decoy result set id
+					addResultSetIds(msiDbConnection, resultSetId);
+					// fetch PSMs grouped by ms query id
+					fetchPSM(msiDbConnection, resultSetIds, msQueriesIds);
+				} else {
+					logger.warn("No ms queries were found!");
+					System.err.println("WARN | No ms queries were found!");
+				}
+			} else {
+				logger.warn("msi_search id does not exist!");
+				System.out.println("WARN | msi_search id does not exist!");
+			}
 		} finally {
 			tryToCloseResultSet(rs);
 			tryToCloseStatement(msiSearchIdStmt);
 		}
-		// Fetch main data
-		assert (msiSearchId > 0L) : "msi_search id must be exists!";
-		fetchData(projectId, msiSearchId);
-		// Fetch ms queries
-		if (!msQueriesIds.isEmpty() && fetchMSQueries(projectId, msQueriesIds)) {
-			// Get decoy result set id
-			addResultSetIds(projectId, resultSetId);
-			// fetch PSMs grouped by ms query id
-			fetchPSM(projectId, resultSetIds, msQueriesIds);
-		} else {
-			logger.warn("No ms queries were found!");
-			System.err.println("WARN | No ms queries were found!");
-		}
+
 	}
 
 	/**
@@ -191,13 +210,13 @@ public class DBSpectraHandler {
 	 * @param msiSearchId the msi search id
 	 * @throws Exception
 	 */
-	private static void fetchData(final Long projectId, final Long msiSearchId) throws Exception {
+	private static void fetchData(final Connection msiDbConnection, final Long msiSearchId) throws Exception {
 		PreparedStatement msQueryStmt = null;
 		ResultSet rs = null;
 		try {
 			System.out.println("INFO | Retrieve data from msi_search_id= #" + msiSearchId);
 			logger.info("Retrieve data from msi_search_id= #{}", msiSearchId);
-			msQueryStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(MSI_MSQ_QUERY);
+			msQueryStmt = msiDbConnection.prepareStatement(MSI_MSQ_QUERY);
 			msQueryStmt.setLong(1, msiSearchId);
 			msQueryStmt.setLong(2, msiSearchId);
 			rs = msQueryStmt.executeQuery();
@@ -225,19 +244,61 @@ public class DBSpectraHandler {
 	}
 
 	/***
+	 * Retrieve the used peaklist sofwatre
 	 * 
-	 * @param projectId       the project id
+	 * @param msiDbConnection
+	 * @param msQueriesIdList
+	 * @throws Exception
+	 */
+	private static void fetchPklSoftware(final Connection msiDbConnection, List<Long> msQueriesIdList)
+			throws Exception {
+		PreparedStatement querySpecStmt = null;
+		ResultSet rs = null;
+		final List<String> softwareList = new ArrayList<String>();
+		try {
+			querySpecStmt = msiDbConnection.prepareStatement(MSI_SPECTRA_PKL);
+			for (Long msqId : msQueriesIdList) {
+				querySpecStmt.setLong(1, msqId);
+				rs = querySpecStmt.executeQuery();
+				while (rs.next()) {
+					Long id = rs.getLong("id");
+					getSoftwareName(msiDbConnection, id).ifPresent(sofwatreName -> {
+						softwareList.add(sofwatreName);
+					});
+				}
+			}
+			if (!softwareList.isEmpty() && softwareList.stream().allMatch(e -> e.equals(softwareList.get(0)))) {
+				Session.CURRENT_REGEX_RT = softwareList.get(0);
+				logger.warn("Current regex: {}", Session.CURRENT_REGEX_RT);
+				System.out.println("INFO | Current regex: " + Session.CURRENT_REGEX_RT);
+			}
+			{
+				logger.warn("Current regex to retrieve spectra are heteregenous. The default value will be used!");
+				System.out.println(
+						"WARN | Current regex to retrieve spectra are heteregenous. The default value will be used!");
+			}
+
+		} finally {
+			tryToCloseResultSet(rs);
+			tryToCloseStatement(querySpecStmt);
+		}
+	}
+
+	/***
+	 * 
+	 * @param msiDbConnection the msi database connection
 	 * @param msQueriesIdList the list of ms queries id
 	 * @return Boolean <code>true</code> when it's succeeded otherwise
 	 *         <code>false</code>
 	 * @throws Exception
 	 */
-	private static boolean fetchMSQueries(final Long projectId, List<Long> msQueriesIdList) throws Exception {
+	private static boolean fetchMSQueries(final Connection msiDbConnection, List<Long> msQueriesIdList)
+			throws Exception {
 		PreparedStatement querySpecStmt = null;
 		ResultSet rs = null;
 		Boolean isSuccess = false;
 		try {
-			querySpecStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(MSI_SPECTRA);
+			querySpecStmt = msiDbConnection.prepareStatement(MSI_SPECTRA);
 			for (Long msqId : msQueriesIdList) {
 				querySpecStmt.setLong(1, msqId);
 				rs = querySpecStmt.executeQuery();
@@ -267,7 +328,6 @@ public class DBSpectraHandler {
 								System.err.println("Error | Invalid fragment! moz must be greater than 0!");
 							}
 						}
-						// Update the current regex
 						spectra.addSpectrum(spectrum);
 					}
 				}
@@ -286,6 +346,35 @@ public class DBSpectraHandler {
 	}
 
 	/**
+	 * Retrieve peaklist software name
+	 * 
+	 * @param conenction the SQL connection to the msi_database
+	 * @param spectrumId the spectrum id
+	 * @return software name
+	 * @throws Exception
+	 * @throws SQLException
+	 */
+
+	private static Optional<String> getSoftwareName(final Connection msiDbconnection, final Long spectrumId)
+			throws SQLException, Exception {
+		PreparedStatement pklSoftwareStmt = null;
+		ResultSet rs = null;
+		Optional<String> softwareName = Optional.empty();
+		try {
+			pklSoftwareStmt = msiDbconnection.prepareStatement(PKL_SOFTWARE);
+			pklSoftwareStmt.setLong(1, spectrumId);
+			rs = pklSoftwareStmt.executeQuery();
+			while (rs.next()) {
+				softwareName = Optional.ofNullable(rs.getString("software.name"));
+			}
+		} finally {
+			tryToCloseResultSet(rs);
+			tryToCloseStatement(pklSoftwareStmt);
+		}
+		return softwareName;
+	}
+
+	/**
 	 * Add result set id to the list of Result set ids and its decoy result set id
 	 * id
 	 * 
@@ -293,13 +382,13 @@ public class DBSpectraHandler {
 	 * @param resultSetId the result set id to add
 	 * @throws Exception
 	 */
-	private static void addResultSetIds(final Long projectId, Long resultSetId) throws Exception {
+	private static void addResultSetIds(final Connection msiDbConnection, Long resultSetId) throws Exception {
 		PreparedStatement resultSetIdsStmt = null;
 		ResultSet rs = null;
 		Long id = -1L;
 		Long decoyId = -1L;
 		try {
-			resultSetIdsStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(RESULTSET_ID);
+			resultSetIdsStmt = msiDbConnection.prepareStatement(RESULTSET_ID);
 			resultSetIdsStmt.setLong(1, resultSetId);
 			rs = resultSetIdsStmt.executeQuery();
 			while (rs.next()) {
@@ -331,11 +420,12 @@ public class DBSpectraHandler {
 	 * @param rsIdList    the list of result set id ( include decoy result set id )
 	 * @throws Exception
 	 */
-	private static void fetchPSM(final Long projectId, List<Long> rsIdList, List<Long> msQueryList) throws Exception {
+	private static void fetchPSM(final Connection msiDbConnection, List<Long> rsIdList, List<Long> msQueryList)
+			throws Exception {
 		PreparedStatement psmStmt = null;
 		ResultSet rs = null;
 		try {
-			psmStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(QUERY_PSM);
+			psmStmt = msiDbConnection.prepareStatement(QUERY_PSM);
 			for (Long rsId : rsIdList) {
 				psmStmt.setLong(1, rsId);
 				for (Long msqId : msQueryList) {

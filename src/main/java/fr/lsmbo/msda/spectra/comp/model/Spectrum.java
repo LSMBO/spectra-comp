@@ -44,10 +44,10 @@ public class Spectrum {
 	private Set<Long> m_refIdSet = new HashSet<>();
 	/** The test ids. */
 	private Set<Long> m_testIdSet = new HashSet<>();
-	
+
 	/** The m matched spectra. */
 	private ObservableList<Spectrum> m_matchedSpectra = FXCollections.observableArrayList();
-	
+
 	/** The m matched size. */
 	private int m_matchedSize = 0;
 	/** The m first scan. */
@@ -169,26 +169,16 @@ public class Spectrum {
 	/**
 	 * Instantiates a new spectrum.
 	 *
-	 * @param id
-	 *            the id
-	 * @param firstScan
-	 *            the first scan
-	 * @param firstTime
-	 *            the first time
-	 * @param lastTime
-	 *            the last time
-	 * @param intensityList
-	 *            the intensity list
-	 * @param mozeList
-	 *            the moze list
-	 * @param precursorCharge
-	 *            the precursor charge
-	 * @param precursorIntensity
-	 *            the precursor intensity
-	 * @param precursorMoz
-	 *            the precursor moz
-	 * @param title
-	 *            the title
+	 * @param id                 the id
+	 * @param firstScan          the first scan
+	 * @param firstTime          the first time
+	 * @param lastTime           the last time
+	 * @param intensityList      the intensity list
+	 * @param mozeList           the moze list
+	 * @param precursorCharge    the precursor charge
+	 * @param precursorIntensity the precursor intensity
+	 * @param precursorMoz       the precursor moz
+	 * @param title              the title
 	 */
 	public Spectrum(long id, Integer firstScan, Float firstTime, Float lastTime, byte[] intensityList, byte[] mozeList,
 			Integer precursorCharge, Float precursorIntensity, Double precursorMoz, String title) {
@@ -209,8 +199,7 @@ public class Spectrum {
 	/**
 	 * Adds the fragment.
 	 *
-	 * @param fragment
-	 *            the fragment to set
+	 * @param fragment the fragment to set
 	 */
 	public void addFragment(Fragment fragment) {
 		this.fragments.add(fragment);
@@ -219,16 +208,15 @@ public class Spectrum {
 	/**
 	 * Adds the fragments.
 	 *
-	 * @param fragments
-	 *            the list of fragment to set
+	 * @param fragments the list of fragment to set
 	 */
 	public void addFragments(ArrayList<Fragment> fragments) {
 		this.fragments.addAll(fragments);
 	}
 
 	/**
-	 * Compute fragment values . It computes the average and the median of
-	 * fragment intensities.
+	 * Compute fragment values . It computes the average and the median of fragment
+	 * intensities.
 	 */
 	private void computeFragmentValues() {
 		// TODO Compute here the sortedFragments array, order by intensity
@@ -281,9 +269,9 @@ public class Spectrum {
 	}
 
 	/**
-	 * Compute the number of intense peaks. It get the nbPeak last fragment of
-	 * the spectrum (sorted by intensity) and put them in an array. they are the
-	 * most intense peaks of the spectrum
+	 * Compute the number of intense peaks. It get the nbPeak last fragment of the
+	 * spectrum (sorted by intensity) and put them in an array. they are the most
+	 * intense peaks of the spectrum
 	 * 
 	 * @return <code> true</code> if the number of fragment is above the session
 	 *         number of peaks otherwise <code>false</code>
@@ -617,8 +605,7 @@ public class Spectrum {
 	/**
 	 * Gets the sorted fragments.
 	 *
-	 * @return A sorted list of fragment. The sort is based on fragment
-	 *         intensities.
+	 * @return A sorted list of fragment. The sort is based on fragment intensities.
 	 */
 	@SuppressWarnings("unchecked")
 	public ArrayList<Fragment> getSortedFragments() {
@@ -650,8 +637,7 @@ public class Spectrum {
 	/**
 	 * Sets the cos theta.
 	 *
-	 * @param cosTheta
-	 *            the new cos theta
+	 * @param cosTheta the new cos theta
 	 */
 	public void setCosTheta(double cosTheta) {
 		this.cosTheta = cosTheta;
@@ -660,8 +646,7 @@ public class Spectrum {
 	/**
 	 * Sets the delta moz with reference spectrum.
 	 *
-	 * @param deltaMozWithReferenceSpectrum
-	 *            the deltaMozWithReferenceSpectrum to set
+	 * @param deltaMozWithReferenceSpectrum the deltaMozWithReferenceSpectrum to set
 	 */
 	public final void setDeltaMozWithReferenceSpectrum(double deltaMozWithReferenceSpectrum) {
 		this.deltaMozWithReferenceSpectrum = deltaMozWithReferenceSpectrum;
@@ -670,8 +655,9 @@ public class Spectrum {
 	/**
 	 * Sets the delta retention time with reference spectrum.
 	 *
-	 * @param deltaRetentionTimeWithReferenceSpectrum
-	 *            the deltaRetentionTimeWithReferenceSpectrum to set
+	 * @param deltaRetentionTimeWithReferenceSpectrum the
+	 *                                                deltaRetentionTimeWithReferenceSpectrum
+	 *                                                to set
 	 */
 	public final void setDeltaRetentionTimeWithReferenceSpectrum(int deltaRetentionTimeWithReferenceSpectrum) {
 		this.deltaRetentionTimeWithReferenceSpectrum = deltaRetentionTimeWithReferenceSpectrum;
@@ -680,8 +666,7 @@ public class Spectrum {
 	/**
 	 * Sets the fragments.
 	 *
-	 * @param fragments
-	 *            the fragments to set
+	 * @param fragments the fragments to set
 	 */
 	public final void setFragments(ArrayList<Fragment> fragments) {
 		this.fragments = fragments;
@@ -690,8 +675,7 @@ public class Spectrum {
 	/**
 	 * Sets the matched.
 	 *
-	 * @param matched
-	 *            the matched to set
+	 * @param matched the matched to set
 	 */
 	public final void setMatched(BooleanProperty matched) {
 		this.matched = matched;
@@ -700,8 +684,7 @@ public class Spectrum {
 	/**
 	 * Sets the line start.
 	 *
-	 * @param lineStart
-	 *            the lineStart to set
+	 * @param lineStart the lineStart to set
 	 */
 	public final void setLineStart(Integer lineStart) {
 		this.lineStart = lineStart;
@@ -710,8 +693,7 @@ public class Spectrum {
 	/**
 	 * Sets the line stop.
 	 *
-	 * @param lineStop
-	 *            the lineStop to set
+	 * @param lineStop the lineStop to set
 	 */
 	public final void setLineStop(Integer lineStop) {
 		this.lineStop = lineStop;
@@ -720,8 +702,7 @@ public class Spectrum {
 	/**
 	 * Sets the m first scan.
 	 *
-	 * @param m_firstScan
-	 *            the m_firstScan to set
+	 * @param m_firstScan the m_firstScan to set
 	 */
 	public final void setM_firstScan(Integer m_firstScan) {
 		this.m_firstScan = m_firstScan;
@@ -730,8 +711,7 @@ public class Spectrum {
 	/**
 	 * Sets the m first time.
 	 *
-	 * @param m_firstTime
-	 *            the m_firstTime to set
+	 * @param m_firstTime the m_firstTime to set
 	 */
 	public final void setM_firstTime(Float m_firstTime) {
 		this.m_firstTime = m_firstTime;
@@ -740,8 +720,7 @@ public class Spectrum {
 	/**
 	 * Sets the m id.
 	 *
-	 * @param m_id
-	 *            the m_id to set
+	 * @param m_id the m_id to set
 	 */
 	public final void setM_id(long m_id) {
 		this.m_id = m_id;
@@ -750,8 +729,7 @@ public class Spectrum {
 	/**
 	 * Sets the m intensity list.
 	 *
-	 * @param m_intensityList
-	 *            the m_intensityList to set
+	 * @param m_intensityList the m_intensityList to set
 	 */
 	public final void setM_intensityList(byte[] m_intensityList) {
 		this.m_intensityList = m_intensityList;
@@ -760,8 +738,7 @@ public class Spectrum {
 	/**
 	 * Sets the m last scan.
 	 *
-	 * @param m_lastScan
-	 *            the m_lastScan to set
+	 * @param m_lastScan the m_lastScan to set
 	 */
 	public final void setM_lastScan(Integer m_lastScan) {
 		this.m_lastScan = m_lastScan;
@@ -770,8 +747,7 @@ public class Spectrum {
 	/**
 	 * Sets the m last time.
 	 *
-	 * @param m_lastTime
-	 *            the m_lastTime to set
+	 * @param m_lastTime the m_lastTime to set
 	 */
 	public final void setM_lastTime(Float m_lastTime) {
 		this.m_lastTime = m_lastTime;
@@ -780,8 +756,7 @@ public class Spectrum {
 	/**
 	 * Sets the m mass intensities values.
 	 *
-	 * @param m_massIntensitiesValues
-	 *            the m_massIntensitiesValues to set
+	 * @param m_massIntensitiesValues the m_massIntensitiesValues to set
 	 */
 	public final void setM_massIntensitiesValues(double[][] m_massIntensitiesValues) {
 		this.m_massIntensitiesValues = m_massIntensitiesValues;
@@ -790,8 +765,7 @@ public class Spectrum {
 	/**
 	 * Sets the m moz list.
 	 *
-	 * @param m_mozList
-	 *            the m_mozList to set
+	 * @param m_mozList the m_mozList to set
 	 */
 	public final void setM_mozList(byte[] m_mozList) {
 		this.m_mozList = m_mozList;
@@ -800,8 +774,7 @@ public class Spectrum {
 	/**
 	 * Sets the m precursor charge.
 	 *
-	 * @param m_precursorCharge
-	 *            the m_precursorCharge to set
+	 * @param m_precursorCharge the m_precursorCharge to set
 	 */
 	public final void setM_precursorCharge(Integer m_precursorCharge) {
 		this.m_precursorCharge = m_precursorCharge;
@@ -810,8 +783,7 @@ public class Spectrum {
 	/**
 	 * Sets the m precursor intensity.
 	 *
-	 * @param m_precursorIntensity
-	 *            the m_precursorIntensity to set
+	 * @param m_precursorIntensity the m_precursorIntensity to set
 	 */
 	public final void setM_precursorIntensity(Float m_precursorIntensity) {
 		this.m_precursorIntensity = m_precursorIntensity;
@@ -820,8 +792,7 @@ public class Spectrum {
 	/**
 	 * Sets the m precursor moz.
 	 *
-	 * @param m_precursorMoz
-	 *            the m_precursorMoz to set
+	 * @param m_precursorMoz the m_precursorMoz to set
 	 */
 	public final void setM_precursorMoz(Double m_precursorMoz) {
 		this.m_precursorMoz = m_precursorMoz;
@@ -830,8 +801,7 @@ public class Spectrum {
 	/**
 	 * Sets the m title.
 	 *
-	 * @param m_title
-	 *            the m_title to set
+	 * @param m_title the m_title to set
 	 */
 	public final void setM_title(String m_title) {
 		this.m_title = m_title;
@@ -840,8 +810,7 @@ public class Spectrum {
 	/**
 	 * Sets the nb match.
 	 *
-	 * @param nbMatch
-	 *            the nbMatch to set
+	 * @param nbMatch the nbMatch to set
 	 */
 	public final void setNbMatch(Integer nbMatch) {
 		this.nbMatch = nbMatch;
@@ -850,8 +819,9 @@ public class Spectrum {
 	/**
 	 * Sets the nb peaks identical with reference spectrum.
 	 *
-	 * @param nbPeaksIdenticalWithReferenceSpectrum
-	 *            the nbPeaksIdenticalWithReferenceSpectrum to set
+	 * @param nbPeaksIdenticalWithReferenceSpectrum the
+	 *                                              nbPeaksIdenticalWithReferenceSpectrum
+	 *                                              to set
 	 */
 	public final void setNbPeaksIdenticalWithReferenceSpectrum(int nbPeaksIdenticalWithReferenceSpectrum) {
 		this.nbPeaksIdenticalWithReferenceSpectrum = nbPeaksIdenticalWithReferenceSpectrum;
@@ -860,8 +830,7 @@ public class Spectrum {
 	/**
 	 * Sets the retention time.
 	 *
-	 * @param retentionTime
-	 *            the retentionTime to set
+	 * @param retentionTime the retentionTime to set
 	 */
 	public final void setRetentionTime(float retentionTime) {
 		this.retentionTime = retentionTime;
@@ -870,15 +839,14 @@ public class Spectrum {
 	/**
 	 * Sets the retention time.
 	 *
-	 * @param retentionTime
-	 *            the new retention time
+	 * @param retentionTime the new retention time
 	 */
 	public void setRetentionTime(Float retentionTime) {
 		this.retentionTime = retentionTime;
 	}
 
 	/**
-	 * Set the retention time from title.
+	 * Set the retention time from the spectrum title.
 	 */
 	public void setRetentionTimeFromTitle() {
 		if ((!StringsUtils.isEmpty(m_title)) && (!StringsUtils.isEmpty(Session.CURRENT_REGEX_RT))) {
@@ -889,8 +857,7 @@ public class Spectrum {
 	/**
 	 * Set the retention from title.
 	 *
-	 * @param regex
-	 *            the used regex to retrieve the retention time from title
+	 * @param regex the used regex to retrieve the retention time from title
 	 */
 	public void setRetentionTimeFromTitle(String regex) {
 		try {
@@ -908,8 +875,7 @@ public class Spectrum {
 	/**
 	 * Sets the title reference spectrum.
 	 *
-	 * @param titleReferenceSpectrum
-	 *            the titleReferenceSpectrum to set
+	 * @param titleReferenceSpectrum the titleReferenceSpectrum to set
 	 */
 	public final void setTitleReferenceSpectrum(String titleReferenceSpectrum) {
 		this.titleReferenceSpectrum = titleReferenceSpectrum;
@@ -927,7 +893,7 @@ public class Spectrum {
 	/**
 	 * Sets the ref id set.
 	 *
-	 * @param ref_idSet            the m_reference ids to set
+	 * @param ref_idSet the m_reference ids to set
 	 */
 	public final void setRef_idSet(Set<Long> ref_idSet) {
 		this.m_refIdSet = ref_idSet;
@@ -945,7 +911,7 @@ public class Spectrum {
 	/**
 	 * Sets the m test id set.
 	 *
-	 * @param m_testIdSet            the m_testIdSet to set
+	 * @param m_testIdSet the m_testIdSet to set
 	 */
 	public final void setM_testIdSet(Set<Long> m_testIdSet) {
 		this.m_testIdSet = m_testIdSet;
@@ -963,7 +929,7 @@ public class Spectrum {
 	/**
 	 * Sets the m matched spectra.
 	 *
-	 * @param m_matchedSpectra            the m_matchedSpectra to set
+	 * @param m_matchedSpectra the m_matchedSpectra to set
 	 */
 	public final void setM_matchedSpectra(ObservableList<Spectrum> m_matchedSpectra) {
 		this.m_matchedSpectra = m_matchedSpectra;
@@ -982,7 +948,7 @@ public class Spectrum {
 	/**
 	 * Sets the m matched size.
 	 *
-	 * @param m_matchedSize            the m_matchedSize to set
+	 * @param m_matchedSize the m_matchedSize to set
 	 */
 	public final void setM_matchedSize(int m_matchedSize) {
 		this.m_matchedSize = m_matchedSize;
