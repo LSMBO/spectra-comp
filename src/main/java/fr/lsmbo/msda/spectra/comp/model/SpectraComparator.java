@@ -239,11 +239,9 @@ public class SpectraComparator {
 	private static void findFragment(Spectrum spectrumOfSecSpectraSubList) {
 		// Recover the nbpeaks most intense of the reference spectrum
 		Fragment[] nbIntensePeaks = referenceSpectrum.getNbIntensePeaks();
-		if (nbIntensePeaks != null) {
-			logger.info("The number of intense peaks is: {}", nbIntensePeaks.length);
-		} else {
-			logger.info("The number of spectrum peaks is under than {}.",
-					Session.USER_PARAMS.getComparison().getNbPeaks());
+		if (nbIntensePeaks == null) {
+			logger.debug("The number of spectrum with title= '{}' peaks is under than {}.",
+					referenceSpectrum.getM_title(), Session.USER_PARAMS.getComparison().getNbPeaks());
 		}
 		ArrayList<Fragment> fragmentEquals = spectrumOfSecSpectraSubList.getFragmentEqualsToChart();
 		fragmentEquals.clear();

@@ -82,7 +82,7 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 	private TreeItem rootItem;
 
 	/** The tree view. */
-	private TreeView<Dataset> treeView;
+	private TreeView<Dataset> referenceTreeView;
 
 	/** The second root. */
 	private StackPane secondRoot;
@@ -91,29 +91,29 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 	private TreeItem secondRootItem;
 
 	/** The second tree view. */
-	private TreeView<Dataset> secondTreeView;
+	private TreeView<Dataset> testTreeView;
 
 	/** The stage. */
 	public static Stage stage;
 
-	/** The ref db name. */
+	/** The reference project id. */
 	//
-	private Long refProjectId;
+	private Long referenceProjectId;
 
-	/** The test db name. */
+	/** The test project id. */
 	private Long testProjectId;
 
 	/** The ref pkl by data source map. */
-	private Map<SpectraSource, Object> refPklByDataSourceMap = new HashMap<>();
+	private Map<SpectraSource, Object> referencePklByDataSourceMap = new HashMap<>();
 
 	/** The test pkl by data source map. */
 	private Map<SpectraSource, Object> testPklByDataSourceMap = new HashMap<>();
 
-	/** The ref rsm ids. */
-	private HashSet<Long> refRsIds = new HashSet<>();
+	/** The reference resultset id set. */
+	private HashSet<Long> referenceResultSetIdSet = new HashSet<>();
 
-	/** The test rsm ids. */
-	private HashSet<Long> testRsIds = new HashSet<>();
+	/** The test resultset id set. */
+	private HashSet<Long> testResultSetIdSet = new HashSet<>();
 
 	/**
 	 * Default constructor.
@@ -197,11 +197,11 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 
 		// Update the view
 		userProjectsCBX.setOnAction(e -> {
-			refProjectId = userProjectsCBX.getValue().getId();
+			referenceProjectId = userProjectsCBX.getValue().getId();
 			rootItem.getChildren().clear();
 			rootItem.getChildren().addAll(createDatasets(userProjectsCBX.getValue().getId()));
-			treeView = new TreeView(rootItem);
-			firstRoot.getChildren().add(treeView);
+			referenceTreeView = new TreeView(rootItem);
+			firstRoot.getChildren().add(referenceTreeView);
 		});
 		VBox warningDbPane = new VBox(2);
 		connectionLabel = new Label("Off connection. Connect to your Proline account please!");
@@ -219,8 +219,8 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 		rootItem = new TreeItem("Peaklists");
 		rootItem.setExpanded(true);
 		rootItem.getChildren().addAll();
-		treeView = new TreeView(rootItem);
-		firstRoot.getChildren().add(treeView);
+		referenceTreeView = new TreeView(rootItem);
+		firstRoot.getChildren().add(referenceTreeView);
 
 		// Layout
 		GridPane projectsPane = new GridPane();
@@ -333,8 +333,8 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 			testProjectId = secondUserProjectsCBX.getValue().getId();
 			secondRootItem.getChildren().clear();
 			secondRootItem.getChildren().addAll(createDatasets(secondUserProjectsCBX.getValue().getId()));
-			secondTreeView = new TreeView(secondRootItem);
-			secondRoot.getChildren().add(secondTreeView);
+			testTreeView = new TreeView(secondRootItem);
+			secondRoot.getChildren().add(testTreeView);
 		});
 		VBox warning2DbPane = new VBox(2);
 		secondConnectionLabel = new Label("Off connection. Connect to your Proline account please!");
@@ -349,8 +349,8 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 		secondRootItem = new TreeItem("Peaklists");
 		secondRootItem.setExpanded(true);
 		secondRootItem.getChildren().addAll();
-		secondTreeView = new TreeView(secondRootItem);
-		secondRoot.getChildren().add(secondTreeView);
+		testTreeView = new TreeView(secondRootItem);
+		secondRoot.getChildren().add(testTreeView);
 		// Layout
 		GridPane projects2Pane = new GridPane();
 		projects2Pane.setAlignment(Pos.TOP_LEFT);
@@ -439,23 +439,25 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 			if (buttonType == ButtonType.OK) {
 				if (pklListRefFileRB.isSelected()) {
 					Session.USER_PARAMS.setDataSource("file");
-					refPklByDataSourceMap.put(SpectraSource.FILE, refPklListTF.getText());
+					referencePklByDataSourceMap.put(SpectraSource.FILE, refPklListTF.getText());
 				} else {
 					Session.USER_PARAMS.setDataSource("database");
-					Long refResultSetId = treeView.getSelectionModel().getSelectedItem().getValue().getResultSetId();
-					refRsIds.add(refResultSetId);
-					refPklByDataSourceMap.put(SpectraSource.DATABASE, refRsIds);
+					Long refResultSetId = referenceTreeView.getSelectionModel().getSelectedItem().getValue()
+							.getResultSetId();
+					referenceResultSetIdSet.add(refResultSetId);
+					referencePklByDataSourceMap.put(SpectraSource.DATABASE, referenceResultSetIdSet);
 				}
 				if (secondPklListRefFileRB.isSelected()) {
 					Session.USER_PARAMS.setDataSource("file");
 					testPklByDataSourceMap.put(SpectraSource.FILE, secondPklListTF.getText());
 				} else {
 					Session.USER_PARAMS.setDataSource("database");
-					Long testResultSetId = treeView.getSelectionModel().getSelectedItem().getValue().getResultSetId();
-					testRsIds.add(testResultSetId);
-					testPklByDataSourceMap.put(SpectraSource.DATABASE, testRsIds);
+					Long testResultSetId = testTreeView.getSelectionModel().getSelectedItem().getValue()
+							.getResultSetId();
+					testResultSetIdSet.add(testResultSetId);
+					testPklByDataSourceMap.put(SpectraSource.DATABASE, testResultSetIdSet);
 				}
-				this.params = new Parameters(refPklByDataSourceMap, testPklByDataSourceMap, refProjectId,
+				this.params = new Parameters(referencePklByDataSourceMap, testPklByDataSourceMap, referenceProjectId,
 						testProjectId);
 				return params;
 			} else {

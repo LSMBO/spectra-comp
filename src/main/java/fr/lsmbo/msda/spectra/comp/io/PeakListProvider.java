@@ -142,7 +142,7 @@ public class PeakListProvider {
 	 * @see SpectraComparatorParams
 	 */
 	public static void compareSpectra() {
-		logger.info("Start to compare: {} as a reference sepctra vs  {} spectra. please wait ...",
+		logger.info("Start to compare:{} a reference spectra in {} as test spectra. please wait ...",
 				ListOfSpectra.getFirstSpectra().getSpectraAsObservable().size(),
 				ListOfSpectra.getSecondSpectra().getSpectraAsObservable().size());
 		logger.info(Session.USER_PARAMS.getComparison().toString());
