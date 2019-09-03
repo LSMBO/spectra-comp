@@ -59,7 +59,7 @@ public class MainPane extends StackPane {
 	// Reference table view
 	/** The ref filtered table. */
 	// Filtered table
-	private FilteredTableView<Spectrum> refFilteredTable;
+	private FilteredTableView<Spectrum> referenceFilteredTable;
 
 	/** The ref id column. */
 	// Filtered columns
@@ -140,14 +140,14 @@ public class MainPane extends StackPane {
 	 * @return the refFilteredTable
 	 */
 	public final FilteredTableView<Spectrum> getRefFilteredTable() {
-		return refFilteredTable;
+		return referenceFilteredTable;
 	}
 
 	/**
 	 * @param refFilteredTable the refFilteredTable to set
 	 */
 	public final void setRefFilteredTable(FilteredTableView<Spectrum> refFilteredTable) {
-		this.refFilteredTable = refFilteredTable;
+		this.referenceFilteredTable = refFilteredTable;
 	}
 
 	/**
@@ -274,11 +274,13 @@ public class MainPane extends StackPane {
 		loadSpectra.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
 		loadSpectra.setOnAction(e -> {
 			model.onLoadSpectra();
+			refreshTables();
 		});
 		MenuItem exportComparison = new MenuItem(" Export comparison ");
 		exportComparison.setGraphic(new ImageView(IconResource.getImage(ICON.EXPORT)));
 		exportComparison.setOnAction(e -> {
 			model.onExportComparsion();
+			refreshTables();
 		});
 		// Settings menu items
 		Menu settingsMenu = new Menu(" Settings ");
@@ -286,11 +288,13 @@ public class MainPane extends StackPane {
 		parsingRules.setGraphic(new ImageView(IconResource.getImage(ICON.EDIT)));
 		parsingRules.setOnAction(e -> {
 			model.onEditParsingRules();
+			refreshTables();
 		});
 		MenuItem dbParameters = new MenuItem(" Database parameters ");
 		dbParameters.setGraphic(new ImageView(IconResource.getImage(ICON.DATABASE)));
 		dbParameters.setOnAction(e -> {
 			model.onEditDbParameters();
+			refreshTables();
 		});
 		MenuItem compParameters = new MenuItem(" Comparaison parameters ");
 		compParameters.setGraphic(new ImageView(IconResource.getImage(ICON.SETTINGS)));
@@ -335,8 +339,8 @@ public class MainPane extends StackPane {
 		/***********************
 		 * Filtered table view *
 		 ***********************/
-		refFilteredTable = new FilteredTableView<>(model.getReferenceItems());
-		refFilteredTable.setId("filtered-ref-table");
+		referenceFilteredTable = new FilteredTableView<>(model.getReferenceItems());
+		referenceFilteredTable.setId("filtered-ref-table");
 		// Id column
 		refIdColumn = new FilterableLongTableColumn<>("Id");
 		refIdColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Long>("m_id"));
@@ -369,12 +373,12 @@ public class MainPane extends StackPane {
 		refMatchedColumn = new FilterableIntegerTableColumn<>("Matched");
 		refMatchedColumn.setCellValueFactory(new PropertyValueFactory<Spectrum, Integer>("m_matchedSize"));
 
-		refFilteredTable.getColumns().setAll(refIdColumn, refTitleColumn, refMozColumn, refIntensityColumn,
+		referenceFilteredTable.getColumns().setAll(refIdColumn, refTitleColumn, refMozColumn, refIntensityColumn,
 				refChargeColumn, refRtColumn, refNbrFragmentsColumn, refMatchedColumn);
 
-		refFilteredTable.autosize();
-		refFilteredTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-		refFilteredTable.setPadding(new Insets(5, 5, 5, 5));
+		referenceFilteredTable.autosize();
+		referenceFilteredTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		referenceFilteredTable.setPadding(new Insets(5, 5, 5, 5));
 
 		/***********************
 		 * Filtered table view *
@@ -438,13 +442,13 @@ public class MainPane extends StackPane {
 		// Create first tabpane
 		TabPane referenceTabPane = new TabPane();
 		Tab referenxcePklFileTab = new Tab(" Reference spectra ");
-		referenxcePklFileTab.setContent(refFilteredTable);
+		referenxcePklFileTab.setContent(referenceFilteredTable);
 		referenxcePklFileTab.setClosable(false);
 		referenceTabPane.getTabs().addAll(referenxcePklFileTab);
 
 		// Create second tabpane
 		TabPane testedTabPane = new TabPane();
-		Tab testedPklFileTab = new Tab(" Tested spectra ");
+		Tab testedPklFileTab = new Tab(" Test spectra ");
 		testedPklFileTab.setContent(testFilteredTable);
 		testedPklFileTab.setClosable(false);
 		testedTabPane.getTabs().addAll(testedPklFileTab);
@@ -459,7 +463,7 @@ public class MainPane extends StackPane {
 			new ConfirmDialog<Boolean>(ICON.WARNING, "Compare spectra",
 					"Are you sure that you want to compare spectra ? This action could take a while!", () -> {
 						model.onCompareSpectra();
-						refFilteredTable.refresh();
+						referenceFilteredTable.refresh();
 						testFilteredTable.refresh();
 						return true;
 					}, stage);
@@ -590,7 +594,7 @@ public class MainPane extends StackPane {
 						swingNodeForChart.setContent(new JPanel());
 					});
 				}
-				refFilteredTable.refresh();
+				referenceFilteredTable.refresh();
 				testFilteredTable.refresh();
 			});
 		});
@@ -611,15 +615,15 @@ public class MainPane extends StackPane {
 						swingNodeForChart.setContent(new JPanel());
 					});
 				}
-				refFilteredTable.refresh();
+				referenceFilteredTable.refresh();
 				testFilteredTable.refresh();
 			});
 		});
-		refFilteredTable.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+		referenceFilteredTable.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
 			if (newValue != null) {
 				refSelectedSpectrum = newValue;
 				spectrumProperty.getRefSpectrumProperty().setValue(refSelectedSpectrum);
-				refFilteredTable.refresh();
+				referenceFilteredTable.refresh();
 			}
 		});
 
@@ -628,7 +632,7 @@ public class MainPane extends StackPane {
 			if (newValue != null) {
 				testSelectedSpectrum = newValue;
 				spectrumProperty.getTestSpectrumProperty().setValue(testSelectedSpectrum);
-				refFilteredTable.refresh();
+				referenceFilteredTable.refresh();
 			}
 		});
 
@@ -689,5 +693,15 @@ public class MainPane extends StackPane {
 	 */
 	private void updateOnJFx(Runnable r) {
 		Platform.runLater(r);
+	}
+
+	/**
+	 * Refresh tables
+	 */
+	private void refreshTables() {
+		updateOnJFx(() -> {
+			referenceFilteredTable.refresh();
+			testFilteredTable.refresh();
+		});
 	}
 }

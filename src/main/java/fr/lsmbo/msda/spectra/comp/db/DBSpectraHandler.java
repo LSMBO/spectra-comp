@@ -478,8 +478,6 @@ public class DBSpectraHandler {
 		ObservableList<Dataset> list = FXCollections.observableArrayList();
 		try {
 			datasetStmt = DBAccess.getUdsDBConnection().prepareStatement(UDS_DATASET);
-			System.out.println("INFO | Load datasets from project with id=#" + projectId);
-			logger.info("Load datasets from project with id=#{}", projectId);
 			datasetStmt.setLong(1, projectId);
 			rs = datasetStmt.executeQuery();
 			while (rs.next()) {
@@ -520,8 +518,6 @@ public class DBSpectraHandler {
 		ObservableList<Dataset> list = FXCollections.observableArrayList();
 		try {
 			datasetStmt = DBAccess.getUdsDBConnection().prepareStatement(ALL_DATASET);
-			System.out.println("INFO | Load datasets from project with id=#" + projectId + ".");
-			logger.info("Load datasets from project with id=#{}", projectId);
 			datasetStmt.setLong(1, projectId);
 			rs = datasetStmt.executeQuery();
 			int i = 0;

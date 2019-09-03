@@ -161,6 +161,7 @@ public class ViewModel {
 				if (!PeaklistReader.isRetentionTimesMissing()) {
 					onEditParsingRules();
 				}
+
 			}, (failure) -> {
 				logger.error("Task has failed {}", failure);
 				System.err.println("INFO | Task has failed: " + failure);
@@ -207,7 +208,7 @@ public class ViewModel {
 				System.err.println("INFO | Task has failed! " + failure);
 			}, false, stage);
 		} else {
-			new ShowPopupDialog("Empty Spectra", "The peaklists to compare must not be empty!", stage);
+			new ShowPopupDialog("Empty Spectra", "The spectra to compare must not be empty!", stage);
 		}
 	}
 
@@ -362,7 +363,7 @@ public class ViewModel {
 
 	private Boolean isValidSpectra() {
 		return (!ListOfSpectra.getFirstSpectra().getSpectraAsObservable().isEmpty()
-				&& !ListOfSpectra.getSecondSpectra().getSpectraAsObservable().isEmpty());
+				|| !ListOfSpectra.getSecondSpectra().getSpectraAsObservable().isEmpty());
 	}
 
 	/**
