@@ -144,8 +144,7 @@ public class MainPane extends StackPane {
 	}
 
 	/**
-	 * @param refFilteredTable
-	 *            the refFilteredTable to set
+	 * @param refFilteredTable the refFilteredTable to set
 	 */
 	public final void setRefFilteredTable(FilteredTableView<Spectrum> refFilteredTable) {
 		this.refFilteredTable = refFilteredTable;
@@ -159,8 +158,7 @@ public class MainPane extends StackPane {
 	}
 
 	/**
-	 * @param testFilteredTable
-	 *            the testFilteredTable to set
+	 * @param testFilteredTable the testFilteredTable to set
 	 */
 	public final void setTestFilteredTable(FilteredTableView<Spectrum> testFilteredTable) {
 		this.testFilteredTable = testFilteredTable;
@@ -174,8 +172,7 @@ public class MainPane extends StackPane {
 	}
 
 	/**
-	 * @param spectrumProperty
-	 *            the spectrumProperty to set
+	 * @param spectrumProperty the spectrumProperty to set
 	 */
 	public final void setSpectrumProperty(SpectrumProperty spectrumProperty) {
 		this.spectrumProperty = spectrumProperty;
@@ -189,8 +186,7 @@ public class MainPane extends StackPane {
 	}
 
 	/**
-	 * @param deltaMozTF
-	 *            the deltaMozTF to set
+	 * @param deltaMozTF the deltaMozTF to set
 	 */
 	public final void setPrecDeltaMozTF(TextField deltaMozTF) {
 		this.deltaPrecMozTF = deltaMozTF;
@@ -204,8 +200,7 @@ public class MainPane extends StackPane {
 	}
 
 	/**
-	 * @param deltaRTTF
-	 *            the deltaRTTF to set
+	 * @param deltaRTTF the deltaRTTF to set
 	 */
 	public final void setDeltaRTTF(TextField deltaRTTF) {
 		this.deltaRTTF = deltaRTTF;
@@ -219,8 +214,7 @@ public class MainPane extends StackPane {
 	}
 
 	/**
-	 * @param minPeaksNbrTF
-	 *            the minPeaksNbrTF to set
+	 * @param minPeaksNbrTF the minPeaksNbrTF to set
 	 */
 	public final void setMinPeaksNbrTF(TextField minPeaksNbrTF) {
 		this.minPeaksNbrTF = minPeaksNbrTF;
@@ -234,8 +228,7 @@ public class MainPane extends StackPane {
 	}
 
 	/**
-	 * @param thetaMinTF
-	 *            the thetaMinTF to set
+	 * @param thetaMinTF the thetaMinTF to set
 	 */
 	public final void setThetaMinTF(TextField thetaMinTF) {
 		this.thetaMinTF = thetaMinTF;
@@ -249,8 +242,7 @@ public class MainPane extends StackPane {
 	}
 
 	/**
-	 * @param peaksNbrTF
-	 *            the peaksNbrTF to set
+	 * @param peaksNbrTF the peaksNbrTF to set
 	 */
 	public final void setPeaksNbrTF(TextField peaksNbrTF) {
 		this.peaksNbrTF = peaksNbrTF;
@@ -259,8 +251,7 @@ public class MainPane extends StackPane {
 	/**
 	 * Instantiates a new main pane.
 	 *
-	 * @param model
-	 *            the model
+	 * @param model the model
 	 */
 	public MainPane(ViewModel model) {
 		// Create the main view
@@ -575,7 +566,7 @@ public class MainPane extends StackPane {
 		// Reference spectrum
 		// Update view on reference spectrum selection
 		spectrumProperty.getRefSpectrumProperty().addListener((observable, oldValue, newValue) -> {
-			Platform.runLater(() -> {
+			updateOnJFx(() -> {
 				if (newValue != null) {
 					refSelectedSpectrum = newValue;
 					// Update the matched spectra of test table view
@@ -605,7 +596,7 @@ public class MainPane extends StackPane {
 		});
 		// Test spectrum
 		spectrumProperty.getTestSpectrumProperty().addListener((observable, oldValue, newValue) -> {
-			Platform.runLater(() -> {
+			updateOnJFx(() -> {
 				if (newValue != null && spectrumPane != null) {
 					testSelectedSpectrum = newValue;
 					// Update the spectrum view
@@ -648,8 +639,7 @@ public class MainPane extends StackPane {
 	/**
 	 * Adds the float validation.
 	 *
-	 * @param field
-	 *            the field
+	 * @param field the field
 	 */
 	private void addFloatValidation(TextField field) {
 		field.getProperties().put("type", "float");
@@ -672,8 +662,7 @@ public class MainPane extends StackPane {
 	/**
 	 * Adds the integer validation.
 	 *
-	 * @param field
-	 *            the field
+	 * @param field the field
 	 */
 	private void addIntegerValidation(TextField field) {
 		field.getProperties().put("type", "integer");
@@ -693,4 +682,12 @@ public class MainPane extends StackPane {
 		}));
 	}
 
+	/**
+	 * Update the view on Java Fx thread
+	 * 
+	 * @param r Runnable to submit
+	 */
+	private void updateOnJFx(Runnable r) {
+		Platform.runLater(r);
+	}
 }
