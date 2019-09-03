@@ -48,11 +48,12 @@ public class ViewModel {
 
 	/** The Constant logger. */
 	private static final Logger logger = LogManager.getLogger(ViewModel.class);
+
 	/** The stage. */
 	public static Stage stage;
 
-	/** The ref items. */
-	private ObservableList<Spectrum> refItems = FXCollections.observableArrayList();
+	/** The reference items. */
+	private ObservableList<Spectrum> referenceItems = FXCollections.observableArrayList();
 
 	/** The test items. */
 	private ObservableList<Spectrum> testItems = FXCollections.observableArrayList();
@@ -61,12 +62,12 @@ public class ViewModel {
 	private TaskRunner task = new TaskRunner();
 
 	/**
-	 * Gets the ref items.
+	 * Gets the reference items.
 	 *
-	 * @return the refItems
+	 * @return the referenceItems
 	 */
-	public final ObservableList<Spectrum> getRefItems() {
-		return refItems;
+	public final ObservableList<Spectrum> getReferenceItems() {
+		return referenceItems;
 	}
 
 	/**
@@ -75,7 +76,7 @@ public class ViewModel {
 	 * @param refItems the refItems to set
 	 */
 	public final void setRefItems(ObservableList<Spectrum> refItems) {
-		this.refItems = refItems;
+		this.referenceItems = refItems;
 	}
 
 	/**
@@ -104,14 +105,13 @@ public class ViewModel {
 	}
 
 	/**
-	 * Create and displays spectra loader dialog.
+	 * Create and displays spectra loader dialog. The spectra could be loaded from
+	 * peaklist files or from proline projects.
 	 * 
 	 */
 	public void onLoadSpectra() {
 		SpectraLoaderDialog spectraLoaderDialog = new SpectraLoaderDialog();
 		spectraLoaderDialog.showAndWait().ifPresent(params -> {
-			System.out.println("INFO | " + params.toString());
-			logger.info(params.toString());
 			TaskRunner.doAsyncWork("Loading spectra", () -> {
 				// Step 1 : load reference spectra
 				if (!params.getRefPklByDataSourceMap().isEmpty()) {
@@ -120,7 +120,7 @@ public class ViewModel {
 							// Reference will be loaded from a peaklist file(.mgf or .pkl)
 							String refFilePath = (String) v;
 							loadRefPklFile(refFilePath);
-							refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
+							referenceItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
 						} else {
 							Long refProjectId = params.getRefProjectId();
 							Set rsIds = (Set) v;
@@ -128,7 +128,7 @@ public class ViewModel {
 									"Reference spectra will be loaded from a proline project with id=#{} and resultset id=#{}",
 									refProjectId, rsIds);
 							loadRefSpectraProline(refProjectId, rsIds);
-							refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
+							referenceItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
 							Session.USER_PARAMS.setFirstPklList(refProjectId + " rs id=#" + rsIds);
 						}
 					});
@@ -198,7 +198,7 @@ public class ViewModel {
 				PeakListProvider.compareSpectra();
 				return true;
 			}, (isSuccess) -> {
-				refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
+				referenceItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
 				testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
 				logger.info("Task has finished sucessfully!");
 				System.out.println("INFO | Task has finished sucessfully!");
@@ -225,7 +225,7 @@ public class ViewModel {
 							.forEach(spectrum -> spectrum.setRetentionTimeFromTitle(parsingRule.getRegex()));
 					return true;
 				}, (isSuccess) -> {
-					refItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
+					referenceItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
 					testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
 					logger.info("Task has finished sucessfully!");
 					System.out.println("INFO | Task has finished sucessfully!");
@@ -479,9 +479,9 @@ public class ViewModel {
 	 * @param table the table to add rows in.
 	 */
 	private void addRows(PdfPTable table) {
-		Long refItemsSize = refItems.stream().filter(spec -> !spec.getM_matchedSpectra().isEmpty()).count();
+		Long refItemsSize = referenceItems.stream().filter(spec -> !spec.getM_matchedSpectra().isEmpty()).count();
 		table.addCell("Reference spectra");
-		table.addCell(refItems.size() + "");
+		table.addCell(referenceItems.size() + "");
 		table.addCell(refItemsSize + "");
 		// tested spectra
 		table.addCell("Tested spectra");

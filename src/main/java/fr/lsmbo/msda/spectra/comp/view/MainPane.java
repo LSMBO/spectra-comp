@@ -344,7 +344,7 @@ public class MainPane extends StackPane {
 		/***********************
 		 * Filtered table view *
 		 ***********************/
-		refFilteredTable = new FilteredTableView<>(model.getRefItems());
+		refFilteredTable = new FilteredTableView<>(model.getReferenceItems());
 		refFilteredTable.setId("filtered-ref-table");
 		// Id column
 		refIdColumn = new FilterableLongTableColumn<>("Id");

@@ -15,7 +15,7 @@ import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 // TODO: Auto-generated Javadoc
 /**
- * Load spectra from Proline projects or from peak list files.
+ * Load spectra from Proline project or from peaklist file.
  * 
  * @author Aromdhani
  *
@@ -28,19 +28,19 @@ public class PeakListProvider {
 	/** The project name. */
 	private static String projectName;
 
-	/** The first pkl list. */
-	private static String firstPklList;
+	/** The reference peaklist. */
+	private static String referencePeakList;
 
-	/** The second pkl list. */
-	private static String secondPklList;
+	/** The test peaklist. */
+	private static String testPeakList;
 
 	/**
-	 * Gets the ref pkl.
+	 * Gets the reference peaklist.
 	 *
 	 * @return the reference peaklist file path
 	 */
-	public static final String getRefPkl() {
-		return firstPklList;
+	public static final String getReferencePeakList() {
+		return referencePeakList;
 	}
 
 	/**
@@ -53,19 +53,47 @@ public class PeakListProvider {
 	}
 
 	/**
-	 * Gets the tested pkl.
+	 * Gets the tested peaklist.
 	 *
 	 * @return the tested peaklist file path
 	 */
-	public static final String getTestedPkl() {
-		return secondPklList;
+	public static final String getTestPeakList() {
+		return testPeakList;
 	}
 
 	/**
-	 * Load reference spectra
+	 * Sets the reference peaklist.
+	 *
+	 * @param referencePeakList the reference peaklist to set
+	 */
+	public static final void setReferencePeakList(String referencePeakList) {
+		PeakListProvider.referencePeakList = referencePeakList;
+	}
+
+	/**
+	 * Sets the project name.
+	 *
+	 * @param projectName the project name to set
+	 */
+	public static final void setProjectName(String projectName) {
+		PeakListProvider.projectName = projectName;
+	}
+
+	/**
+	 * Sets the test peaklist.
+	 *
+	 * @param testPeakList the second peak list to set
+	 */
+	public static final void setSecondPklList(String testPeakList) {
+		PeakListProvider.testPeakList = testPeakList;
+	}
+
+	/**
+	 * Load reference spectra from proline project.
 	 * 
 	 * @param projectId   the project id
-	 * @param resultSetId the result set id
+	 * @param resultSetId the result set id from where the spectra will be
+	 *                    retrieved.
 	 * @throws Exception the exception to throw
 	 */
 	public static void loadRefSpectra(final Long projectId, final Long resultSetId) throws Exception {
@@ -81,10 +109,10 @@ public class PeakListProvider {
 	}
 
 	/**
-	 * Load test spectra
+	 * Load test spectra from proline project.
 	 * 
-	 * @param projectId   the project id
-	 * @param resultSetId the result set id
+	 * @param projectId the project id
+	 * @param the       result set id from where the spectra will be retrieved.
 	 * @throws Exception the exception to throw
 	 */
 	public static void loadTestSpectra(final Long projectId, final Long resultSetId) throws Exception {
@@ -92,7 +120,7 @@ public class PeakListProvider {
 			logger.info("Start to retrieve test spectra from a proline project with id=#{}. Please wait ...",
 					projectId);
 			System.out.println("INFO | Start to retrieve test spectra from a proline project with id=#" + projectId
-					+ ". Please wait ...");
+					+ ". Please wait...");
 			DBSpectraHandler.fetchMSQueriesData(projectId, resultSetId);
 			ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
 					.setAll(DBSpectraHandler.getSpectra().getSpectraAsObservable());
@@ -100,10 +128,10 @@ public class PeakListProvider {
 	}
 
 	/**
-	 * Load the reference spectra from a peaklist file (.mgf or .pkl).
+	 * Load the reference spectra from a peaklist file(.mgf or .pkl).
 	 *
 	 * @param refPklFilePath The path of the reference peaklist file.
-	 * @throws Exception the exception
+	 * @throws Exception the exception tro throw
 	 */
 	@SuppressWarnings("restriction")
 	public static void loadRefSpectraFromFile(String refPklFilePath) throws Exception {
@@ -142,41 +170,15 @@ public class PeakListProvider {
 	 * @see SpectraComparatorParams
 	 */
 	public static void compareSpectra() {
-		logger.info("Start to compare:{} a reference spectra in {} as test spectra. please wait ...",
+		logger.info(
+				"Start comparing: {} as reference spectra in {} as test spectra. The used parameters in comparison: {}. Please wait...",
 				ListOfSpectra.getFirstSpectra().getSpectraAsObservable().size(),
-				ListOfSpectra.getSecondSpectra().getSpectraAsObservable().size());
-		logger.info(Session.USER_PARAMS.getComparison().toString());
+				ListOfSpectra.getSecondSpectra().getSpectraAsObservable().size(),
+				Session.USER_PARAMS.getComparison().toString());
 		ListOfSpectra.getFirstSpectra().getSpectraAsObservable().forEach(sepctrum -> {
 			SpectraComparator.run(sepctrum);
 		});
-		logger.info("{} valid spectra found.", SpectraComparator.getValidSpectra().getNbSpectra());
-	}
-
-	/**
-	 * Sets the first pkl list.
-	 *
-	 * @param firstPklList the first peak list to set
-	 */
-	public static final void setFirstPklList(String firstPklList) {
-		PeakListProvider.firstPklList = firstPklList;
-	}
-
-	/**
-	 * Sets the project name.
-	 *
-	 * @param projectName the project name to set
-	 */
-	public static final void setProjectName(String projectName) {
-		PeakListProvider.projectName = projectName;
-	}
-
-	/**
-	 * Sets the second pkl list.
-	 *
-	 * @param secondPklList the second peak list to set
-	 */
-	public static final void setSecondPklList(String secondPklList) {
-		PeakListProvider.secondPklList = secondPklList;
+		logger.info("{} valid spectra were found.", SpectraComparator.getValidSpectra().getNbSpectra());
 	}
 
 }
