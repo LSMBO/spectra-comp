@@ -154,7 +154,7 @@ public class PeakListProvider {
 	public static void loadTestedSpectraFromFile(String testPklFilePath) throws Exception {
 		if (SpectraSource.getType(Session.USER_PARAMS.getDataSource()) == SpectraSource.FILE) {
 			assert (!StringsUtils.isEmpty(testPklFilePath)
-					&& (new File(testPklFilePath).exists())) : "Invalid file path !";
+					&& (new File(testPklFilePath).exists())) : "Invalid file path!";
 			logger.info("Load spectra to test from the file: {} . Please wait ...", testPklFilePath);
 			System.out.println("INFO | --- Load test spectra from file: " + testPklFilePath + ". Please wait ...");
 			File testPklFile = new File(testPklFilePath);
