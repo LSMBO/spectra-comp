@@ -13,7 +13,6 @@ import fr.lsmbo.msda.spectra.comp.model.SpectraComparator;
 import fr.lsmbo.msda.spectra.comp.settings.SpectraComparatorParams;
 import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Load spectra from Proline project or from peaklist file.
  * 
@@ -171,7 +170,7 @@ public class PeakListProvider {
 	 */
 	public static void compareSpectra() {
 		logger.info(
-				"Start comparing: {} as reference spectra in {} as test spectra. The used parameters in comparison: {}. Please wait...",
+				"Start comparing: {} as reference spectra with {} as test spectra. The used parameters in comparison are {}. Please wait...",
 				ListOfSpectra.getFirstSpectra().getSpectraAsObservable().size(),
 				ListOfSpectra.getSecondSpectra().getSpectraAsObservable().size(),
 				Session.USER_PARAMS.getComparison().toString());

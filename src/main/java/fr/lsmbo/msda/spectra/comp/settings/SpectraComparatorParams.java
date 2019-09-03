@@ -199,10 +199,9 @@ public class SpectraComparatorParams {
 	 */
 	@Override
 	public String toString() {
-		return "Spectra-comp parameters: Precursor delta moz: " + deltaPrecMoz + "; delta peaks moz:" + deltaPeaksMoz
+		return "Precursor delta moz: " + deltaPrecMoz + "; delta peaks moz:" + deltaPeaksMoz
 				+ "; deltaRT: " + deltaRT + " ; nbPeaksMin: " + nbPeaksMin + " ;thetaMin: " + thetaMin + "; nbPeaks:"
 				+ nbPeaks;
 
 	}
-
 }
