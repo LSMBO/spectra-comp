@@ -230,7 +230,8 @@ public class ParsingRulesDialog extends Dialog<Map<ParsingRuleType, ParsingRule>
 		this.setDialogPane(dialogPane);
 
 		// Enable Ok button when input fields are valid.
-		buttonOk.disableProperty().bind(refParsingRuleWarningLabel.visibleProperty());
+		buttonOk.disableProperty()
+				.bind(refParsingRuleWarningLabel.visibleProperty().or(testParsingRuleWarningLabel.visibleProperty()));
 		// On apply button
 		this.setResultConverter(buttonType -> {
 			if ((buttonType == ButtonType.OK) && (refSelectedParsingRule != null)

@@ -158,10 +158,12 @@ public class ViewModel {
 			}, (isSuccess) -> {
 				logger.info("Task has finished sucessfully!");
 				System.out.println("INFO | Task has finished sucessfully!");
-				if (!PeaklistReader.isRetentionTimesMissing()) {
+				if (ListOfSpectra.getFirstSpectra().getSpectraAsObservable().stream().limit(5)
+						.allMatch(spec -> spec.getRetentionTime() <= 0)
+						|| ListOfSpectra.getSecondSpectra().getSpectraAsObservable().stream().limit(5)
+								.allMatch(spec -> spec.getRetentionTime() <= 0)) {
 					onEditParsingRules();
 				}
-
 			}, (failure) -> {
 				logger.error("Task has failed {}", failure);
 				System.err.println("INFO | Task has failed: " + failure);
@@ -170,7 +172,7 @@ public class ViewModel {
 	}
 
 	/**
-	 * Export comparison
+	 * Export comparison result in a pdf file.
 	 * 
 	 */
 	public void onExportComparsion() {
