@@ -18,6 +18,7 @@ import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import fr.lsmbo.msda.spectra.comp.model.ViewModel;
 import fr.lsmbo.msda.spectra.comp.utils.TaskRunner;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ConfirmDialog;
+import javafx.scene.Cursor;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
@@ -130,7 +131,7 @@ public class MainPane extends StackPane {
 
 	/** The swing node for chart. */
 	private final SwingNode swingNodeForChart = new SwingNode();
-
+	private final BorderPane mainView = new BorderPane();
 	/** The stage. */
 	public static Stage stage;
 
@@ -255,7 +256,6 @@ public class MainPane extends StackPane {
 	 */
 	public MainPane(ViewModel model) {
 		// Create the main view
-		BorderPane mainView = new BorderPane();
 		mainView.setPrefSize(1400, 800);
 		// Create the glassePane
 		VBox glassPane = new VBox();
@@ -692,11 +692,20 @@ public class MainPane extends StackPane {
 	 * @param r Runnable to submit
 	 */
 	private void updateOnJFx(Runnable r) {
-		Platform.runLater(r);
+		try {
+			stage.getScene().setCursor(Cursor.WAIT);
+			mainView.setDisable(true);
+			referenceFilteredTable.setDisable(true);
+			Platform.runLater(r);
+		} finally {
+			stage.getScene().setCursor(Cursor.DEFAULT);
+			mainView.setDisable(false);
+		}
 	}
 
 	/**
 	 * Refresh tables
+	 * 
 	 */
 	private void refreshTables() {
 		updateOnJFx(() -> {
