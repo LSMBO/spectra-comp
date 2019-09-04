@@ -218,12 +218,14 @@ public class ViewModel {
 	public void onEditParsingRules() {
 		if (isValidSpectra()) {
 			ParsingRulesDialog parsingRulesDialog = new ParsingRulesDialog();
-			parsingRulesDialog.showAndWait().ifPresent(parsingRule -> {
-				TaskRunner.doAsyncWork("Update retention time", () -> {
+			parsingRulesDialog.showAndWait().ifPresent(parsingRuleByType -> {
+				TaskRunner.doAsyncWork("Update retention time from title", () -> {
+					ParsingRule refParsingRule = parsingRuleByType.get(ParsingRuleType.REFERENCE);
+					ParsingRule testParsingRule = parsingRuleByType.get(ParsingRuleType.TEST);
 					ListOfSpectra.getFirstSpectra().getSpectraAsObservable()
-							.forEach(spectrum -> spectrum.setRetentionTimeFromTitle(parsingRule.getRegex()));
+							.forEach(spectrum -> spectrum.setRetentionTimeFromTitle(refParsingRule.getRegex()));
 					ListOfSpectra.getSecondSpectra().getSpectraAsObservable()
-							.forEach(spectrum -> spectrum.setRetentionTimeFromTitle(parsingRule.getRegex()));
+							.forEach(spectrum -> spectrum.setRetentionTimeFromTitle(testParsingRule.getRegex()));
 					return true;
 				}, (isSuccess) -> {
 					referenceItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
