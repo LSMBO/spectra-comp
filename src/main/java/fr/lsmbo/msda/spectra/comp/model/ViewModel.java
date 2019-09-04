@@ -113,13 +113,14 @@ public class ViewModel {
 		SpectraLoaderDialog spectraLoaderDialog = new SpectraLoaderDialog();
 		spectraLoaderDialog.showAndWait().ifPresent(params -> {
 			TaskRunner.doAsyncWork("Loading spectra", () -> {
+				Boolean isFinished = false;
 				// Step 1 : load reference spectra
 				if (!params.getRefPklByDataSourceMap().isEmpty()) {
 					params.getRefPklByDataSourceMap().forEach((k, v) -> {
 						if (k.equals(SpectraSource.FILE)) {
 							// Reference will be loaded from a peaklist file(.mgf or .pkl)
 							String refFilePath = (String) v;
-							loadRefPklFile(refFilePath);
+							loadRefPeakListFile(refFilePath);
 							referenceItems.setAll(ListOfSpectra.getFirstSpectra().getSpectraAsObservable());
 						} else {
 							Long refProjectId = params.getRefProjectId();
@@ -139,7 +140,7 @@ public class ViewModel {
 						// Test spectra will be loaded from a peaklist file(.mgf or .pkl)
 						if (k.equals(SpectraSource.FILE)) {
 							String testFilePath = (String) v;
-							loadTestedPklFile(testFilePath);
+							loadTestPeakListFile(testFilePath);
 							testItems.setAll(ListOfSpectra.getSecondSpectra().getSpectraAsObservable());
 						} else {
 							// Test spectra loaded from a Proline project
@@ -154,7 +155,8 @@ public class ViewModel {
 						}
 					});
 				}
-				return true;
+				isFinished = true;
+				return isFinished;
 			}, (isSuccess) -> {
 				logger.info("Task has finished sucessfully!");
 				System.out.println("INFO | Task has finished sucessfully!");
@@ -272,17 +274,19 @@ public class ViewModel {
 	}
 
 	/**
-	 * * Load the reference spectra from a peaklist file.
+	 * Load the reference spectra from a peaklist file(.mgf or .pkl).
 	 *
 	 * @param refPklFilePath the peaklist file path from where the spectra will be
 	 *                       loaded.
 	 */
-	private void loadRefPklFile(String refPklFilePath) {
+	private void loadRefPeakListFile(String refPklFilePath) {
 		try {
 			PeaklistReader.isSecondPeakList = false;
 			PeakListProvider.loadRefSpectraFromFile(refPklFilePath);
+			logger.info("{} spectrum was found from the reference spectra",
+					ListOfSpectra.getFirstSpectra().getSpectraAsObservable().size());
 			System.out.println("INFO | " + ListOfSpectra.getFirstSpectra().getSpectraAsObservable().size()
-					+ "  spectrum was found from the reference spectra.");
+					+ "  spectrum was found from the reference spectra");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -290,19 +294,19 @@ public class ViewModel {
 	}
 
 	/**
-	 * * Load the spectra to test from a peaklist file.
+	 * Load the spectra to test from a peaklist file(.mgf or .pkl).
 	 *
 	 * @param testPklFilePath the peaklist file path from where the spectra will be
 	 *                        loaded.
 	 */
-	private void loadTestedPklFile(String testPklFilePath) {
+	private void loadTestPeakListFile(String testPklFilePath) {
 		try {
 			PeaklistReader.isSecondPeakList = true;
 			PeakListProvider.loadTestedSpectraFromFile(testPklFilePath);
-			logger.info("{} spectrum was found from the tested spectra",
+			logger.info("{} spectrum was found from the test spectra",
 					ListOfSpectra.getSecondSpectra().getSpectraAsObservable().size());
 			System.out.println("INFO | " + ListOfSpectra.getSecondSpectra().getSpectraAsObservable().size()
-					+ " spectrum was found from the tested spectra.");
+					+ " spectrum was found from the test spectra.");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -355,7 +359,7 @@ public class ViewModel {
 					DBAccess.closeAllDb();
 					Platform.exit();
 					System.exit(0);
-					return null;
+					return true;
 				}, stage);
 	}
 
@@ -408,6 +412,7 @@ public class ViewModel {
 	private void createPdfFile() throws FileNotFoundException, DocumentException {
 		FileUtils.openPdfFile(file -> {
 			TaskRunner.doAsyncWork("Export Comparison file", () -> {
+				Boolean isFinished = false;
 				Document document = new Document();
 				try {
 					PdfWriter.getInstance(document, new FileOutputStream(file.getAbsolutePath()));
@@ -452,11 +457,12 @@ public class ViewModel {
 					if (document != null && document.isOpen())
 						document.close();
 				}
-				return true;
+				isFinished = true;
+				return isFinished;
 			}, (isSuccess) -> {
 				System.out.println("INFO | Task has finished sucessfully!");
 			}, (failure) -> {
-				logger.error("Task has failed {}", failure);
+				logger.error("Task has failed! {}", failure);
 				System.err.println("INFO | Task has failed! " + failure);
 			}, false, stage);
 		}, stage);
