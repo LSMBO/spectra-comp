@@ -89,12 +89,12 @@ public class ParametersDialog extends Dialog<Map<String, Number>> {
 			deltaPrecMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPrecMoz()));
 		deltaPrecMozTF.setTooltip(new Tooltip("Enter the precursor delta moz value"));
 
-		deltaPeaksMozLabel = new Label("Peaks delta moz: ");
+		deltaPeaksMozLabel = new Label("Fragment delta moz: ");
 		deltaPeaksMozTF = new TextField();
 		deltaPeaksMozTF.setMinWidth(250);
 		if (!StringsUtils.isEmpty(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPeaksMoz())))
 			deltaPeaksMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPeaksMoz()));
-		deltaPeaksMozTF.setTooltip(new Tooltip("Enter the peaks delta moz value"));
+		deltaPeaksMozTF.setTooltip(new Tooltip("Enter the fragment delta moz value"));
 
 		deltaRTLabel = new Label("Delta retention time: ");
 		deltaRTTF = new TextField();

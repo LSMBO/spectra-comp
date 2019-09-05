@@ -481,9 +481,9 @@ public class MainPane extends StackPane {
 				Session.USER_PARAMS.getComparison().setDeltaPrecMoz(Float.valueOf(n));
 		});
 
-		Label peaksDeltaMozLabel = new Label("Peaks delta moz (Da):");
+		Label peaksDeltaMozLabel = new Label("Fragment delta moz (Da):");
 		deltaPeaksMozTF = new TextField();
-		deltaPeaksMozTF.setTooltip(new Tooltip("Enter the peaks delta moz value (Da)!"));
+		deltaPeaksMozTF.setTooltip(new Tooltip("Enter the fragment delta moz value (Da)!"));
 		deltaPeaksMozTF.setPrefWidth(80);
 		deltaPeaksMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPeaksMoz()));
 		deltaPeaksMozTF.textProperty().addListener((o, v, n) -> {
