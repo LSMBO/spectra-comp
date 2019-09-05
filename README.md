@@ -10,7 +10,8 @@ The tested spectra could be loaded from :
 
 The spectra are compared using a dot product method. The user could set up the comaprison spectra parameters from the graphical interface or from the paremeters JSON file (<code>default-params.json</code>).
 The parameters of comparison are :
-* Delta Moz: the delta (+- Moz), it will be used for the precursor moz and for the fragments moz.
+* Precursor delta Moz: the delta (+- Moz), it will be used for the precursor moz.
+* Fragment delta Moz: the delta (+- Moz), it will be used for the fragments moz.
 * Delta retention time: the delta retention time (-+ in secondes).  
 * Number of minimum peaks: the minimum number of peaks that matched between the reference spectrum and the tested specrum(same Moz and RT) .  
 * Number of peaks: the number of peaks that matched: for the tested spectra if a value is present for the same peak of reference spectra, we keep the most intense value of intensity.   
