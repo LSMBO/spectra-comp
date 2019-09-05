@@ -3,8 +3,8 @@
   "timestamp": "",
   "spectraCompVersion": "0.0.1-SNAPSHOT",
   "projectName": "msi_db_project_10",
-  "firstPklList": "C:\\Users\\Administrateur\\Desktop\\Algo_Beaux_Spectres\\X004081MROLM.mgf",
-  "secondPklList": "C:\\Users\\Administrateur\\Desktop\\Algo_Beaux_Spectres\\X004081MROLM.mgf",
+  "firstPklList": "",
+  "secondPklList": "",
   "dataSource":"file",
   "comparison": {
     "deltaPrecMoz": 0.007,
