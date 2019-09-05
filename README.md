@@ -1,5 +1,5 @@
 # Spectra-comp
-Spectra-comp is an Ms/Ms spectra comparison tool. The reference spectra could be loaded from:
+Spectra-comp is an Ms/Ms spectra comparison tool. It used to compare between reference spectra and test spectra using dot product method. The reference spectra could be loaded from:
 * Proline project (you should have proline software installed and a proline account as well https://github.com/profiproteomics). 
 * Peaklist file (<code>.mgf or .pkl</code>).
 
@@ -13,7 +13,7 @@ The parameters of comparison are :
 * Precursor delta Moz: the delta (+- Moz), it will be used for the precursor moz.
 * Fragment delta Moz: the delta (+- Moz), it will be used for the fragments moz.
 * Delta retention time: the delta retention time (-+ in secondes).  
-* Number of minimum peaks: the minimum number of peaks that matched between the reference spectrum and the tested specrum(same Moz and RT) .  
+* Number of minimum peaks: the minimum number of peaks that matched between the reference spectrum and the tested spectrum.  
 * Number of peaks: the number of peaks that matched: for the tested spectra if a value is present for the same peak of reference spectra, we keep the most intense value of intensity.   
 * Minimum theta: this value is computed as <code>Math.cos(Math.toRadians(thetaMin))</code>  
 
