@@ -131,7 +131,10 @@ public class MainPane extends StackPane {
 
 	/** The swing node for chart. */
 	private final SwingNode swingNodeForChart = new SwingNode();
+	
+	/** The main view pane */
 	private final BorderPane mainView = new BorderPane();
+	
 	/** The stage. */
 	public static Stage stage;
 
