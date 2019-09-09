@@ -54,7 +54,11 @@ public class IconResource {
 		/** The settings. */
 		SETTINGS,
 		/** The progress. */
-		PROGRESS, EXPORT;
+		PROGRESS,
+		/** The export */
+		EXPORT,
+		/** The plus */
+		EYE;
 	}
 
 	/** The images. */
@@ -63,8 +67,7 @@ public class IconResource {
 	/**
 	 * Return an image.
 	 *
-	 * @param icon
-	 *            the icon to load.
+	 * @param icon the icon to load.
 	 * @return Image
 	 */
 	public static Image getImage(ICON icon) {
@@ -127,6 +130,9 @@ public class IconResource {
 				break;
 			case CROSS:
 				images.put(icon, new Image(IconResource.class.getResourceAsStream("/images/cross.png")));
+				break;
+			case EYE:
+				images.put(icon, new Image(IconResource.class.getResourceAsStream("/images/eye.png")));
 				break;
 			default:
 				break;

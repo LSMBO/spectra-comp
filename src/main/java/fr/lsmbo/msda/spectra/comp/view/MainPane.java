@@ -11,9 +11,17 @@ import org.google.jhsheets.filtered.tablecolumn.FilterableIntegerTableColumn;
 import org.google.jhsheets.filtered.tablecolumn.FilterableLongTableColumn;
 import org.google.jhsheets.filtered.tablecolumn.FilterableStringTableColumn;
 
+import javafx.beans.binding.BooleanExpression;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.util.Callback;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.beans.value.ObservableValue;
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
+import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import fr.lsmbo.msda.spectra.comp.model.ViewModel;
 import fr.lsmbo.msda.spectra.comp.utils.TaskRunner;
@@ -21,6 +29,7 @@ import fr.lsmbo.msda.spectra.comp.view.dialog.ConfirmDialog;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -44,6 +53,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyCombination.Modifier;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -114,8 +124,12 @@ public class MainPane extends StackPane {
 	private FilterableIntegerTableColumn<Spectrum, Integer> testNbrFragmentsColumn;
 
 	private FilterableDoubleTableColumn<Spectrum, Double> testCosColumn;
+
 	/** The test matched column. */
 	private FilterableBooleanTableColumn<Spectrum, Boolean> testMatchedColumn;
+
+	/** Action column */
+	private FilterableBooleanTableColumn testActionColumn;
 
 	/** The ref selected spectrum. */
 	private Spectrum refSelectedSpectrum = null;
@@ -131,10 +145,10 @@ public class MainPane extends StackPane {
 
 	/** The swing node for chart. */
 	private final SwingNode swingNodeForChart = new SwingNode();
-	
+
 	/** The main view pane */
 	private final BorderPane mainView = new BorderPane();
-	
+
 	/** The stage. */
 	public static Stage stage;
 
@@ -423,8 +437,27 @@ public class MainPane extends StackPane {
 		testMatchedColumn.setCellValueFactory(cellData -> cellData.getValue().getMatched());
 		testMatchedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(testMatchedColumn));
 
+		testActionColumn = new FilterableBooleanTableColumn<>("Peptide");
+		testActionColumn.setCellValueFactory(
+				new Callback<FilterableBooleanTableColumn.CellDataFeatures<Spectrum, Boolean>, ObservableValue<Boolean>>() {
+					@Override
+					public ObservableValue<Boolean> call(
+							FilterableBooleanTableColumn.CellDataFeatures<Spectrum, Boolean> p) {
+						return new SimpleBooleanProperty(p.getValue() != null);
+					}
+				});
+		testActionColumn.setCellFactory(
+				new Callback<FilterableBooleanTableColumn<Spectrum, Boolean>, TableCell<Spectrum, Boolean>>() {
+
+					@Override
+					public TableCell<Spectrum, Boolean> call(FilterableBooleanTableColumn<Spectrum, Boolean> p) {
+						return new ButtonCell();
+					}
+				});
+
 		testFilteredTable.getColumns().setAll(testIdColumn, testTitleColumn, testMozColumn, testIntensityColumn,
-				testChargeColumn, testRtColumn, testNbrFragmentsColumn, testCosColumn, testMatchedColumn);
+				testChargeColumn, testRtColumn, testNbrFragmentsColumn, testCosColumn, testMatchedColumn,
+				testActionColumn);
 
 		testFilteredTable.autosize();
 		testFilteredTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -715,5 +748,33 @@ public class MainPane extends StackPane {
 			referenceFilteredTable.refresh();
 			testFilteredTable.refresh();
 		});
+	}
+
+	/** Define the button cell */
+	private class ButtonCell extends TableCell<Spectrum, Boolean> {
+
+		final Button cellButton = new Button("", new ImageView(IconResource.getImage(ICON.EYE)));
+
+		/**
+		 * Default constructor
+		 */
+		ButtonCell() {
+			cellButton.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent t) {
+					Spectrum sp = (Spectrum) getTableRow().getItem();
+					System.out.println("INFO| The list of peptide_match of ms query with id=#" + sp.getM_id());
+				}
+			});
+		}
+
+		// Display button if the row is not empty
+		@Override
+		protected void updateItem(Boolean t, boolean empty) {
+			super.updateItem(t, empty);
+			if (!empty) {
+				setGraphic(cellButton);
+			}
+		}
 	}
 }
