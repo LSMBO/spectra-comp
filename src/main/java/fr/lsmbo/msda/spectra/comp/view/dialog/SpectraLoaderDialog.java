@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.apache.poi.hsmf.datatypes.PropertyValue.BooleanPropertyValue;
+
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
@@ -14,8 +16,13 @@ import fr.lsmbo.msda.spectra.comp.model.Dataset;
 import fr.lsmbo.msda.spectra.comp.model.Dataset.DatasetType;
 import fr.lsmbo.msda.spectra.comp.model.Parameters;
 import fr.lsmbo.msda.spectra.comp.model.Project;
+import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -58,13 +65,13 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 	private Label connectionLabel;
 
 	/** The second connection label. */
-	private Label secondConnectionLabel;
+	private Label testConnectionLabel;
 
 	/** The user projects CBX. */
 	private ComboBox<Project> userProjectsCBX = new ComboBox<Project>();
 
 	/** The second user projects CBX. */
-	private ComboBox<Project> secondUserProjectsCBX = new ComboBox<Project>();
+	private ComboBox<Project> testUserProjectsCBX = new ComboBox<Project>();
 
 	/** The ref user projects. */
 	private ObservableList<Project> refUserProjects = FXCollections.observableArrayList();
@@ -76,19 +83,19 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 	private Parameters params;
 
 	/** The first root. */
-	private StackPane firstRoot;
+	private StackPane refRoot;
 
 	/** The root item. */
-	private TreeItem rootItem;
+	private TreeItem refRootItem;
 
 	/** The tree view. */
 	private TreeView<Dataset> referenceTreeView;
 
 	/** The second root. */
-	private StackPane secondRoot;
+	private StackPane testRoot;
 
 	/** The second root item. */
-	private TreeItem secondRootItem;
+	private TreeItem testRootItem;
 
 	/** The second tree view. */
 	private TreeView<Dataset> testTreeView;
@@ -104,10 +111,10 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 	private Long testProjectId;
 
 	/** The ref pkl by data source map. */
-	private Map<SpectraSource, Object> referencePklByDataSourceMap = new HashMap<>();
+	private Map<SpectraSource, Object> refPeakListByDataSourceMap = new HashMap<>();
 
 	/** The test pkl by data source map. */
-	private Map<SpectraSource, Object> testPklByDataSourceMap = new HashMap<>();
+	private Map<SpectraSource, Object> testPeakListByDataSourceMap = new HashMap<>();
 
 	/** The reference resultset id set. */
 	private HashSet<Long> referenceResultSetIdSet = new HashSet<>();
@@ -127,16 +134,15 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 		peaklistSplitPane.setDividerPositions(0.5f, 0.5f);
 		// Create radio buttons
 		ToggleGroup group = new ToggleGroup();
-		RadioButton pklListRefFileRB = new RadioButton("Select the first peaklist file to set as a reference");
-		pklListRefFileRB.setToggleGroup(group);
-		RadioButton pklListRefDBRB = new RadioButton(
-				"Select the first peaklist to set as a reference from your Proline projects");
-		pklListRefDBRB.setSelected(true);
-		pklListRefDBRB.setToggleGroup(group);
-		pklListRefFileRB.setOnAction(e -> {
+		RadioButton refPeakListFileRB = new RadioButton("Select the reference peaklist file");
+		refPeakListFileRB.setToggleGroup(group);
+		RadioButton refPeakListProlineRB = new RadioButton("Select the reference peaklist from your Proline projects");
+		refPeakListProlineRB.setSelected(true);
+		refPeakListProlineRB.setToggleGroup(group);
+		refPeakListFileRB.setOnAction(e -> {
 			Session.USER_PARAMS.setDataSource("file");
 		});
-		pklListRefDBRB.setOnAction(e -> {
+		refPeakListProlineRB.setOnAction(e -> {
 			Session.USER_PARAMS.setDataSource("database");
 		});
 		// Create the 1 peak list pane
@@ -146,19 +152,19 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 		peaklist1SplitPane.setDividerPositions(0.2f, 0.8f);
 
 		VBox warningPane = new VBox(2);
-		Label emptyFirstPklListLabel = new Label(
-				"Choose the first peaklist file to set as reference. Make sure that you have selected a valid file!");
-		emptyFirstPklListLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
-		emptyFirstPklListLabel.setStyle(JavaFxUtils.RED_ITALIC);
-		warningPane.getChildren().addAll(emptyFirstPklListLabel);
-		Label refPklListLabel = new Label("Reference peaklist:");
-		TextField refPklListTF = new TextField();
-		refPklListTF.setText(Session.USER_PARAMS.getFirstPklList());
-		refPklListTF.setTooltip(new Tooltip("Choose the first peaklist file to set as reference."));
-		Button loadRefPklListButton = new Button("Load");
-		loadRefPklListButton.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
-		loadRefPklListButton.setOnAction(e -> {
-			load(refPklListTF);
+		Label emptyrefPeakListLabel = new Label(
+				"Choose the reference peaklist file. Make sure that you have selected a valid file!");
+		emptyrefPeakListLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
+		emptyrefPeakListLabel.setStyle(JavaFxUtils.RED_ITALIC);
+		warningPane.getChildren().addAll(emptyrefPeakListLabel);
+		Label refPeakListLabel = new Label("Reference peaklist:");
+		TextField refPeakListTF = new TextField();
+		refPeakListTF.setText(Session.USER_PARAMS.getFirstPklList());
+		refPeakListTF.setTooltip(new Tooltip("Choose the reference peaklist file."));
+		Button loadRefPeakListButton = new Button("Load");
+		loadRefPeakListButton.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
+		loadRefPeakListButton.setOnAction(e -> {
+			load(refPeakListTF);
 		});
 		// Layout
 		GridPane refPklListPane = new GridPane();
@@ -166,12 +172,12 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 		refPklListPane.setPadding(new Insets(15));
 		refPklListPane.setHgap(15);
 		refPklListPane.setVgap(15);
-		refPklListPane.add(pklListRefFileRB, 0, 0, 3, 1);
+		refPklListPane.add(refPeakListFileRB, 0, 0, 3, 1);
 		refPklListPane.add(warningPane, 0, 1, 3, 1);
-		refPklListPane.add(refPklListLabel, 0, 2, 1, 1);
-		refPklListPane.add(refPklListTF, 1, 2, 1, 1);
-		refPklListPane.add(loadRefPklListButton, 2, 2, 1, 1);
-		GridPane.setHgrow(refPklListTF, Priority.ALWAYS);
+		refPklListPane.add(refPeakListLabel, 0, 2, 1, 1);
+		refPklListPane.add(refPeakListTF, 1, 2, 1, 1);
+		refPklListPane.add(loadRefPeakListButton, 2, 2, 1, 1);
+		GridPane.setHgrow(refPeakListTF, Priority.ALWAYS);
 		// From Proline projects
 		Button ButtonConnection = new Button("Connect ...");
 		ButtonConnection.setGraphic(new ImageView(IconResource.getImage(ICON.ADMIN)));
@@ -198,10 +204,10 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 		// Update the view
 		userProjectsCBX.setOnAction(e -> {
 			referenceProjectId = userProjectsCBX.getValue().getId();
-			rootItem.getChildren().clear();
-			rootItem.getChildren().addAll(createDatasets(userProjectsCBX.getValue().getId()));
-			referenceTreeView = new TreeView(rootItem);
-			firstRoot.getChildren().add(referenceTreeView);
+			refRootItem.getChildren().clear();
+			refRootItem.getChildren().addAll(createDatasets(userProjectsCBX.getValue().getId()));
+			referenceTreeView = new TreeView(refRootItem);
+			refRoot.getChildren().add(referenceTreeView);
 		});
 		VBox warningDbPane = new VBox(2);
 		connectionLabel = new Label("Off connection. Connect to your Proline account please!");
@@ -212,15 +218,15 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 		// Create dialog components
 		Label fileLocationLabel = new Label("User peaklists:");
 		connectionLabel.setPrefWidth(580);
-		firstRoot = new StackPane();
-		firstRoot.setPadding(new Insets(5));
+		refRoot = new StackPane();
+		refRoot.setPadding(new Insets(5));
 
 		// Set components control
-		rootItem = new TreeItem("Peaklists");
-		rootItem.setExpanded(true);
-		rootItem.getChildren().addAll();
-		referenceTreeView = new TreeView(rootItem);
-		firstRoot.getChildren().add(referenceTreeView);
+		refRootItem = new TreeItem("Peaklists");
+		refRootItem.setExpanded(true);
+		refRootItem.getChildren().addAll();
+		referenceTreeView = new TreeView(refRootItem);
+		refRoot.getChildren().add(referenceTreeView);
 
 		// Layout
 		GridPane projectsPane = new GridPane();
@@ -229,7 +235,7 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 		projectsPane.setHgap(15);
 		projectsPane.setVgap(15);
 		projectsPane.addRow(0, fileLocationLabel);
-		projectsPane.add(firstRoot, 0, 1, 1, 6);
+		projectsPane.add(refRoot, 0, 1, 1, 6);
 
 		Label userProjectLabel = new Label("User projects:");
 
@@ -239,25 +245,25 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 		refPklListDBPane.setHgap(15);
 		refPklListDBPane.setVgap(15);
 
-		refPklListDBPane.add(pklListRefDBRB, 0, 0, 3, 1);
+		refPklListDBPane.add(refPeakListProlineRB, 0, 0, 3, 1);
 		refPklListDBPane.add(warningDbPane, 0, 1, 3, 1);
 		refPklListDBPane.add(ButtonConnection, 3, 1, 1, 1);
 		refPklListDBPane.add(userProjectLabel, 0, 2, 2, 1);
 		refPklListDBPane.add(userProjectsCBX, 3, 2, 1, 1);
-		refPklListDBPane.add(firstRoot, 0, 3, 4, 1);
-		GridPane.setHgrow(firstRoot, Priority.ALWAYS);
+		refPklListDBPane.add(refRoot, 0, 3, 4, 1);
+		GridPane.setHgrow(refRoot, Priority.ALWAYS);
 		peaklist1SplitPane.getItems().addAll(refPklListPane, refPklListDBPane);
 		// Control
-		warningPane.visibleProperty().bind(refPklListTF.textProperty().isEmpty());
-		warningPane.disableProperty().bind(pklListRefDBRB.selectedProperty());
-		refPklListLabel.disableProperty().bind(pklListRefDBRB.selectedProperty());
-		refPklListTF.disableProperty().bind(pklListRefDBRB.selectedProperty());
-		loadRefPklListButton.disableProperty().bind(pklListRefDBRB.selectedProperty());
+		warningPane.visibleProperty().bind(refPeakListTF.textProperty().isEmpty());
+		warningPane.disableProperty().bind(refPeakListProlineRB.selectedProperty());
+		refPeakListLabel.disableProperty().bind(refPeakListProlineRB.selectedProperty());
+		refPeakListTF.disableProperty().bind(refPeakListProlineRB.selectedProperty());
+		loadRefPeakListButton.disableProperty().bind(refPeakListProlineRB.selectedProperty());
 
-		warningDbPane.disableProperty().bind(pklListRefFileRB.selectedProperty());
-		userProjectLabel.disableProperty().bind(pklListRefFileRB.selectedProperty());
-		ButtonConnection.disableProperty().bind(pklListRefFileRB.selectedProperty());
-		userProjectsCBX.disableProperty().bind(pklListRefFileRB.selectedProperty());
+		warningDbPane.disableProperty().bind(refPeakListFileRB.selectedProperty());
+		userProjectLabel.disableProperty().bind(refPeakListFileRB.selectedProperty());
+		ButtonConnection.disableProperty().bind(refPeakListFileRB.selectedProperty());
+		userProjectsCBX.disableProperty().bind(refPeakListFileRB.selectedProperty());
 		// Create the second pane
 		SplitPane peaklist2SplitPane = new SplitPane();
 		peaklist2SplitPane.setOrientation(Orientation.VERTICAL);
@@ -265,56 +271,55 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 		peaklist2SplitPane.setDividerPositions(0.2f, 0.8f);
 
 		ToggleGroup group2 = new ToggleGroup();
-		RadioButton secondPklListRefFileRB = new RadioButton("Select the second peaklist file to test");
-		secondPklListRefFileRB.setOnAction(e -> {
+		RadioButton testPeakListFileRB = new RadioButton("Select the test peaklist file");
+		testPeakListFileRB.setOnAction(e -> {
 			Session.USER_PARAMS.setDataSource("file");
 		});
-		secondPklListRefFileRB.setToggleGroup(group2);
-		RadioButton secondPklListDBRB = new RadioButton(
-				"Select the second peaklist to test from your Proline projects");
-		secondPklListDBRB.setSelected(true);
-		secondPklListDBRB.setToggleGroup(group2);
-		secondPklListDBRB.setOnAction(e -> {
+		testPeakListFileRB.setToggleGroup(group2);
+		RadioButton testPeakListProlineRB = new RadioButton("Select the test peaklist from your Proline projects");
+		testPeakListProlineRB.setSelected(true);
+		testPeakListProlineRB.setToggleGroup(group2);
+		testPeakListProlineRB.setOnAction(e -> {
 			Session.USER_PARAMS.setDataSource("database");
 		});
 
 		VBox warning2Pane = new VBox(2);
 		Label emptySecondPklListLabel = new Label(
-				"Choose the second peaklist file to test. Make sure that you have selected a valid file!");
+				"Choose the test peaklist file. Make sure that you have selected a valid file!");
 		emptySecondPklListLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
 		emptySecondPklListLabel.setStyle(JavaFxUtils.RED_ITALIC);
 		warning2Pane.getChildren().addAll(emptySecondPklListLabel);
-		Label secondPklListLabel = new Label("Second peaklist:");
-		TextField secondPklListTF = new TextField();
-		secondPklListTF.setText(Session.USER_PARAMS.getSecondPklList());
-		secondPklListTF.setTooltip(new Tooltip("Choose the second peaklist file to test."));
-		Button loadSecondPklListButton = new Button("Load");
-		loadSecondPklListButton.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
-		loadSecondPklListButton.setOnAction(e -> {
-			load(secondPklListTF);
+		Label testPeakListLabel = new Label("Test peaklist:");
+		TextField testPeakListTF = new TextField();
+		testPeakListTF.setText(Session.USER_PARAMS.getSecondPklList());
+		testPeakListTF.setTooltip(new Tooltip("Choose the test peaklist file."));
+		Button loadtestPeakListButton = new Button("Load");
+		loadtestPeakListButton.setGraphic(new ImageView(IconResource.getImage(ICON.LOAD)));
+		loadtestPeakListButton.setOnAction(e -> {
+			load(testPeakListTF);
 		});
 		// Layout
-		GridPane secondPklListPane = new GridPane();
-		secondPklListPane.setAlignment(Pos.TOP_LEFT);
-		secondPklListPane.setPadding(new Insets(15));
-		secondPklListPane.setHgap(15);
-		secondPklListPane.setVgap(15);
-		secondPklListPane.add(secondPklListRefFileRB, 0, 0, 3, 1);
-		secondPklListPane.add(warning2Pane, 0, 1, 3, 1);
-		secondPklListPane.add(secondPklListLabel, 0, 2, 1, 1);
-		secondPklListPane.add(secondPklListTF, 1, 2, 1, 1);
-		secondPklListPane.add(loadSecondPklListButton, 2, 2, 1, 1);
-		GridPane.setHgrow(secondPklListTF, Priority.ALWAYS);
+		GridPane testPeakListPane = new GridPane();
+		testPeakListPane.setAlignment(Pos.TOP_LEFT);
+		testPeakListPane.setPadding(new Insets(15));
+		testPeakListPane.setHgap(15);
+		testPeakListPane.setVgap(15);
+		testPeakListPane.add(testPeakListFileRB, 0, 0, 3, 1);
+		testPeakListPane.add(warning2Pane, 0, 1, 3, 1);
+		testPeakListPane.add(testPeakListLabel, 0, 2, 1, 1);
+		testPeakListPane.add(testPeakListTF, 1, 2, 1, 1);
+		testPeakListPane.add(loadtestPeakListButton, 2, 2, 1, 1);
+		GridPane.setHgrow(testPeakListTF, Priority.ALWAYS);
 		// From Proline databases
 		Button secondButtonConnection = new Button("Connect ...");
 		secondButtonConnection.setGraphic(new ImageView(IconResource.getImage(ICON.ADMIN)));
 		secondButtonConnection.setOnAction(e -> {
 			LoginDialog loginDialog = new LoginDialog();
 			loginDialog.showAndWait().ifPresent(userProject -> {
-				secondConnectionLabel.setVisible(false);
+				testConnectionLabel.setVisible(false);
 				testUserProjects.setAll(userProject);
-				secondUserProjectsCBX.setItems(testUserProjects);
-				secondUserProjectsCBX.setConverter(new StringConverter<Project>() {
+				testUserProjectsCBX.setItems(testUserProjects);
+				testUserProjectsCBX.setConverter(new StringConverter<Project>() {
 					@Override
 					public String toString(Project object) {
 						return object.getName();
@@ -329,28 +334,28 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 
 		});
 		// Update the view
-		secondUserProjectsCBX.setOnAction(e -> {
-			testProjectId = secondUserProjectsCBX.getValue().getId();
-			secondRootItem.getChildren().clear();
-			secondRootItem.getChildren().addAll(createDatasets(secondUserProjectsCBX.getValue().getId()));
-			testTreeView = new TreeView(secondRootItem);
-			secondRoot.getChildren().add(testTreeView);
+		testUserProjectsCBX.setOnAction(e -> {
+			testProjectId = testUserProjectsCBX.getValue().getId();
+			testRootItem.getChildren().clear();
+			testRootItem.getChildren().addAll(createDatasets(testUserProjectsCBX.getValue().getId()));
+			testTreeView = new TreeView(testRootItem);
+			testRoot.getChildren().add(testTreeView);
 		});
 		VBox warning2DbPane = new VBox(2);
-		secondConnectionLabel = new Label("Off connection. Connect to your Proline account please!");
-		secondConnectionLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
-		secondConnectionLabel.setStyle(JavaFxUtils.RED_ITALIC);
-		warning2DbPane.getChildren().addAll(secondConnectionLabel);
+		testConnectionLabel = new Label("Off connection. Connect to your Proline account please!");
+		testConnectionLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
+		testConnectionLabel.setStyle(JavaFxUtils.RED_ITALIC);
+		warning2DbPane.getChildren().addAll(testConnectionLabel);
 		// Create dialog components
 		Label secondFileLocationLabel = new Label("User peaklists:");
-		secondConnectionLabel.setPrefWidth(580);
-		secondRoot = new StackPane();
-		secondRoot.setPadding(new Insets(5));
-		secondRootItem = new TreeItem("Peaklists");
-		secondRootItem.setExpanded(true);
-		secondRootItem.getChildren().addAll();
-		testTreeView = new TreeView(secondRootItem);
-		secondRoot.getChildren().add(testTreeView);
+		testConnectionLabel.setPrefWidth(580);
+		testRoot = new StackPane();
+		testRoot.setPadding(new Insets(5));
+		testRootItem = new TreeItem("Peaklists");
+		testRootItem.setExpanded(true);
+		testRootItem.getChildren().addAll();
+		testTreeView = new TreeView(testRootItem);
+		testRoot.getChildren().add(testTreeView);
 		// Layout
 		GridPane projects2Pane = new GridPane();
 		projects2Pane.setAlignment(Pos.TOP_LEFT);
@@ -358,7 +363,7 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 		projects2Pane.setHgap(15);
 		projects2Pane.setVgap(15);
 		projects2Pane.addRow(0, secondFileLocationLabel);
-		projects2Pane.add(secondRoot, 0, 1, 1, 6);
+		projects2Pane.add(testRoot, 0, 1, 1, 6);
 
 		Label secondUserProjectLabel = new Label("User projects:");
 
@@ -368,26 +373,26 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 		secondPklListDBPane.setHgap(15);
 		secondPklListDBPane.setVgap(15);
 
-		secondPklListDBPane.add(secondPklListDBRB, 0, 0, 3, 1);
+		secondPklListDBPane.add(testPeakListProlineRB, 0, 0, 3, 1);
 		secondPklListDBPane.add(warning2DbPane, 0, 1, 3, 1);
 		secondPklListDBPane.add(secondButtonConnection, 3, 1, 1, 1);
 		secondPklListDBPane.add(secondUserProjectLabel, 0, 2, 2, 1);
-		secondPklListDBPane.add(secondUserProjectsCBX, 3, 2, 1, 1);
-		secondPklListDBPane.add(secondRoot, 0, 3, 4, 1);
-		GridPane.setHgrow(secondRoot, Priority.ALWAYS);
-		peaklist2SplitPane.getItems().addAll(secondPklListPane, secondPklListDBPane);
+		secondPklListDBPane.add(testUserProjectsCBX, 3, 2, 1, 1);
+		secondPklListDBPane.add(testRoot, 0, 3, 4, 1);
+		GridPane.setHgrow(testRoot, Priority.ALWAYS);
+		peaklist2SplitPane.getItems().addAll(testPeakListPane, secondPklListDBPane);
 
 		// Control
-		warning2Pane.visibleProperty().bind(refPklListTF.textProperty().isEmpty());
-		warning2Pane.disableProperty().bind(secondPklListDBRB.selectedProperty());
-		secondPklListLabel.disableProperty().bind(secondPklListDBRB.selectedProperty());
-		secondPklListTF.disableProperty().bind(secondPklListDBRB.selectedProperty());
-		loadSecondPklListButton.disableProperty().bind(secondPklListDBRB.selectedProperty());
+		warning2Pane.visibleProperty().bind(refPeakListTF.textProperty().isEmpty());
+		warning2Pane.disableProperty().bind(testPeakListProlineRB.selectedProperty());
+		testPeakListLabel.disableProperty().bind(testPeakListProlineRB.selectedProperty());
+		testPeakListTF.disableProperty().bind(testPeakListProlineRB.selectedProperty());
+		loadtestPeakListButton.disableProperty().bind(testPeakListProlineRB.selectedProperty());
 
-		warning2DbPane.disableProperty().bind(secondPklListRefFileRB.selectedProperty());
-		secondUserProjectLabel.disableProperty().bind(secondPklListRefFileRB.selectedProperty());
-		secondButtonConnection.disableProperty().bind(secondPklListRefFileRB.selectedProperty());
-		secondUserProjectsCBX.disableProperty().bind(secondPklListRefFileRB.selectedProperty());
+		warning2DbPane.disableProperty().bind(testPeakListFileRB.selectedProperty());
+		secondUserProjectLabel.disableProperty().bind(testPeakListFileRB.selectedProperty());
+		secondButtonConnection.disableProperty().bind(testPeakListFileRB.selectedProperty());
+		testUserProjectsCBX.disableProperty().bind(testPeakListFileRB.selectedProperty());
 
 		// Create the 2 peak list pane
 		// Create first tabpane
@@ -405,7 +410,7 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 		// Create second tabpane
 		TabPane testedTabPane = new TabPane();
 		Tab testedPklFileTab = new Tab("Peaklist File");
-		testedPklFileTab.setContent(secondPklListPane);
+		testedPklFileTab.setContent(testPeakListPane);
 		testedPklFileTab.setClosable(false);
 
 		Tab testedPklFromDBTab = new Tab("Proline projects");
@@ -432,33 +437,43 @@ public class SpectraLoaderDialog extends Dialog<Parameters> {
 		Button buttonOk = (Button) dialogPane.lookupButton(ButtonType.OK);
 		buttonOk.setGraphic(new ImageView(IconResource.getImage(ICON.TICK)));
 
+//		BooleanProperty isRefPeakListPropertyOK = new SimpleBooleanProperty();
+//		isRefPeakListPropertyOK.bind(referenceTreeView.getSelectionModel().selectedItemProperty().isNull()
+//				.or(refPeakListTF.textProperty().isEmpty()));
+//
+//		BooleanProperty isTestPeakListPropertyOK = new SimpleBooleanProperty();
+//		isTestPeakListPropertyOK.bind(testTreeView.getSelectionModel().selectedItemProperty().isNull()
+//				.or(testPeakListTF.textProperty().isEmpty()));
+//		// Disable ok button
+//		buttonOk.disableProperty().bind(isRefPeakListPropertyOK.or(isTestPeakListPropertyOK));
+
 		this.setTitle("Spectra Loader");
 		this.setDialogPane(dialogPane);
 		// On apply button
 		this.setResultConverter(buttonType -> {
 			if (buttonType == ButtonType.OK) {
-				if (pklListRefFileRB.isSelected()) {
+				if (refPeakListFileRB.isSelected()) {
 					Session.USER_PARAMS.setDataSource("file");
-					referencePklByDataSourceMap.put(SpectraSource.FILE, refPklListTF.getText());
+					refPeakListByDataSourceMap.put(SpectraSource.FILE, refPeakListTF.getText());
 				} else {
 					Session.USER_PARAMS.setDataSource("database");
 					Long refResultSetId = referenceTreeView.getSelectionModel().getSelectedItem().getValue()
 							.getResultSetId();
 					referenceResultSetIdSet.add(refResultSetId);
-					referencePklByDataSourceMap.put(SpectraSource.DATABASE, referenceResultSetIdSet);
+					refPeakListByDataSourceMap.put(SpectraSource.DATABASE, referenceResultSetIdSet);
 				}
-				if (secondPklListRefFileRB.isSelected()) {
+				if (testPeakListFileRB.isSelected()) {
 					Session.USER_PARAMS.setDataSource("file");
-					testPklByDataSourceMap.put(SpectraSource.FILE, secondPklListTF.getText());
+					testPeakListByDataSourceMap.put(SpectraSource.FILE, testPeakListTF.getText());
 				} else {
 					Session.USER_PARAMS.setDataSource("database");
 					Long testResultSetId = testTreeView.getSelectionModel().getSelectedItem().getValue()
 							.getResultSetId();
 					testResultSetIdSet.add(testResultSetId);
-					testPklByDataSourceMap.put(SpectraSource.DATABASE, testResultSetIdSet);
+					testPeakListByDataSourceMap.put(SpectraSource.DATABASE, testResultSetIdSet);
 				}
-				this.params = new Parameters(referencePklByDataSourceMap, testPklByDataSourceMap, referenceProjectId,
-						testProjectId);
+				this.params = new Parameters(refPeakListByDataSourceMap, testPeakListByDataSourceMap,
+						referenceProjectId, testProjectId);
 				return params;
 			} else {
 				return null;

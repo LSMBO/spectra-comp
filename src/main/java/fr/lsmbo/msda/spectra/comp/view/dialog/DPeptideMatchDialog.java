@@ -80,9 +80,9 @@ public class DPeptideMatchDialog extends Dialog<Integer> {
 		peptideWarningLabel.setGraphic(new ImageView(IconResource.getImage(ICON.WARNING)));
 		peptideWarningLabel.setStyle(JavaFxUtils.ORANGE_ITALIC);
 		peptideWarningPane.getChildren().addAll(peptideWarningLabel);
-
+		peptideWarningPane.setPrefWidth(500);
 		// Create peptide match dialog components
-		Label peptideLabel = new Label("The peptide list:");
+		Label peptideLabel = new Label("The peptide(s):");
 		peptideTableView = new TableView<DPeptide>(peptideList);
 		TableColumn<DPeptide, String> sequenceCol = new TableColumn<DPeptide, String>("Sequence");
 		sequenceCol.setCellValueFactory(new PropertyValueFactory<DPeptide, String>("m_sequence"));
