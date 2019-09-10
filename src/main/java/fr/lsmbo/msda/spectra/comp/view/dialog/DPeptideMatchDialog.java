@@ -27,7 +27,7 @@ import javafx.stage.Stage;
 
 // TODO: Auto-generated Javadoc
 /**
- * Creates and displays parsing rules dialog to edit parsing rules.
+ * Creates and displays peptide match dialog.
  * 
  * @author aromdhani
  *
@@ -81,7 +81,7 @@ public class DPeptideMatchDialog extends Dialog<Integer> {
 		peptideWarningLabel.setStyle(JavaFxUtils.ORANGE_ITALIC);
 		peptideWarningPane.getChildren().addAll(peptideWarningLabel);
 
-		// Create Parsing rules dialog components
+		// Create peptide match dialog components
 		Label peptideLabel = new Label("The peptide list:");
 		peptideTableView = new TableView<DPeptide>(peptideList);
 		TableColumn<DPeptide, String> sequenceCol = new TableColumn<DPeptide, String>("Sequence");
