@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.net.URI;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -60,6 +61,23 @@ public class ViewModel {
 
 	/** The task runner. */
 	private TaskRunner task = new TaskRunner();
+
+	/** The test project id used to compute the peptide sequence */
+	private Optional<Long> testProjectIdOpt = Optional.empty();
+
+	/**
+	 * @return the testProjectIdOpt
+	 */
+	public final Optional<Long> getTestProjectIdOpt() {
+		return testProjectIdOpt;
+	}
+
+	/**
+	 * @param testProjectIdOpt the testProjectIdOpt to set
+	 */
+	public final void setTestProjectIdOpt(Optional<Long> testProjectIdOpt) {
+		this.testProjectIdOpt = testProjectIdOpt;
+	}
 
 	/**
 	 * Gets the reference items.
@@ -145,6 +163,7 @@ public class ViewModel {
 						} else {
 							// Test spectra loaded from a Proline project
 							Long testProjectId = params.getTestProjectId();
+							testProjectIdOpt = Optional.of(testProjectId);
 							Set rsIds = (Set) v;
 							logger.info(
 									"Test spectra will be loaded from a proline project with id=#{} and resultset id=#{}",

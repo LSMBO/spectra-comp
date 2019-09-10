@@ -14,13 +14,17 @@ import org.google.jhsheets.filtered.tablecolumn.FilterableStringTableColumn;
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
+import fr.lsmbo.msda.spectra.comp.db.DBSpectraHandler;
+import fr.lsmbo.msda.spectra.comp.model.DPeptide;
 import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import fr.lsmbo.msda.spectra.comp.model.ViewModel;
 import fr.lsmbo.msda.spectra.comp.utils.TaskRunner;
 import fr.lsmbo.msda.spectra.comp.view.dialog.ConfirmDialog;
+import fr.lsmbo.msda.spectra.comp.view.dialog.DPeptideMatchDialog;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -62,6 +66,7 @@ import javafx.util.Callback;
 public class MainPane extends StackPane {
 
 	// Main view components
+	private ViewModel model;
 	// Reference table view
 	/** The ref filtered table. */
 	// Filtered table
@@ -268,6 +273,7 @@ public class MainPane extends StackPane {
 	 */
 	public MainPane(ViewModel model) {
 		// Create the main view
+		this.model = model;
 		mainView.setPrefSize(1400, 800);
 		// Create the glassePane
 		VBox glassPane = new VBox();
@@ -757,8 +763,21 @@ public class MainPane extends StackPane {
 			cellButton.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent t) {
-					Spectrum sp = (Spectrum) getTableRow().getItem();
-					System.out.println("INFO| The list of peptide_match of ms query with id=#" + sp.getM_id());
+					model.getTestProjectIdOpt().ifPresent(projectId -> {
+						Spectrum sp = (Spectrum) getTableRow().getItem();
+						try {
+							ObservableList<DPeptide> peptideList = DBSpectraHandler.getPeptideByMsqId(projectId,
+									sp.getM_id());
+							DPeptideMatchDialog peptideMatchDialog = new DPeptideMatchDialog(peptideList);
+							peptideMatchDialog.showAndWait().ifPresent(peptideNbr -> {
+								System.out.println("INFO | " + peptideNbr + " peptide were found.");
+							});
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					});
+
 				}
 			});
 		}

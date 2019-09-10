@@ -121,28 +121,33 @@ public class DBSpectraHandler {
 	 * @return a list of peptide
 	 * @throws Exception
 	 */
-	public static List<DPeptide> getPeptideByMsqId(final Long projectId, Long msqId) throws Exception {
+	public static ObservableList<DPeptide> getPeptideByMsqId(final Long projectId, Long msqId) throws Exception {
 		PreparedStatement peptidesByMsqIdStmt = null;
 		ResultSet rs = null;
-		List<DPeptide> peptideList = new ArrayList<>();
+		ObservableList<DPeptide> peptideList = FXCollections.observableArrayList();
 		try {
-			peptidesByMsqIdStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(PEPTIDE_QUERY);
-			peptidesByMsqIdStmt.setLong(2, msqId);
-			rs = peptidesByMsqIdStmt.executeQuery();
-			while (rs.next()) {
-				Long pepId = rs.getLong("id");
-				String sequence = rs.getString("sequence");
-				String ptmAsString = rs.getString("ptm_string");
-				Double calcMass = rs.getDouble("calculated_mass");
-				if (pepId > 0L) {
-					DPeptide pep = new DPeptide(pepId);
-					if (!StringsUtils.isEmpty(sequence))
-						pep.setM_sequence(sequence);
-					if (!StringsUtils.isEmpty(ptmAsString))
-						pep.setM_ptm(ptmAsString);
-					if (calcMass != null && calcMass > 0D)
-						pep.setM_calculatedMass(calcMass);
-					peptideList.add(pep);
+			Set<Long> peptideIdSet = peptideMatchesByMsQueryIdMap.get(msqId);
+			if (!peptideIdSet.isEmpty()) {
+				for (Long peptideId : peptideIdSet) {
+					peptidesByMsqIdStmt = DBAccess.getMsiDBConnection(projectId).prepareStatement(PEPTIDE_QUERY);
+					peptidesByMsqIdStmt.setLong(1, peptideId);
+					rs = peptidesByMsqIdStmt.executeQuery();
+					while (rs.next()) {
+						Long pepId = rs.getLong("id");
+						String sequence = rs.getString("sequence");
+						String ptmAsString = rs.getString("ptm_string");
+						Double calcMass = rs.getDouble("calculated_mass");
+						if (pepId > 0L) {
+							DPeptide pep = new DPeptide(pepId);
+							if (!StringsUtils.isEmpty(sequence))
+								pep.setM_sequence(sequence);
+							if (!StringsUtils.isEmpty(ptmAsString))
+								pep.setM_ptm(ptmAsString);
+							if (calcMass != null && calcMass > 0D)
+								pep.setM_calculatedMass(calcMass);
+							peptideList.add(pep);
+						}
+					}
 				}
 			}
 		} finally {
