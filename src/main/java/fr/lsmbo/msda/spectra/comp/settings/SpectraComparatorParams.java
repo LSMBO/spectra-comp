@@ -42,16 +42,11 @@ public class SpectraComparatorParams {
 	/**
 	 * Instantiates a new spectra comparator params.
 	 *
-	 * @param deltaMoz
-	 *            the delta moz
-	 * @param deltaRT
-	 *            the delta RT
-	 * @param nbPeaksMin
-	 *            the nb peaks min
-	 * @param thetaMin
-	 *            the theta min
-	 * @param nbPeaks
-	 *            the nb peaks
+	 * @param deltaMoz   the delta moz
+	 * @param deltaRT    the delta RT
+	 * @param nbPeaksMin the nb peaks min
+	 * @param thetaMin   the theta min
+	 * @param nbPeaks    the nb peaks
 	 */
 	public SpectraComparatorParams(double deltaPrecMoz, double deltaPeaksMoz, Integer deltaRT, Integer nbPeaksMin,
 			Integer thetaMin, Integer nbPeaks) {
@@ -94,8 +89,7 @@ public class SpectraComparatorParams {
 	}
 
 	/**
-	 * @param deltaPrecMoz
-	 *            the deltaPrecMoz to set
+	 * @param deltaPrecMoz the deltaPrecMoz to set
 	 */
 	public final void setDeltaPrecMoz(double deltaPrecMoz) {
 		this.deltaPrecMoz = deltaPrecMoz;
@@ -109,8 +103,7 @@ public class SpectraComparatorParams {
 	}
 
 	/**
-	 * @param deltaPeaksMoz
-	 *            the deltaPeaksMoz to set
+	 * @param deltaPeaksMoz the deltaPeaksMoz to set
 	 */
 	public final void setDeltaPeaksMoz(double deltaPeaksMoz) {
 		this.deltaPeaksMoz = deltaPeaksMoz;
@@ -128,8 +121,7 @@ public class SpectraComparatorParams {
 	/**
 	 * Sets the delta RT.
 	 *
-	 * @param deltaRT
-	 *            the deltaRT to set
+	 * @param deltaRT the deltaRT to set
 	 */
 	public final void setDeltaRT(Integer deltaRT) {
 		this.deltaRT = deltaRT;
@@ -147,8 +139,7 @@ public class SpectraComparatorParams {
 	/**
 	 * Sets the nb peaks min.
 	 *
-	 * @param nbPeaksMin
-	 *            the nbPeaksMin to set
+	 * @param nbPeaksMin the nbPeaksMin to set
 	 */
 	public final void setNbPeaksMin(Integer nbPeaksMin) {
 		this.nbPeaksMin = nbPeaksMin;
@@ -166,8 +157,7 @@ public class SpectraComparatorParams {
 	/**
 	 * Sets the theta min.
 	 *
-	 * @param thetaMin
-	 *            the thetaMin to set
+	 * @param thetaMin the thetaMin to set
 	 */
 	public final void setThetaMin(Integer thetaMin) {
 		this.thetaMin = thetaMin;
@@ -185,8 +175,7 @@ public class SpectraComparatorParams {
 	/**
 	 * Sets the nb peaks.
 	 *
-	 * @param nbPeaks
-	 *            the nbPeaks to set
+	 * @param nbPeaks the nbPeaks to set
 	 */
 	public final void setNbPeaks(Integer nbPeaks) {
 		this.nbPeaks = nbPeaks;
@@ -199,9 +188,8 @@ public class SpectraComparatorParams {
 	 */
 	@Override
 	public String toString() {
-		return "Precursor delta moz: " + deltaPrecMoz + "; delta peaks moz:" + deltaPeaksMoz
-				+ "; deltaRT: " + deltaRT + " ; nbPeaksMin: " + nbPeaksMin + " ;thetaMin: " + thetaMin + "; nbPeaks:"
-				+ nbPeaks;
+		return "precursor delta moz: " + deltaPrecMoz + "; delta peaks moz:" + deltaPeaksMoz + "; delta RT: " + deltaRT
+				+ " ; min peaks nbr: " + nbPeaksMin + " ;theta min: " + thetaMin + "; peaks nbr:" + nbPeaks;
 
 	}
 }
