@@ -188,8 +188,8 @@ public class SpectraComparatorParams {
 	 */
 	@Override
 	public String toString() {
-		return "precursor delta moz: " + deltaPrecMoz + "; delta peaks moz:" + deltaPeaksMoz + "; delta RT: " + deltaRT
-				+ " ; min peaks nbr: " + nbPeaksMin + " ;theta min: " + thetaMin + "; peaks nbr:" + nbPeaks;
+		return "precursor delta moz: " + deltaPrecMoz + "; delta peaks moz: " + deltaPeaksMoz + "; delta RT: " + deltaRT
+				+ "; min peaks nbr: " + nbPeaksMin + "; theta min: " + thetaMin + "; peaks nbr: " + nbPeaks;
 
 	}
 }
