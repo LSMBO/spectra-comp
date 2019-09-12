@@ -126,6 +126,7 @@ public class DBSpectraHandler {
 		ResultSet rs = null;
 		ObservableList<DPeptide> peptideList = FXCollections.observableArrayList();
 		try {
+			System.out.println("INFO - The initial MS Query id=#" + msqQueryMap.get(msqId));
 			Set<Long> peptideIdSet = peptideMatchesByMsQueryIdMap.get(msqId);
 			if (!peptideIdSet.isEmpty()) {
 				for (Long peptideId : peptideIdSet) {

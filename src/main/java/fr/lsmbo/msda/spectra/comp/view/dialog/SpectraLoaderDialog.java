@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.apache.poi.hsmf.datatypes.PropertyValue.BooleanPropertyValue;
-
 import fr.lsmbo.msda.spectra.comp.IconResource;
 import fr.lsmbo.msda.spectra.comp.IconResource.ICON;
 import fr.lsmbo.msda.spectra.comp.Session;
@@ -16,13 +14,8 @@ import fr.lsmbo.msda.spectra.comp.model.Dataset;
 import fr.lsmbo.msda.spectra.comp.model.Dataset.DatasetType;
 import fr.lsmbo.msda.spectra.comp.model.Parameters;
 import fr.lsmbo.msda.spectra.comp.model.Project;
-import fr.lsmbo.msda.spectra.comp.model.Spectrum;
 import fr.lsmbo.msda.spectra.comp.utils.FileUtils;
 import fr.lsmbo.msda.spectra.comp.utils.JavaFxUtils;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
