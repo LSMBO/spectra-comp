@@ -25,8 +25,8 @@ The parameters of comparison are :
 
 Spectra-comp has been developped in Java and can be used on Windows and Linux.<br>
 Spectra-comp requires Java 8 at least.<br>
-To run Spectra-comp, you can double-click on the script <code>start_spectra_comp</code>
-
+The latest release can be downloaded from here: https://github.com/LSMBO/spectra-comp/releases<br>
+To run Spectra-comp, you can double-click on the script start_spectra_comp.bat( Windows ) or start_spectra_comp.sh( Unix )
  <h3>Screenshot</h3>
 
 ![alt text](https://github.com/LSMBO/spectra-comp/blob/master/src/main/resources/images/screen-shot.png)
