@@ -509,8 +509,9 @@ public class MainPane extends StackPane {
 		BorderPane graphicsPane = new BorderPane();
 		graphicsPane.setMinHeight(150);
 		Label deltaMozLabel = new Label("Prec delta moz (Da):");
+		deltaMozLabel.setTooltip(new Tooltip("Enter the precursor delta moz value (Da)!"));
 		deltaPrecMozTF = new TextField();
-		deltaPrecMozTF.setTooltip(new Tooltip("Enter the delta moz value (Da)!"));
+		deltaPrecMozTF.setTooltip(new Tooltip("Enter the precursor delta moz value (Da)!"));
 		deltaPrecMozTF.setPrefWidth(80);
 		deltaPrecMozTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getDeltaPrecMoz()));
 		deltaPrecMozTF.textProperty().addListener((o, v, n) -> {
@@ -519,6 +520,7 @@ public class MainPane extends StackPane {
 		});
 
 		Label peaksDeltaMozLabel = new Label("Fragment delta moz (Da):");
+		peaksDeltaMozLabel.setTooltip(new Tooltip("Enter the fragment delta moz value (Da)!"));
 		deltaPeaksMozTF = new TextField();
 		deltaPeaksMozTF.setTooltip(new Tooltip("Enter the fragment delta moz value (Da)!"));
 		deltaPeaksMozTF.setPrefWidth(80);
@@ -529,6 +531,7 @@ public class MainPane extends StackPane {
 		});
 
 		Label deltaRTLabel = new Label("Delta rt (sec):");
+		deltaRTLabel.setTooltip(new Tooltip("Enter the delta retention time value in secondes!"));
 		deltaRTTF = new TextField();
 		deltaRTTF.setPrefWidth(80);
 		deltaRTTF.setTooltip(new Tooltip("Enter the delta retention time value in secondes!"));
@@ -539,6 +542,7 @@ public class MainPane extends StackPane {
 		});
 
 		Label minPeaksNbrLabel = new Label("Min peaks number:");
+		minPeaksNbrLabel.setTooltip(new Tooltip("Enter the minimum peaks number value!"));
 		minPeaksNbrTF = new TextField();
 		minPeaksNbrTF.setPrefWidth(80);
 		minPeaksNbrTF.setTooltip(new Tooltip("Enter the minimum peaks number value!"));
@@ -549,9 +553,10 @@ public class MainPane extends StackPane {
 		});
 
 		Label thetaMinLabel = new Label("Theta min:");
+		thetaMinLabel.setTooltip(new Tooltip("Enter the theta min value!"));
 		thetaMinTF = new TextField();
 		thetaMinTF.setPrefWidth(80);
-		thetaMinTF.setTooltip(new Tooltip("Enter the Theta min value!"));
+		thetaMinTF.setTooltip(new Tooltip("Enter the theta min value!"));
 		thetaMinTF.setText(String.valueOf(Session.USER_PARAMS.getComparison().getThetaMin()));
 		thetaMinTF.textProperty().addListener((o, v, n) -> {
 			if (n != null)
@@ -559,6 +564,7 @@ public class MainPane extends StackPane {
 		});
 
 		Label peaksNbrLabel = new Label("Peaks number:");
+		peaksNbrLabel.setTooltip(new Tooltip("Enter the peaks number value!"));
 		peaksNbrTF = new TextField();
 		peaksNbrTF.setPrefWidth(80);
 		peaksNbrTF.setTooltip(new Tooltip("Enter the peaks number value!"));

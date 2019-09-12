@@ -46,7 +46,7 @@ public class SpectraCompFx extends Application {
 		MainPane mainPane = new MainPane(model);
 		MainPane.stage = primaryStage;
 		primaryStage.getIcons().add(new ImageView(IconResource.getImage(ICON.SPECTRA_COMP)).getImage());
-		Scene scene = new Scene(mainPane, 1240, 800);
+		Scene scene = new Scene(mainPane, 1260, 800);
 		// Add style sheets
 		scene.getStylesheets().add("/css/style.css");
 		// Set software name and release version

@@ -12,7 +12,7 @@ import fr.lsmbo.msda.spectra.comp.utils.StringsUtils;
 
 /**
  * This class represents a database connectorFactory. It provides methods to
- * create database connections.
+ * create/get database connections.
  * 
  * @author Aromdhani
  *
