@@ -86,9 +86,14 @@ public class DPeptideMatchDialog extends Dialog<Integer> {
 		peptideTableView = new TableView<DPeptide>(peptideList);
 		TableColumn<DPeptide, String> sequenceCol = new TableColumn<DPeptide, String>("Sequence");
 		sequenceCol.setCellValueFactory(new PropertyValueFactory<DPeptide, String>("m_sequence"));
+
 		TableColumn<DPeptide, Double> caluclatedMassCol = new TableColumn<DPeptide, Double>("Calculated mass");
 		caluclatedMassCol.setCellValueFactory(new PropertyValueFactory<DPeptide, Double>("m_calculatedMass"));
-		peptideTableView.getColumns().addAll(sequenceCol, caluclatedMassCol);
+
+		TableColumn<DPeptide, String> peptidePtmCol = new TableColumn<DPeptide, String>("PTM");
+		peptidePtmCol.setCellValueFactory(new PropertyValueFactory<DPeptide, String>("m_ptm"));
+
+		peptideTableView.getColumns().addAll(sequenceCol, peptidePtmCol, caluclatedMassCol);
 		peptideTableView.autosize();
 		peptideTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		peptideWarningPane.setVisible(peptideList.isEmpty());
