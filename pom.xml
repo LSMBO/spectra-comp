@@ -143,7 +143,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.3.6</version> <!-- change to 42.1.13 ? -->
+            <version>42.3.7</version> <!-- change to 42.1.13 ? -->
             <!-- Exclude slf4j-simple which the implementation used by logback-classic
                 dependency -->
             <exclusions>
